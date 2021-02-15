@@ -279,7 +279,7 @@
 *temp char_list_len length(p_char_list)
 *temp char_list_index char_list_len
 *label contains_loop
-*if (string_index > 1)
+*if (string_index >= 1)
     *label contains_char_list_loop
     *if ((p_string#string_index) = (p_char_list#char_list_index))
         *set cslib_ret true

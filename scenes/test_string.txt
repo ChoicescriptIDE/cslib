@@ -1,5 +1,5 @@
 *label get_test_count
-*set cslib_ret 15
+*set cslib_ret 16
 *return
 
 *label test
@@ -227,6 +227,19 @@
 *label test_15
 *temp result_expected false
 *gosub_scene cslib_string contains "Hello World!" "2345txy"
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_16
+*label test_name_16
+*set cslib_ret "CONTAINS #3 (single)"
+*return
+
+*label test_16
+*temp result_expected true
+*gosub_scene cslib_string contains "!" "@!$%^"
 *temp result_actual cslib_ret
 *gosub_scene _test_framework strings_equal result_actual result_expected
 *return
