@@ -38,7 +38,7 @@
 *comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
 *label build_array
 *params p_prefix p_cancel
-*gosub _common p_prefix "" "" ""
+*gosub _common p_prefix p_cancel "" "" ""
 *gosub _init
 *return
 
@@ -68,7 +68,7 @@
 *comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
 *label build_array_filter
 *params p_prefix p_cancel p_filter p_filter_type p_filter_value
-*gosub _common p_prefix p_filter p_filter_type p_filter_value
+*gosub _common p_prefix p_cancel p_filter p_filter_type p_filter_value
 *gosub _init
 *return
 
@@ -110,14 +110,14 @@
 
 *comment INTERNAL FUNCTIONS (DO NOT CALL DIRECTLY):
 *label _common
-*params p_prefix p_filter p_filter_type p_filter_value
+*params p_prefix p_cancel p_filter p_filter_type p_filter_value
 *temp prefix p_prefix
 *temp filter p_filter
 *temp filter_value p_filter_value
 *temp filter_type p_filter_type
 *if (filter != "") and ((filter_type != "MATCH") and (filter_type != "NOT_MATCH"))
 	*bug filter_type was "${filter_type}" but should be "MATCH" or "NOT_MATCH"
-*temp allow_cancel true
+*temp allow_cancel p_cancel
 *return
 
 *label _build_simple_common
