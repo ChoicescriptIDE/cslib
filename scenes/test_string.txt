@@ -1,0 +1,193 @@
+*label get_test_count
+*set cslib_ret 12
+*return
+
+*label test
+*params test_id
+*temp result_actual 0
+*gosub test[test_id]
+*if (cslib_ret)
+    *set cslib_ret "PASS"
+*else
+    *gosub_scene _test_framework get_results result_expected result_actual
+*return
+
+*comment TEST_1
+*label test_name_1
+*set cslib_ret "CONCAT #1"
+*return
+
+*label test_1
+*temp result_expected "Real John Doe"
+*comment test-specific variables
+*temp first_name "Real"
+*temp second_name "John"
+*temp third_name "Doe"
+*comment test logic
+*gosub_scene cslib_string concat " " first_name second_name third_name
+*temp result_actual cslib_ret
+*comment test results
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_2
+*label test_name_2
+*set cslib_ret "CONCAT #2"
+*return
+
+*label test_2
+*comment test descriptors
+*temp result_expected "full_name"
+*comment test-specific variables
+*temp first_str "full"
+*temp second_str "name"
+*comment test logic
+*gosub_scene cslib_string concat "_" first_str second_str
+*temp result_actual cslib_ret
+*comment test results
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_3
+*label test_name_3
+*set cslib_ret "SUBSTRING #1"
+*return
+
+*label test_3
+*temp result_expected "super"
+*temp original_string "superman"
+*gosub_scene cslib_string substring original_string 1 5
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_4
+*label test_name_4
+*set cslib_ret "SUBSTRING #2 (one char)"
+*return
+
+*label test_4
+*temp result_expected "_"
+*temp original_string "hello_world"
+*gosub_scene cslib_string substring original_string 6 6
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_5
+*label test_name_5
+*set cslib_ret "SUBSTRING #3 (one char string)"
+*return
+
+*label test_5
+*temp result_expected "E"
+*temp original_string "E"
+*gosub_scene cslib_string substring original_string 1 1
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_6
+*label test_name_6
+*set cslib_ret "FIND #1"
+*return
+*label test_6
+*temp result_expected 7
+*temp original_string "Hello World!"
+*gosub_scene cslib_string find original_string "World"
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_7
+*label test_name_7
+*set cslib_ret "REPLACE #1"
+*return
+*label test_7
+*temp result_expected "abc_abc_abc_abc_abc"
+*temp original_string "abc_bca_abc_bca_abc"
+*gosub_scene cslib_string replace original_string "bca" "abc"
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_8
+*label test_name_8
+*set cslib_ret "REPLACE #2 (sequential)"
+*return
+
+*label test_8
+*temp result_expected "LE SP3AK 15 BAD"
+*temp original_string "L337 SP34K 15 B4D"
+*gosub_scene cslib_string replace original_string "337" "E"
+*gosub_scene cslib_string replace cslib_ret "4" "A"
+*gosub_scene cslib_string replace cslib_ret "7" "T"
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_9
+*label test_name_9
+*set cslib_ret "REPLACE #3 (sequential)"
+*return
+
+*label test_9
+*temp result_expected "LEET SPEAK 1S BAD"
+*temp original_string "L337 SP34K 15 B4D"
+*gosub_scene cslib_string replace original_string "3" "E"
+*gosub_scene cslib_string replace cslib_ret "4" "A"
+*gosub_scene cslib_string replace cslib_ret "7" "T"
+*gosub_scene cslib_string replace cslib_ret "5" "S"
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_10
+*label test_name_10
+*set cslib_ret "LOWERCASE #1"
+*return
+
+*label test_10
+*temp result_expected "lowercase"
+*temp original_string "LOWERCASE"
+*gosub_scene cslib_string lowercase original_string
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_11
+*label test_name_11
+*set cslib_ret "LOWERCASE #2 (spaces)"
+*return
+
+*label test_11
+*temp result_expected "lowercase with spaces"
+*temp original_string "LOWERCASE with SPACES"
+*gosub_scene cslib_string lowercase original_string
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_12
+*label test_name_12
+*set cslib_ret "REVERSE #1"
+*return
+
+*label test_12
+*temp result_expected "!dlroW olleH"
+*temp original_string "Hello World!"
+*gosub_scene cslib_string reverse original_string
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return

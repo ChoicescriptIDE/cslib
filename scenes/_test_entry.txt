@@ -1,0 +1,66 @@
+*label main
+[b]CSLIB Test Framework[/b]
+*gosub_scene cslib_menu build_simple "Run tests for a single module" "Run tests for all modules" "View test logs"
+*if cslib_ret = 1
+	[b]Testing a module[/b]
+	*gosub_scene cslib_menu build_array "module" true
+	*if cslib_ret = 0
+		*goto main
+	*else
+		*temp module_id cslib_ret
+		*gosub test_module module_id
+		*temp pass_count cslib_ret
+		*gosub_scene _test_display_templates display_module_summary module[module_id] test_count pass_count
+		Results have been logged.
+		*page_break
+		*goto main
+*elseif cslib_ret = 2
+	*gosub test_all_modules
+	*goto main
+*elseif cslib_ret = 3
+	*gosub view_logs
+	*goto main
+*elseif cslib_ret = 4
+	*gosub test_templates
+	*goto main
+*else
+	*bug bad selection at main menu!
+
+*label test_module
+*params p_module_id
+*gosub_scene test[module[p_module_id]] get_test_count
+*temp test_count cslib_ret
+*gosub_scene _test_framework test_module module[p_module_id] test_count ("module_log_"&p_module_id)
+*set total_tests_run + test_count
+*set total_tests_passed + cslib_ret
+*return
+ 
+*comment RUN THE TESTS
+*label test_all_modules
+*temp n 1
+*label run_loop
+*if (n <= module_count)
+	*gosub test_module n
+	*set n + 1
+	*goto run_loop
+*gosub_scene _test_display_templates display_full_summary
+*line_break
+Results have been logged.
+*page_break
+*return
+
+*label view_logs
+*label log_selection
+[b]Viewing test logs[/b]
+*gosub_scene cslib_menu build_array_filter "module" true "log" "NOT_MATCH" ""
+*if cslib_ret = 0
+	*goto main
+*else
+	*gosub_scene _test_display_templates display_log cslib_ret
+	*page_break
+	*goto log_selection
+*return
+
+*label test_templates
+*gosub_scene cslib_template
+*return

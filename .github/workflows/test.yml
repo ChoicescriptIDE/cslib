@@ -1,0 +1,35 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.4
+        with:
+          # Version Spec of the version to use.  Examples: 10.x, 10.15.1, >=10.15.0
+          node-version: 12.x
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: cslib
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          repository: 'dfabulich/choicescript'
+          path: choicescript
+      - name: Test
+        run: |
+          rm choicescript/web/mygame/scenes/*
+          cp cslib/scenes/* choicescript/web/mygame/scenes
+      - name: Run randomtest
+        run: |
+          cd choicescript
+          node randomtest.js num=1 showText=true

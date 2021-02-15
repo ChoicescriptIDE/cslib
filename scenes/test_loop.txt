@@ -1,0 +1,62 @@
+*label get_test_count
+*set cslib_ret 2
+*return
+
+
+*label test
+*params test_id
+*temp result_actual 0
+*gosub test[test_id]
+*if (cslib_ret)
+    *set cslib_ret "PASS"
+*else
+    *gosub_scene _test_framework get_results result_expected result_actual
+*return
+
+
+*comment TEST_1
+*label test_name_1
+*set cslib_ret "ACC STR"
+*return
+
+*label test_1
+*temp result_expected "Pop[n/]Pop[n/]Fizz[n/]Pop[n/]Buzz[n/]Fizz[n/]Pop[n/]Pop[n/]Fizz[n/]Buzz[n/]Pop[n/]Fizz[n/]Pop[n/]Pop[n/]FizzBuzz"
+*comment test-specific variables
+*gosub_scene cslib_loop acc_str "test_loop" "acc_loop_fizzbuzz" 15
+*set result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_2
+*label test_name_2
+*set cslib_ret "ACC NUM"
+*return
+
+*label test_2
+*temp result_expected 256
+*comment test-specific variables
+*gosub_scene cslib_loop acc_str "test_loop" "acc_loop_square" 3 2
+*set result_actual cslib_ret
+*gosub_scene _test_framework numbers_equal result_actual result_expected
+*return
+
+
+*label acc_loop_fizzbuzz
+*params n acc count
+*temp str ""
+*if ((n modulo 3) = 0)
+    *set str &"Fizz"
+*if ((n modulo 5) = 0)
+    *set str &"Buzz"
+*if (str = "")
+    *set str &"Pop"
+*if (n != count)
+    *set str &"[n/]"
+*set cslib_ret acc&str
+*return
+
+*label acc_loop_square
+*params n acc count
+*set cslib_ret acc * acc
+*return

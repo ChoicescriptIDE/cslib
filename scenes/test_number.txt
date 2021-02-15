@@ -1,0 +1,110 @@
+*label get_test_count
+*set cslib_ret 7
+*return
+
+*label test
+*params test_id
+*temp result_actual 0
+*gosub test[test_id]
+*if (cslib_ret)
+    *set cslib_ret "PASS"
+*else
+    *gosub_scene _test_framework get_results result_expected result_actual
+*return
+
+*comment TEST_1
+*label test_name_1
+*set cslib_ret "MEAN #1"
+*return
+
+*label test_1
+*temp result_expected 3
+*comment test logic
+*gosub_scene cslib_number mean 1 2 3 4 5
+*set result_actual cslib_ret
+*gosub_scene _test_framework numbers_equal result_actual result_expected
+*return
+
+
+*comment TEST_2
+*label test_name_2
+*set cslib_ret "MAX #1"
+*return
+
+*label test_2
+*temp result_expected 66
+*comment logic
+*gosub_scene cslib_number max 1 32 17 66
+*set result_actual cslib_ret
+*gosub_scene _test_framework numbers_equal result_actual result_expected
+*return
+
+
+*comment TEST_3
+*label test_name_3
+*set cslib_ret "MIN #1"
+*return
+
+*label test_3
+*temp result_expected 17
+*comment test logic
+*gosub_scene cslib_number min 123 32 17 66
+*set result_actual cslib_ret
+*gosub_scene _test_framework numbers_equal result_actual result_expected
+*return
+
+
+*comment TEST_4
+*label test_name_4
+*set cslib_ret "IS_NUMBER #1"
+*return
+
+*label test_4
+*temp result_expected true
+*comment test logic
+*gosub_scene cslib_number is_number "1234567890"
+*set result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_5
+*label test_name_5
+*set cslib_ret "IS_NUMBER #2 (neg)"
+*return
+
+*label test_5
+*temp result_expected false
+*comment test logic
+*gosub_scene cslib_number is_number "123fourfive"
+*set result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_6
+*label test_name_6
+*set cslib_ret "ARE_NUMBERS #1"
+*return
+
+*label test_6
+*temp result_expected true
+*comment test logic
+*gosub_scene cslib_number is_number "12345" "6789"
+*set result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_7
+*label test_name_7
+*set cslib_ret "ARE_NUMBERS #2 (neg)"
+*return
+
+*label test_7
+*temp result_expected false
+*comment test logic
+*gosub_scene cslib_number are_numbers "12345" "onetwothree"
+*set result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return

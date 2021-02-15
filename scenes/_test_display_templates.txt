@@ -1,0 +1,25 @@
+*label display_module_summary
+*params p_module p_test_count p_pass_count
+[b]Test Summary for $!{p_module}:[/b]
+*line_break
+Ran ${p_test_count}, of which ${p_pass_count} passed and ${p_test_count - p_pass_count} failed.
+*line_break
+*line_break
+*return
+
+*label display_full_summary
+[b]FULL CSLIB TEST SUMMARY (${total_tests_passed}/${total_tests_run})[/b]
+*line_break
+Ran ${total_tests_run} tests in ${module_count} modules. Of which ${total_tests_passed} passed and ${total_tests_run - total_tests_passed} failed.
+*temp pass_rate round((total_tests_passed * (100 / total_tests_run)))
+
+Pass rate: ${pass_rate}%
+*return
+
+*label display_log
+*params p_log_id
+[b]Test Report for cslib_${module[p_log_id]}[/b]
+
+${module_log[param_1]}
+*line_break
+*return

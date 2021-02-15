@@ -1,0 +1,260 @@
+*bug "cslib_string is a cslib module and must not be accessed directly"
+
+*comment static reference table for converting
+*comment alphabet letters to lowercase
+*label lowercase_init
+*temp lowercase_A "a"
+*temp lowercase_B "b"
+*temp lowercase_C "c"
+*temp lowercase_D "d"
+*temp lowercase_E "e"
+*temp lowercase_F "f"
+*temp lowercase_G "g"
+*temp lowercase_H "h"
+*temp lowercase_I "i"
+*temp lowercase_J "j"
+*temp lowercase_K "k"
+*temp lowercase_L "l"
+*temp lowercase_M "m"
+*temp lowercase_N "n"
+*temp lowercase_O "o"
+*temp lowercase_P "p"
+*temp lowercase_Q "q"
+*temp lowercase_R "r"
+*temp lowercase_S "s"
+*temp lowercase_T "t"
+*temp lowercase_U "u"
+*temp lowercase_V "v"
+*temp lowercase_W "w"
+*temp lowercase_X "x"
+*temp lowercase_Y "y"
+*temp lowercase_Z "z"
+*return
+
+
+*comment CONCAT
+*comment ------------------------------
+*comment Returns a concatenated string formed of
+*comment at least two given strings, joined by
+*comment a given seperator.
+*comment ------------------------------
+*comment 	params:
+*comment        p_concat_sep: the separating value 
+*comment		param_n(string): the values to concatenate
+*comment	returns: 
+*comment		(string): the concatenated string
+*label concat
+*if (cslib_script)
+	*script let p = this.temps.param; this.setVar("cslib_ret", p.slice(1).reverse().reduce((str, acc) => acc += (p[0] + str)));
+	*line_break
+	*return
+*params p_concat_sep
+*comment param2+ strings to concatenate
+*gosub_scene cslib_assert custom (param_count > 2) "cslib.string.concat: expected at least three arguments (seperator, string, string, ...)"
+*label concat_loop_top
+*temp concat_param_num 2
+*temp concat_result ""
+*label concat_loop
+*if (concat_param_num < param_count)
+	*set concat_result &param[concat_param_num]
+	*set concat_result &p_concat_sep
+	*set concat_param_num + 1
+	*goto concat_loop
+*comment last item should not have a separator
+*set concat_result &param[concat_param_num]
+*set cslib_ret concat_result
+*return
+
+*comment LOWERCASE
+*comment ------------------------------
+*comment Returns the given string converted to all lowercase.
+*comment The string should only contain characters from the
+*comment standard latin alphabet (A-Z) and spaces.
+*comment ------------------------------
+*comment 	params:
+*comment		p_string(string): the string to convert to lowercase
+*comment	returns: 
+*comment		(string): the all lowercase form of the original string
+*label lowercase
+*params p_string
+*gosub lowercase_init
+*comment lowercase all
+*temp string_len length(p_string)
+*temp lower_string ""
+*temp c 1
+*label lowercase_loop
+*if (c <= string_len)
+	*if ((p_string#c) != " ")
+		*set lower_string & (lowercase[p_string#c])
+	*else
+		*set lower_string & " "
+	*set c + 1
+	*goto lowercase_loop
+*set cslib_ret lower_string
+*return
+
+
+*comment SUBSTRING
+*comment ------------------------------
+*comment Returns the portion of a string 
+*comment (substring) between two given points.
+*comment ------------------------------
+*comment 	params:
+*comment		p_str(string): the full string
+*comment		p_s_index(string): the full string
+*comment		p_e_index(string): the full string
+*comment	returns: 
+*comment		(string): the substring
+*label substring
+*params p_str p_s_index p_e_index
+*if (cslib_script)
+	*script this.setVar("cslib_ret", this.temps.p_str.substring(this.temps.p_s_index - 1, this.temps.p_e_index));
+	*return
+*gosub_scene cslib_assert custom (p_str != "") "cslib.string.substring: string must not be empty"
+*gosub_scene cslib_assert custom (p_s_index > 0) "cslib.string.substring: start index (${p_s_index}) can not be less than 1"
+*gosub_scene cslib_assert custom not(p_s_index > p_e_index) "cslib.string.substring: start index (${p_s_index}) should be less than or equal to end index (${p_e_index})"
+*gosub_scene cslib_assert custom (p_e_index <= length(p_str)) "cslib.string.substring: end index (${p_e_index}) can not be greater than the length of string (${length(p_str)})"
+*comment TODO: CAN WE ASSERT PARAMETER TYPES?
+*temp substring_char p_s_index
+*temp substring_result ""
+*label substring_loop
+*if (substring_char <= p_e_index)
+	*set substring_result &(p_str#substring_char)
+	*set substring_char + 1
+	*goto substring_loop
+*set cslib_ret substring_result
+*return
+
+
+*comment FIND
+*comment ------------------------------
+*comment Returns a positive number (the start char) of the first match of a
+*comment a specified substring within a string.
+*comment ------------------------------
+*comment 	params:
+*comment		p_str(string): the string to modify
+*comment		p_find_str(string): the old substring to match
+*comment	returns: 
+*comment		(number): the first char of the first match, or 0 (no match)
+*comment returns a positive number (the start_char) of a string within a string, or 0
+*label find
+*params p_str p_find_str
+*if (cslib_script)
+	*script let i = this.temps.p_str.indexOf(this.temps.p_find_str); this.setVar("cslib_ret", i === -1 ? 0 : i + 1);
+	*return
+*temp p_str_len length(p_str)
+*temp p_find_str_len length(p_find_str)
+*if (p_find_str = p_str)
+	*set cslib_ret 1
+	*return
+*if (p_find_str_len > p_str_len)
+	*set cslib_ret 0
+	*return
+*temp find_e_index 0
+*temp find_s_index 1
+*label find_loop
+*set find_e_index (find_s_index + (p_find_str_len - 1))
+*if (find_e_index <= p_str_len)
+	*gosub_scene cslib_string substring p_str find_s_index (find_s_index + (p_find_str_len - 1))
+	*if (cslib_ret = p_find_str)
+		*set cslib_ret find_s_index
+		*return
+	*set find_s_index + 1
+	*goto find_loop
+*set cslib_ret 0
+*return
+
+
+*comment REPLACE
+*comment ------------------------------
+*comment Returns a given string with all occurences of
+*comment a specified substring replaced with a new substring.
+*comment ------------------------------
+*comment 	params:
+*comment		p_str(string): the string to modify
+*comment		p_old(string): the old substring to match
+*comment		p_new(string): the new substring to replace those matches
+*comment	returns: 
+*comment		(string): the modified string 
+*label replace
+*params p_str p_old_str p_new_str
+*if (cslib_script)
+	*script this.setVar("cslib_ret", this.temps.p_str.replaceAll(this.temps.p_old_str, this.temps.p_new_str));
+	*return
+*temp p_str_len length(p_str)
+*temp p_old_str_len length(p_old_str)
+*temp replace_result ""
+*temp replace_s_index 1
+*temp replace_to_search_str ""
+*label replace_loop
+*comment grab the unsearched part of the original string, and search it
+*gosub_scene cslib_string substring p_str replace_s_index p_str_len
+*set replace_to_search_str cslib_ret
+*gosub_scene cslib_string find (replace_to_search_str) p_old_str
+*if (cslib_ret > 0)
+	*temp replace_r (cslib_ret - 1)
+	*comment get the searched str up until the 'matched' substring
+	*if (replace_r > 0)
+		*gosub_scene cslib_string substring replace_to_search_str (replace_s_index - length(replace_result)) replace_r
+		*set replace_result &cslib_ret
+	*else
+		*set replace_result &""
+	*comment add the 'replaced' string instead
+	*set replace_result &p_new_str
+	*comment continue search _after_ the last match
+	*set replace_s_index replace_s_index + ((replace_r + p_old_str_len))
+	*goto replace_loop
+*set replace_result &replace_to_search_str
+*set cslib_ret replace_result
+*return
+
+
+*comment INDEX
+*comment ------------------------------
+*comment Returns the position of the first occurence of a
+*comment given character (string of length 1) in the given string.
+*comment If the character isn't found, 0 is returned.
+*comment Inputs of a length not equal to 1 will cause an error to be thrown.
+*comment ------------------------------
+*comment 	params:
+*comment		p_str(string): a string to search for p_char
+*comment		p_char(string): a string of length 1
+*comment	returns: 
+*comment		(number): the position of the first 
+*label index
+*params p_str p_char
+*if (length(p_har) != 1)
+	*bug p_char should be a single character, not "${p_char}"
+*temp c 1
+*temp str_len length(p_str)
+*label index_loop
+*if (c <= str_len)
+	*if (p_str#c) = p_char
+		*set cslib_ret c
+		*return
+	*set c + 1
+	*goto index_loop
+*set cslib_ret 0
+*return
+
+
+*comment REVERSE
+*comment ------------------------------
+*comment Returns the given string reversed.
+*comment ------------------------------
+*comment 	params:
+*comment		p_str(string): a string
+*comment	returns: 
+*comment		(string): p_str reversed
+*label reverse
+*params p_str
+*temp reversed_string ""
+*temp string_len length(p_str)
+*temp c string_len
+*label reverse_loop
+*if (c >= 1)
+	*set reversed_string & (p_str#c)
+	*set c - 1
+	*goto reverse_loop
+*set cslib_ret reversed_string
+*return

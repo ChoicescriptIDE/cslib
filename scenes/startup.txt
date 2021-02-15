@@ -1,0 +1,59 @@
+*title ChoiceScript Library (cslib)
+*author CSIDE
+
+*comment Set to FALSE for manual test selection
+*create automatic_testing true
+
+*comment CSLIB_VARS / CONFIGURATION
+*comment ----------------------------------
+*create cslib_ret 0
+*comment captures ...
+*create cslib_assert true
+*comment allow cslib to use faster *script calls where possible
+*create cslib_script false
+
+*comment MODULE TEST REGISTRATION
+*create module_count 4
+*create module_0 ""
+*create module_log_0 ""
+*create module_1 "string"
+*create module_log_1 ""
+*create module_2 "number"
+*create module_log_2 ""
+*create module_3 "assert"
+*create module_log_3 ""
+*create module_4 "loop"
+*create module_log_4 ""
+
+*comment GLOBAL TEST VARIABLES
+*create total_tests_run 0
+*create total_tests_passed 0
+
+*comment GLOBAL VALUES
+*create const_num_1 1
+*create const_num_2 2
+*create const_num_3 3
+*create const_num_4 4
+*create const_num_5 5
+*create const_num_6 6
+*create const_num_7 7
+*create const_num_8 8
+*create const_num_9 9
+
+*create string_buffer ""
+
+*set implicit_control_flow true
+
+*if (automatic_testing)
+	*comment automatic 'test all' for CI, quicktest etc.
+	*gosub_scene _test_entry test_all_modules
+	*if (total_tests_passed < total_tests_run)
+		*comment print all module logs
+		*gosub_scene cslib_loop repeat "_test_display_templates" "display_log" module_count
+		*comment force quicktest + randomtest to fail
+		*bug ${total_tests_passed}/${total_tests_run} tests passed (${total_tests_run - total_tests_passed} failed)
+	*else
+		All tests passed.
+*else
+	*comment allow user to select individual tests, view ogs etc.
+	*goto_scene _test_entry main

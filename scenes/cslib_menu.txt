@@ -1,0 +1,270 @@
+*bug "cslib_menu is a cslib module and must not be accessed directly"
+
+*comment --------------------------------------
+*comment ###  MENU / CHOICE module: README ###
+*comment --------------------------------------
+*comment 	This module allows for quick and tidy presentation of complicated
+*comment 	"choices" or menus in ChoiceScript.
+*comment 
+*comment 	Unless otherwise noted, all the routines in this module immediatly display/render
+*comment 	the menu/choice to the screen, and support and unlimited amount of options, via automatic pagination.
+*comment 
+*comment # Assumptions
+*comment 	In order for this module to work properly, some assumptions must be adhered to:
+*comment	- "arrays" are a series of variables that follow the "name_N" pattern, e.g. myvar_1, myvar_2
+*comment 	- arrays must start from index 1 (not 0)
+*comment	- all arrays must be global (i.e. *create not *temp)
+*comment	- all arrays must have a name_count variable that denotes the length of the array, inclusive (e.g. myvar_count)
+*comment	- an array must not have any gaps: e.g. myvar_1, my_var2, my_var4 (with no myvar_3)
+*comment	- "prefix" (or array ref) values should not include the underscore: '_' (i.e. "myvar" is the prefix, not "myvar_")
+*comment 
+
+
+*comment BUILD_ARRAY
+*comment ------------------------------
+*comment Renders a choice menu from a given array.
+*comment 
+*comment 	Example usage:
+*comment		*create myvar_1 "Option 1"
+*comment		*create myvar_2 "Option 2"
+*comment		...
+*comment		*create myvar_len 5
+*comment		*gosub_scene cslib_menu build_array "myvar"
+*comment ------------------------------
+*comment 	params:
+*comment		p_prefix(string): the array name/reference (prefix)
+*comment		p_cancel(boolean): include a 'cancel' option
+*comment	returns: 
+*comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
+*label build_array
+*params p_prefix p_cancel
+*gosub _common p_prefix "" "" ""
+*gosub _init
+*return
+
+
+*comment BUILD_ARRAY_FILTER
+*comment ------------------------------
+*comment Renders a choice menu from a given array, but filters out entries
+*comment based on a provided filter and filter value.
+*comment 
+*comment 	Example usage:
+*comment		*create item_1 "Sword"
+*comment		*create item_type_1 "weapon"
+*comment		*create item_2 "Shield"
+*comment 		*create item_type_2 "armour"
+*comment		...
+*comment		*create myvar_count 5
+*comment 		Select a weapon:
+*comment		*gosub_scene cslib_menu build_array_filter "item" false "type" "MATCH" "weapon"
+v"module" true "log" "NOT_MATCH" ""
+*comment ------------------------------
+*comment 	params:
+*comment		p_prefix(string): the array name/reference (prefix)
+*comment		p_cancel(boolean): include a 'cancel' option
+*comment		p_filter(string): the array attribute to test against
+*comment		p_filter_type(string): one of "MATCH" or "NOT_MATCH" - determines filter comparison operation
+*comment		p_filter_value(any): the value to check against the filter attribute
+*comment	returns: 
+*comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
+*label build_array_filter
+*params p_prefix p_cancel p_filter p_filter_type p_filter_value
+*gosub _common p_prefix p_filter p_filter_type p_filter_value
+*gosub _init
+*return
+
+
+*comment BUILD_SIMPLE
+*comment ------------------------------
+*comment Renders a choice menu containing the given strings as individual options.
+*comment 
+*comment 	Example usage:
+*comment		*gosub_scene cslib_menu build_simple "Option 1" "Option 2" "Option 3" ...
+*comment ------------------------------
+*comment 	params:
+*comment		param_n(string): a series of menu options
+*comment	returns: 
+*comment		(number): a positive number indicating the selected option
+*label build_simple
+*params
+*temp allow_cancel false
+*goto _build_simple_common
+
+
+*comment BUILD_SIMPLE_CANCEL
+*comment ------------------------------
+*comment Renders a choice menu containing the given strings as individual options
+*comment in addition to a cancellation option.
+*comment 
+*comment 	Example usage:
+*comment		*gosub_scene cslib_menu build_simple_cancel "Option 1" "Option 2" "Option 3" ...
+*comment ------------------------------
+*comment 	params:
+*comment		param_n(string): a series of menu options
+*comment	returns: 
+*comment		(number): a positive number indicating the selected option, or 0 (if cancel was selected)
+*label build_simple_with_cancel
+*params
+*temp allow_cancel true
+*goto _build_simple_common
+
+
+*comment INTERNAL FUNCTIONS (DO NOT CALL DIRECTLY):
+*label _common
+*params p_prefix p_filter p_filter_type p_filter_value
+*temp prefix p_prefix
+*temp filter p_filter
+*temp filter_value p_filter_value
+*temp filter_type p_filter_type
+*if (filter != "") and ((filter_type != "MATCH") and (filter_type != "NOT_MATCH"))
+	*bug filter_type was "${filter_type}" but should be "MATCH" or "NOT_MATCH"
+*temp allow_cancel true
+*return
+
+*label _build_simple_common
+*temp prefix "param"
+*temp filter ""
+*temp filter_value ""
+
+*label _init
+*comment CONSTANT CONFIG VALUES:
+*comment swap the next/prev buttons intelligently for smoother navigation
+*temp next_preference true
+*comment determines the direction in which options are displayed
+*temp invert_order false
+*comment the amount of options per 'page':
+*temp items_per_page 5
+
+*temp cur_page 1
+
+*label _soft_reset
+*comment (re-)calculate the visible options (after a page navigation)
+*temp option_slot_id_1 0
+*temp option_slot_id_2 0
+*temp option_slot_id_3 0
+*temp option_slot_id_4 0
+*temp option_slot_id_5 0
+*temp option_slot_id_6 0
+*temp option_slot_id_7 0
+*temp option_slot_id_8 0
+*temp option_slot_id_9 0
+*temp option_slot_id_10 0
+
+*temp ignore 0
+*set ignore ((cur_page - 1) * items_per_page)
+*temp item_count 0
+*temp cur_option 1
+*temp cur_item "@{invert_order ${{prefix&\"_len\"}}|1}"
+*label filter_loop
+*if (filter = "")
+	*goto _do_not_filter
+*if ({((prefix&"_")&(filter&"_"))&cur_item} = filter_value)
+	*if (filter_type = "NOT_MATCH")
+		*goto acc
+*elseif (filter_type != "NOT_MATCH")
+	*goto acc
+*label _do_not_filter
+*set item_count + 1
+*if (ignore < 1) and (cur_option <= items_per_page)
+	*set option_slot_id[cur_option] cur_item
+	*set cur_option + 1
+*if (ignore > 0)
+	*set ignore -1
+*label acc
+*if (invert_order)
+	*if (cur_item > 1)
+		*set cur_item - 1
+		*goto filter_loop
+*else
+	*if (cur_item < {prefix&"_count"})
+		*set cur_item + 1
+		*goto filter_loop
+*if (item_count = 0) and not(allow_cancel)
+	*bug cslib_menu: menu construction failed as there were 0 matching items — consider allowing cancellation
+
+*label _render
+*temp page_count 0
+*if (item_count < items_per_page)
+	*set page_count 1
+*else
+	*set page_count (item_count / items_per_page)
+*comment this *if might be redundant?
+*if (page_count < 1)
+	*set cslib_ret 0
+	*goto _return
+*if ((page_count modulo 1) > 0)
+	*set page_count ((page_count - (page_count modulo 1)) + 1)
+*temp page_modifier (items_per_page * (cur_page - 1))
+
+*fake_choice
+	*if (page_count > 1)
+		*comment when there is more than one page, display a page indicator
+		*selectable_if (false) # Page (${cur_page} / ${page_count})
+			*bug "cslib_menu error: this option should not be selectable"
+	*if (((cur_page < page_count) and (next_preference)) or ((cur_page = 1) and (page_count > 1)))
+		#[i]Next -->[/i]
+			*set next_preference true
+			*set cur_page + 1
+			*goto _soft_reset
+	*if ((cur_page > 1) and ((cur_page = page_count) or (next_preference != true)))
+		#[i]<-- Previous[/i]
+			*set next_preference false
+			*set cur_page - 1
+			*goto _soft_reset
+	*if ((option_slot_id_1 > 0) and (items_per_page > 0)) 
+		# ${{(prefix&"_")&{option_slot_id_1}}}
+			*set cslib_ret option_slot_id_1
+			*goto _return
+	*if ((option_slot_id_2 > 0) and (items_per_page > 1)) 
+		# ${{(prefix&"_")&{option_slot_id_2}}}
+			*set cslib_ret option_slot_id_2
+			*goto _return
+	*if ((option_slot_id_3 > 0) and (items_per_page > 2)) 
+		# ${{(prefix&"_")&{option_slot_id_3}}}
+			*set cslib_ret option_slot_id_3
+			*goto _return
+	*if ((option_slot_id_4 > 0) and (items_per_page > 3))
+		# ${{(prefix&"_")&{option_slot_id_4}}}
+			*set cslib_ret option_slot_id_4
+			*goto _return
+	*if ((option_slot_id_5 > 0) and (items_per_page > 4)) 
+		# ${{(prefix&"_")&{option_slot_id_5}}}
+			*set cslib_ret option_slot_id_5
+			*goto _return
+	*if ((option_slot_id_6 > 0) and (items_per_page > 5)) 
+		# ${{(prefix&"_")&{option_slot_id_6}}}
+			*set cslib_ret option_slot_id_6
+			*goto _return
+	*if ((option_slot_id_7 > 0) and (items_per_page > 6)) 
+		# ${{(prefix&"_")&{option_slot_id_7}}}
+			*set cslib_ret option_slot_id_7
+			*goto _return
+	*if ((option_slot_id_8 > 0) and (items_per_page > 7)) 
+		# ${{(prefix&"_")&{option_slot_id_8}}}
+			*set cslib_ret option_slot_id_8
+			*goto _return
+	*if ((option_slot_id_9 > 0) and (items_per_page > 8)) 
+		# ${{(prefix&"_")&{option_slot_id_9}}}
+			*set cslib_ret option_slot_id_9
+			*goto _return
+	*if ((option_slot_id_10 > 0) and (items_per_page > 9))
+		# ${{(prefix&"_")&{option_slot_id_10}}}
+			*set cslib_ret option_slot_id_10
+			*goto _return
+	*if (((cur_page < page_count) and (next_preference != true)) and (cur_page != 1)) 
+		#[i]Next -->[/i]
+			*set next_preference true
+			*set cur_page + 1
+			*goto _soft_reset
+	*if (((cur_page > 1) and (next_preference)) and (cur_page != page_count))
+		#[i]<-- Previous[/i]
+			*set next_preference false
+			*set cur_page - 1
+			*goto _soft_reset
+	*if (allow_cancel) #Return
+		*set cslib_ret 0
+		*goto _return
+*bug "_paginated_menu: unreachable"
+*label _return
+*return
+   *if variable "Example #10"
