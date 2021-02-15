@@ -57,7 +57,6 @@
 *comment		*create myvar_count 5
 *comment 		Select a weapon:
 *comment		*gosub_scene cslib_menu build_array_filter "item" false "type" "MATCH" "weapon"
-v"module" true "log" "NOT_MATCH" ""
 *comment ------------------------------
 *comment 	params:
 *comment		p_prefix(string): the array name/reference (prefix)
