@@ -1,5 +1,5 @@
 *label get_test_count
-*set cslib_ret 12
+*set cslib_ret 15
 *return
 
 *label test
@@ -188,6 +188,45 @@
 *temp result_expected "!dlroW olleH"
 *temp original_string "Hello World!"
 *gosub_scene cslib_string reverse original_string
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_13
+*label test_name_13
+*set cslib_ret "CONTAINS #1 (numbers)"
+*return
+
+*label test_13
+*temp result_expected true
+*gosub_scene cslib_string contains "My n4m3 is" "123456789"
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_14
+*label test_name_14
+*set cslib_ret "CONTAINS #2 (spaces)"
+*return
+
+*label test_14
+*temp result_expected true
+*gosub_scene cslib_string contains "Shouldn't have spaces" " "
+*temp result_actual cslib_ret
+*gosub_scene _test_framework strings_equal result_actual result_expected
+*return
+
+
+*comment TEST_15
+*label test_name_15
+*set cslib_ret "CONTAINS #3 (neg)"
+*return
+
+*label test_15
+*temp result_expected false
+*gosub_scene cslib_string contains "Hello World!" "2345txy"
 *temp result_actual cslib_ret
 *gosub_scene _test_framework strings_equal result_actual result_expected
 *return
