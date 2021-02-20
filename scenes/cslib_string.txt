@@ -223,7 +223,7 @@
 *comment		(number): the position of the first 
 *label index
 *params p_str p_char
-*if (length(p_har) != 1)
+*if (length(p_char) != 1)
 	*bug p_char should be a single character, not "${p_char}"
 *temp c 1
 *temp str_len length(p_str)
