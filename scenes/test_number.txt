@@ -1,110 +1,71 @@
-*label get_test_count
-*set cslib_ret 7
-*return
+*label entry
+*params module log_buffer
+*temp test_count 0
+*temp tests_passed 0
 
-*label test
-*params test_id
-*temp result_actual 0
-*gosub test[test_id]
-*if (cslib_ret)
-	*set cslib_ret "PASS"
-*else
-	*gosub_scene _test_framework get_results result_expected result_actual
-*return
 
-*comment TEST_1
-*label test_name_1
-*set cslib_ret "MEAN #1"
-*return
-
-*label test_1
+*comment :::::: MEAN tests ::::::
+*gosub test_start "MEAN #1"
 *temp result_expected 3
-*comment test logic
 *gosub_scene cslib_number mean 1 2 3 4 5
-*set result_actual cslib_ret
-*gosub_scene _test_framework numbers_equal result_actual result_expected
-*return
+*gosub test_finish result_expected cslib_ret
 
 
-*comment TEST_2
-*label test_name_2
-*set cslib_ret "MAX #1"
-*return
-
-*label test_2
+*comment :::::: MAX tests ::::::
+*gosub test_start "MAX #1"
 *temp result_expected 66
-*comment logic
 *gosub_scene cslib_number max 1 32 17 66
-*set result_actual cslib_ret
-*gosub_scene _test_framework numbers_equal result_actual result_expected
-*return
+*gosub test_finish result_expected cslib_ret
 
 
-*comment TEST_3
-*label test_name_3
-*set cslib_ret "MIN #1"
-*return
-
-*label test_3
+*comment :::::: MIN tests ::::::
+*gosub test_start "MIN #1"
 *temp result_expected 17
-*comment test logic
 *gosub_scene cslib_number min 123 32 17 66
-*set result_actual cslib_ret
-*gosub_scene _test_framework numbers_equal result_actual result_expected
-*return
+*gosub test_finish result_expected cslib_ret
 
 
-*comment TEST_4
-*label test_name_4
-*set cslib_ret "IS_NUMBER #1"
-*return
-
-*label test_4
+*comment :::::: IS_NUMBER tests ::::::
+*gosub test_start "IS_NUMBER #1"
 *temp result_expected true
-*comment test logic
 *gosub_scene cslib_number is_number "1234567890"
-*set result_actual cslib_ret
-*gosub_scene _test_framework strings_equal result_actual result_expected
-*return
+*gosub test_finish result_expected cslib_ret
 
-
-*comment TEST_5
-*label test_name_5
-*set cslib_ret "IS_NUMBER #2 (neg)"
-*return
-
-*label test_5
+*gosub test_start "IS_NUMBER #2 (neg)"
 *temp result_expected false
-*comment test logic
 *gosub_scene cslib_number is_number "123fourfive"
-*set result_actual cslib_ret
-*gosub_scene _test_framework strings_equal result_actual result_expected
-*return
+*gosub test_finish result_expected cslib_ret
 
 
-*comment TEST_6
-*label test_name_6
-*set cslib_ret "ARE_NUMBERS #1"
-*return
-
-*label test_6
+*comment :::::: ARE_NUMBERS tests ::::::
+*gosub test_start "ARE_NUMBERS #1"
 *temp result_expected true
-*comment test logic
-*gosub_scene cslib_number is_number "12345" "6789"
-*set result_actual cslib_ret
-*gosub_scene _test_framework strings_equal result_actual result_expected
-*return
+*gosub_scene cslib_number are_numbers "12345" "6789"
+*gosub test_finish result_expected cslib_ret
 
-
-*comment TEST_7
-*label test_name_7
-*set cslib_ret "ARE_NUMBERS #2 (neg)"
-*return
-
-*label test_7
+*gosub test_start "ARE_NUMBERS #2 (neg)"
 *temp result_expected false
-*comment test logic
 *gosub_scene cslib_number are_numbers "12345" "onetwothree"
-*set result_actual cslib_ret
-*gosub_scene _test_framework strings_equal result_actual result_expected
+*gosub test_finish result_expected cslib_ret
+
+
+*set cslib_ret "${tests_passed}|${test_count}"
+*return
+
+*comment :::::: UTILITY routines ::::::
+*label test_start
+*params p_test_name
+*set test_count + 1
+*set {log_buffer} &"TEST ${p_test_name}: "
+*return
+
+*label test_finish
+*params p_result_expected p_result_actual
+*temp result (p_result_expected = p_result_actual)
+*set {log_buffer} &"@{result PASS|FAIL}[n/]"
+*if result
+	*set tests_passed + 1
+*else
+	*set {log_buffer} &"=> Expected - ${p_result_expected}[n/]"
+	*set {log_buffer} &"=> Received - ${p_result_actual}[n/]"
 *return

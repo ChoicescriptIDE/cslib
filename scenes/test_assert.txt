@@ -1,38 +1,34 @@
-*label get_test_count
-*set cslib_ret 0
-*return
+*label entry
+*params module log_buffer
+*temp test_count 0
+*temp tests_passed 0
 
-*label test
-*params test_id
-*if not(cslib_assert)
-	*set cslib_ret "SKIP"
-	*return
-*gosub test[test_id]
-*comment asserts will 'fail' by throwing a *bug
-*comment assuming 'cside_asserts' is true
-*set cslib_ret true
-*return
 
-*comment TEST_1
-*label test_name_1
-*set cslib_ret "ASSERT numbers not zero #1"
-*return
-
-*label test_1
+*comment :::::: MAX tests ::::::
+*gosub test_start "ASSERT numbers not zero #1"
 *gosub_scene cslib_assert number_not_zero 1
 *gosub_scene cslib_assert numbers_not_zero 1 2 1
+*gosub test_finish true true
+
+
+*set cslib_ret "${tests_passed}|${test_count}"
 *return
 
 
-*comment TEST_3
-*label test_name_3
-*set cslib_ret "MIN #1"
+*comment :::::: UTILITY routines ::::::
+*label test_start
+*params p_test_name
+*set test_count + 1
+*set {log_buffer} &"TEST ${p_test_name}: "
 *return
 
-*label test_3
-*temp result_expected 17
-*comment test logic
-*gosub_scene cslib_number min 123 32 17 66
-*set result_actual cslib_ret
-*gosub_scene _test_framework numbers_equal result_actual result_expected
+*label test_finish
+*params p_result_expected p_result_actual
+*temp result (p_result_expected = p_result_actual)
+*set {log_buffer} &"@{result PASS|FAIL}[n/]"
+*if result
+	*set tests_passed + 1
+*else
+	*set {log_buffer} &"=> Expected - ${p_result_expected}[n/]"
+	*set {log_buffer} &"=> Received - ${p_result_actual}[n/]"
 *return

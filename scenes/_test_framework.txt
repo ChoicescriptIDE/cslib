@@ -5,99 +5,13 @@
 
 
 *label test_module
-*params module num_tests log_buffer
-*temp test_scene_name "test_"&module
+*params module_id log_buffer
+*temp test_scene_name "test_"&(module[module_id])
 *temp test_name ""
 *temp num_failures 0
 *temp num_passes 0
 *temp feedback_string ""
 *temp test_output ""
-*label test_module_loop_top
-*temp n 1
-*label test_module_loop
-*if (n <= num_tests)
-	*gosub_scene {test_scene_name} test_name[n]
-	*set test_name cslib_ret
-	*gosub_scene {test_scene_name} test n
-	*set test_output cslib_ret
-	*gosub tally_test_result test_output
-	*set {log_buffer} &"TEST ${test_name}: @{cslib_ret ${test_output}|FAIL}[n/]"
-	*comment print errors
-	*if not(cslib_ret)
-		*set {log_buffer} &(test_output&"[n/]")
-	*set n + 1
-	*goto test_module_loop
-*set cslib_ret num_passes
-*return
 
-
-*label tally_test_result
-*params result
-*if (result = "PASS") or (result = "SKIP")
-	*set num_passes + 1
-	*set cslib_ret true
-*else
-	*set num_failures + 1
-	*set cslib_ret false
-*return
-
-
-*label summary
-Ran ${num_tests} tests:
-*line_break
-=> Failed: ${num_failures}.
-*line_break
-=> Passed: ${num_passes}.
-*return
-
-*label print_testname
-*params
-${param_1}
-*line_break
-*return
-
-
-*label summarise_module_results
-*params num_tests num_passes num_failures
-Ran ${num_tests} tests:
-*line_break
-=> Passed: ${num_passes}.
-*line_break
-=> Failed: ${num_failures}.
-*return
-
-
-*label print_results
-*params expected received
-=> Expected - ${expected}
-*line_break
-=> Received - ${received}
-*return
-
-
-*label get_results
-*params expected received
-*set cslib_ret "=> Expected - ${expected}[n/]=> Received - ${received}"
-*return
-
-
-*label strings_equal
-*params string_1 string_2
-*set cslib_ret (string_1 = string_2)
-*return
-
-
-*label numbers_equal
-*params num_1 num_2
-*if (cslib_assert)
-	*gosub_scene cslib_number are_numbers num_1 num_2
-	*if not(cslib_ret)
-		*bug cslib — _test_framework.txt: numbers_equal expected two numbers but got ${num_1} and ${num_2}
-*set cslib_ret num_1 = num_2
-*return
-
-
-*label print
-*params
-${param_1}
+*gosub_scene {test_scene_name} entry module_id log_buffer
 *return

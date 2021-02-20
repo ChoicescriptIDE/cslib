@@ -10,7 +10,13 @@
 		*temp module_id cslib_ret
 		*gosub test_module module_id
 		*temp pass_count cslib_ret
-		*gosub_scene _test_display_templates display_module_summary module[module_id] test_count pass_count
+		*gosub_scene cslib_string index test_data "|"
+		*temp index cslib_ret
+		*gosub_scene cslib_string substring test_data 1 (index - 1)
+		*temp tests_passed cslib_ret
+		*gosub_scene cslib_string substring test_data (index + 1) length(test_data)
+		*temp tests_run cslib_ret
+		*gosub_scene _test_display_templates display_module_summary module[module_id] tests_passed tests_run
 		Results have been logged.
 		*page_break
 		*goto main
@@ -28,15 +34,21 @@
 
 *label test_module
 *params p_module_id
-*gosub_scene test[module[p_module_id]] get_test_count
-*temp test_count cslib_ret
-*gosub_scene _test_framework test_module module[p_module_id] test_count ("module_log_"&p_module_id)
-*set total_tests_run + test_count
+*set {"module_log_"&p_module_id} ""
+*gosub_scene _test_framework test_module p_module_id ("module_log_"&p_module_id)
+*temp test_data cslib_ret
+*gosub_scene cslib_string index test_data "|"
+*temp index cslib_ret
+*gosub_scene cslib_string substring test_data 1 (index - 1)
 *set total_tests_passed + cslib_ret
+*gosub_scene cslib_string substring test_data (index + 1) length(test_data)
+*set total_tests_run + cslib_ret
 *return
  
 *comment RUN THE TESTS
 *label test_all_modules
+*set total_tests_run 0
+*set total_tests_passed 0
 *temp n 1
 *label run_loop
 *if (n <= module_count)

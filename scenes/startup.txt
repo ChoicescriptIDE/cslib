@@ -40,7 +40,7 @@
 *create const_num_8 8
 *create const_num_9 9
 
-*create string_buffer ""
+*create str_buffer ""
 
 *set implicit_control_flow true
 
