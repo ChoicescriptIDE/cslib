@@ -7,9 +7,9 @@
 *temp result_actual 0
 *gosub test[test_id]
 *if (cslib_ret)
-    *set cslib_ret "PASS"
+	*set cslib_ret "PASS"
 *else
-    *gosub_scene _test_framework get_results result_expected result_actual
+	*gosub_scene _test_framework get_results result_expected result_actual
 *return
 
 *comment TEST_1

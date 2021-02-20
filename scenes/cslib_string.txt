@@ -273,22 +273,22 @@
 *label contains
 *params p_string p_char_list
 *if (p_string = "") or (p_char_list = "")
-    *set cslib_ret false
-    *return
+	*set cslib_ret false
+	*return
 *temp string_index length(p_string)
 *temp char_list_len length(p_char_list)
 *temp char_list_index char_list_len
 *label contains_loop
 *if (string_index >= 1)
-    *label contains_char_list_loop
-    *if ((p_string#string_index) = (p_char_list#char_list_index))
-        *set cslib_ret true
-        *return
-    *elsif (char_list_index > 1)
-        *set char_list_index -1
-        *goto contains_char_list_loop
-    *set string_index -1
-    *set char_list_index char_list_len
-    *goto contains_loop
+	*label contains_char_list_loop
+	*if ((p_string#string_index) = (p_char_list#char_list_index))
+		*set cslib_ret true
+		*return
+	*elsif (char_list_index > 1)
+		*set char_list_index -1
+		*goto contains_char_list_loop
+	*set string_index -1
+	*set char_list_index char_list_len
+	*goto contains_loop
 *set cslib_ret false
 *return

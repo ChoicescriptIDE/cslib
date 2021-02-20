@@ -3,72 +3,72 @@
 *label strings_not_empty
 *params
 *if not(cslib_assert)
-    *return
+	*return
 *temp len param_count
 *label strings_not_zero_loop
 *if (len > 0)
-    *temp value param[len]
-    *gosub string_not_empty value
-    *set len - 1
-    *goto strings_not_zero_loop
+	*temp value param[len]
+	*gosub string_not_empty value
+	*set len - 1
+	*goto strings_not_zero_loop
 *set cslib_ret true
 *return
 
 *label string_not_empty
 *params string
 *if not(cslib_assert)
-    *return
+	*return
 *gosub is_string
 *if (string = "")
-    *bug "cslib.assert: string_not_empty"
+	*bug "cslib.assert: string_not_empty"
 *set cslib_ret true
 *return
 
 *label numbers_not_zero
 *params
 *if not(cslib_assert)
-    *return
+	*return
 *temp len param_count
 *label numbers_not_zero_loop
 *if (len > 0)
-    *temp value param[len]
-    *gosub number_not_zero value
-    *set len - 1
-    *goto numbers_not_zero_loop
+	*temp value param[len]
+	*gosub number_not_zero value
+	*set len - 1
+	*goto numbers_not_zero_loop
 *set cslib_ret true
 *return
 
 *label number_not_zero
 *params value
 *if not(cslib_assert)
-    *return
+	*return
 *if (value = 0)
-    *bug "cslib.assert: number_not_zero"
+	*bug "cslib.assert: number_not_zero"
 *set cslib_ret true
 *return
 
 *label less_or_equal_to
 *params value constraint
 *if not(cslib_assert)
-    *return
+	*return
 *elseif (value > constraint)
-    *bug "${value} is > ${constraint}"
+	*bug "${value} is > ${constraint}"
 *else
-    *return
+	*return
 
 *label greater_or_equal_to
 *params value constraint
 *if not(cslib_assert)
-    *return
+	*return
 *elseif (value < constraint)
-    *bug "${value} is < ${constraint}"
+	*bug "${value} is < ${constraint}"
 *else
-    *return
+	*return
 
 *label is_string
 *params value
 *if not(cslib_assert)
-    *return
+	*return
 *temp str ""
 *set str &value
 *return
@@ -76,6 +76,6 @@
 *label custom
 *params expr msg
 *if not(expr)
-    *bug "${msg}"
+	*bug "${msg}"
 *set cslib_ret true
 *return

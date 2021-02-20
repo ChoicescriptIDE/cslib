@@ -8,9 +8,9 @@
 *temp result_actual 0
 *gosub test[test_id]
 *if (cslib_ret)
-    *set cslib_ret "PASS"
+	*set cslib_ret "PASS"
 *else
-    *gosub_scene _test_framework get_results result_expected result_actual
+	*gosub_scene _test_framework get_results result_expected result_actual
 *return
 
 
@@ -46,13 +46,13 @@
 *params n acc count
 *temp str ""
 *if ((n modulo 3) = 0)
-    *set str &"Fizz"
+	*set str &"Fizz"
 *if ((n modulo 5) = 0)
-    *set str &"Buzz"
+	*set str &"Buzz"
 *if (str = "")
-    *set str &"Pop"
+	*set str &"Pop"
 *if (n != count)
-    *set str &"[n/]"
+	*set str &"[n/]"
 *set cslib_ret acc&str
 *return
 

@@ -13,12 +13,12 @@
 *temp result true
 *label is_number_loop
 *if (n <= input_len)
-    *gosub_scene cslib_number _char_is_number (p_string#n)
-    *if not(cslib_ret)
-        *set result false
-        *goto is_number_end
-    *set n + 1
-    *goto is_number_loop
+	*gosub_scene cslib_number _char_is_number (p_string#n)
+	*if not(cslib_ret)
+		*set result false
+		*goto is_number_end
+	*set n + 1
+	*goto is_number_loop
 *label is_number_end
 *set cslib_ret result
 *return
@@ -38,12 +38,12 @@
 *temp result true
 *label are_numbers_loop
 *if (n <= param_count)
-    *gosub_scene cslib_number is_number param[n]
-    *if not(cslib_ret)
-        *set result false
-        *goto are_numbers_end
-    *set n + 1
-    *goto are_numbers_loop
+	*gosub_scene cslib_number is_number param[n]
+	*if not(cslib_ret)
+		*set result false
+		*goto are_numbers_end
+	*set n + 1
+	*goto are_numbers_loop
 *label are_numbers_end
 *set cslib_ret result
 *return
@@ -59,8 +59,8 @@
 *comment		(number): the mean of the given numbers
 *label mean
 *if (cslib_script)
-    *script this.setVar("cslib_ret", this.temps.param.reduce((n, acc) => parseFloat(acc) + parseFloat(n)) / this.temps.param.length);
-    *return
+	*script this.setVar("cslib_ret", this.temps.param.reduce((n, acc) => parseFloat(acc) + parseFloat(n)) / this.temps.param.length);
+	*return
 *params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *label mean_loop_top
@@ -68,9 +68,9 @@
 *temp n 1
 *label mean_loop
 *if (n <= param_count)
-    *set sum + param[n]
-    *set n + 1
-    *goto mean_loop
+	*set sum + param[n]
+	*set n + 1
+	*goto mean_loop
 *set cslib_ret (sum / param_count)
 *return
 
@@ -85,18 +85,18 @@
 *comment		(number): the largest number
 *label max
 *if (cslib_script)
-    *script this.setVar("cslib_ret", Math.max.call(...this.temps.param));
-    *return
+	*script this.setVar("cslib_ret", Math.max.call(...this.temps.param));
+	*return
 *params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]
 *temp n 2
 *label max_loop
 *if (n > param_count)
-    *set cslib_ret current
-    *return
+	*set cslib_ret current
+	*return
 *if (param[n] > current)
-    *set current param[n]
+	*set current param[n]
 *set n + 1
 *goto max_loop
 
@@ -111,18 +111,18 @@
 *comment		(number): the smallest number
 *label min
 *if (cslib_script)
-    *script this.setVar("cslib_ret", Math.min.call(...this.temps.param));
-    *return
+	*script this.setVar("cslib_ret", Math.min.call(...this.temps.param));
+	*return
 *params arr_ref
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]
 *temp n 2
 *label min_loop
 *if (n > param_count)
-    *set cslib_ret current
-    *return
+	*set cslib_ret current
+	*return
 *if (param[n] < current)
-    *set current param[n]
+	*set current param[n]
 *set n + 1
 *goto min_loop
 
@@ -130,17 +130,17 @@
 *label _char_is_number
 *params p_char
 *if (length(p_char) != 1)
-    *bug TODO
+	*bug TODO
 *temp nums "0123456789"
 *temp n 1
 *temp result false
 *label char_is_number_loop
 *if (n <= 10)
-    *if p_char = (nums#n)
-        *set result true
-        *goto char_is_number_end
-    *set n + 1
-    *goto char_is_number_loop
+	*if p_char = (nums#n)
+		*set result true
+		*goto char_is_number_end
+	*set n + 1
+	*goto char_is_number_loop
 *label char_is_number_end
 *set cslib_ret result
 *return

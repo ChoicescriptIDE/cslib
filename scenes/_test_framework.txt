@@ -16,17 +16,17 @@
 *temp n 1
 *label test_module_loop
 *if (n <= num_tests)
-    *gosub_scene {test_scene_name} test_name[n]
-    *set test_name cslib_ret
-    *gosub_scene {test_scene_name} test n
-    *set test_output cslib_ret
-    *gosub tally_test_result test_output
-    *set {log_buffer} &"TEST ${test_name}: @{cslib_ret ${test_output}|FAIL}[n/]"
-    *comment print errors
-    *if not(cslib_ret)
-        *set {log_buffer} &(test_output&"[n/]")
-    *set n + 1
-    *goto test_module_loop
+	*gosub_scene {test_scene_name} test_name[n]
+	*set test_name cslib_ret
+	*gosub_scene {test_scene_name} test n
+	*set test_output cslib_ret
+	*gosub tally_test_result test_output
+	*set {log_buffer} &"TEST ${test_name}: @{cslib_ret ${test_output}|FAIL}[n/]"
+	*comment print errors
+	*if not(cslib_ret)
+		*set {log_buffer} &(test_output&"[n/]")
+	*set n + 1
+	*goto test_module_loop
 *set cslib_ret num_passes
 *return
 
@@ -34,11 +34,11 @@
 *label tally_test_result
 *params result
 *if (result = "PASS") or (result = "SKIP")
-    *set num_passes + 1
-    *set cslib_ret true
+	*set num_passes + 1
+	*set cslib_ret true
 *else
-    *set num_failures + 1
-    *set cslib_ret false
+	*set num_failures + 1
+	*set cslib_ret false
 *return
 
 
@@ -90,9 +90,9 @@ Ran ${num_tests} tests:
 *label numbers_equal
 *params num_1 num_2
 *if (cslib_assert)
-    *gosub_scene cslib_number are_numbers num_1 num_2
-    *if not(cslib_ret)
-        *bug cslib — _test_framework.txt: numbers_equal expected two numbers but got ${num_1} and ${num_2}
+	*gosub_scene cslib_number are_numbers num_1 num_2
+	*if not(cslib_ret)
+		*bug cslib — _test_framework.txt: numbers_equal expected two numbers but got ${num_1} and ${num_2}
 *set cslib_ret num_1 = num_2
 *return
 

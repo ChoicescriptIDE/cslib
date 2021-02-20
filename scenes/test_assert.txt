@@ -5,8 +5,8 @@
 *label test
 *params test_id
 *if not(cslib_assert)
-    *set cslib_ret "SKIP"
-    *return
+	*set cslib_ret "SKIP"
+	*return
 *gosub test[test_id]
 *comment asserts will 'fail' by throwing a *bug
 *comment assuming 'cside_asserts' is true
