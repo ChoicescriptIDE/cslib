@@ -1,0 +1,53 @@
+*title CSLIB Example
+*author cslib
+
+*comment :::::: GAME variables ::::::
+*comment nothing special about these!
+*create rerolls 3
+*create name ""
+*create alignment ""
+*create race ""
+
+*comment :::::: CONFIG variables ::::::
+*comment cslib requires these three configuration variables
+*comment and (at present) implicit_control_flow to be enabled
+*create cslib_ret 0
+*create cslib_assert true
+*create cslib_script false
+*create implicit_control_flow true
+
+*comment :::::: CONST variables ::::::
+*comment a useful practice is to hold any values you might reuse,
+*comment but that also won't change, in "CONSTANT" variables.
+*comment There's no functionality for this in ChoiceScript, but you
+*comment can add const_ as a reminder to yourself not to modify them!
+*create const_invalid_chars " 0123456789!?£@%$&*^()[]{}|\/`~"
+
+*comment :::::: ARRAY variables ::::::
+*comment cslib supports ChoiceScript 'arrays'.
+*comment However, as arrays aren't *really* arrays,
+*comment you will need to help cslib out a bit. Whenever
+*comment a cslib routine asks for an array, it will
+*comment expect there to be a '_count' variable denoting its length.
+*create race_count 4
+*create race_1 "Orc"
+*create race_2 "Human"
+*create race_3 "Elf"
+*create race_4 "Dwarf"
+
+*create attr_count 6
+*create attr_1 "strength"
+*create attr_2 "charisma"
+*create attr_3 "wisdom"
+*create attr_4 "intelligence"
+*create attr_5 "constitution"
+*create attr_6 "dexterity"
+*create attr_val_1 0
+*create attr_val_2 0
+*create attr_val_3 0
+*create attr_val_4 0
+*create attr_val_5 0
+*create attr_val_6 0
+
+*comment :::::: ON with THE show ::::::
+*goto_scene character_creator

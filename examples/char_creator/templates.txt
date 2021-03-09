@@ -1,0 +1,98 @@
+*comment :::::: TEMPLATE file ::::::
+*comment One of they key things that cslib allows (and encourages!)
+*comment is a 'separation of (your game's) concerns'.
+*comment
+*comment When coding in ChoiceScript you tend to (loosely) always
+*comment be trying to do either one of only two things:
+*comment    CALCULATING what a new value is, after player interaction
+*comment    DISPLAYING that new value back to the player,
+*comment be it in plaintext or something more intricate.
+*comment
+*comment Below are a number of variations on the idea of "TEMPLATES" which
+*comment focus on the "DISPLAYING" part of your game.
+
+
+*comment :::::: SIMPLE FORMATTING templates ::::::
+*comment Simple templates that take values and present
+*comment them in a certain format.
+*comment As you can see, this isn't "pretty" code.
+*comment Indeed, it would be really distracting
+*comment to have it inbetween our logic stream. What's more,
+*comment it's also code that can be reused across our entire
+*comment game.
+*label display_error
+*params error_msg
+[b]Error:[/b] ${error_msg}
+*line_break
+————————————————
+*line_break
+*return
+
+
+*comment :::::: ITERATIVE TEMPLATE file ::::::
+*comment This template is designed to be called with
+*comment cslib_loop's "repeat" routine.
+*comment
+*comment You can see an example of this in the INCLUDING
+*comment template below.
+*label print_attr
+*params n
+${attr[n]}: ${attr_val[n]}[n/]
+*return
+
+
+*comment :::::: INCLUDING other templates ::::::
+*comment The difference here is that this template is
+*comment actually calling (or 'including') another template/routine.
+*comment
+*comment Sometimes breaking templates into smaller chunks,
+*comment that can include one another, will allow you more flexibility.
+*label display_character
+*page_break Character Sheet
+
+[b]Name:[/b] ${name}
+*line_break
+[b]Race:[/b] ${race}
+*line_break
+[b]Alignment:[/b] ${alignment}
+
+[b]Attributes[/b]
+
+*comment Here we're asking cslib to include the "print_attr"
+*comment template for each attribute in the game.
+*gosub_scene cslib_loop repeat "templates" "print_attr" attr_count
+*return
+
+
+*comment :::::: TEMPLATE file ::::::
+*comment Hold up! There's CALCULATION *and* DISPLAY here, isn't there?
+*comment Yes! Well spotted. In this 'template' routine there is some logic.
+*comment The logic is however very tightly tied a singular 'display' (i.e.)
+*comment the presenting of the re-roll(s).
+*label roll_attr
+*params n
+*label roll_attr_n
+*rand attr_val[n] 10 16
+For ${attr[n]} you rolled a ${attr_val[n]}.
+
+*if rerolls > 0
+    Would you like to re-roll? (${rerolls} left)
+    *gosub_scene cslib_menu build_simple "Yes" "No"
+    *if cslib_ret = 1
+        *set rerolls -1
+        *goto roll_attr_n
+*return
+
+
+*label attr_sort
+*params item_a item_b
+*if (item_a < item_b)
+    *set cslib_ret -1
+*elseif (item_a > item_b)
+    *set cslib_ret 1
+*else
+    *set cslib_ret 0
+*return
+
+
+*gosub_scene cslib_number min

@@ -1,0 +1,47 @@
+*comment :::::: NAME INPUT and VALIDATION ::::::
+*comment Every adventurer must have a name!
+*comment But what if we'd rather players didn't
+*comment use numbers and percentages and asterisks etc?
+*label name_input
+Please enter your name
+*input_text name
+*comment We can ask cslib to check the string against
+*comment a blocklist defined in startup.txt:
+*gosub_scene cslib_string contains name const_invalid_chars
+*if cslib_ret
+    *gosub_scene templates display_error "Your name contains invalid characters! (${const_invalid_chars})"
+    *goto name_input
+
+*comment :::::: ALIGNMENT selection ::::::
+*comment Here we need a simple binary choice.
+*comment But, instead of using a 5~ line *choice,
+*comment we can use cslib to get the value in just 2.
+What's your alignment?
+*gosub_scene cslib_menu build_simple "Good" "Evil"
+*set alignment "@{cslib_ret Good|Evil}"
+
+*comment :::::: RACE selection ::::::
+*comment There's a few more options for races, and what's more,
+*comment you might decide to add more at some point.
+*comment Wouldn't it be a pain to come back and add them everywhere?
+*comment
+*comment Well, with cslib you can also build a choice from an 'array',
+*comment meaning that any updates to that array will be automagically
+*comment propagated. And, if you add too many, cslib will even
+*comment paginate the options for you… Go see what happens when you
+*comment try and add 5 more in startup.txt!
+What's your race?
+*gosub_scene cslib_menu build_array "race" false
+*set race race[cslib_ret]
+
+*comment :::::: ATTRIBUTE generation ::::::
+*comment Here we're asking cslib to repeat a "unit" of
+*comment work (rolling the starting value) for each
+*comment attribute in the game. We could write our own loop,
+*comment but when the task is simple offloading that to cslib
+*comment will help us keep the flow of our code/logic clear.
+*gosub_scene cslib_loop repeat "templates" "roll_attr" attr_count
+
+*comment Phew, finally. Now, let's display our character and finish the game!
+*gosub_scene templates display_character
+*finish
