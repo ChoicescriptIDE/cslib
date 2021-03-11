@@ -6,7 +6,7 @@
 *comment 	This module allows for quick and tidy presentation of complicated
 *comment 	"choices" or menus in ChoiceScript.
 *comment 
-*comment 	Unless otherwise noted, all the routines in this module immediatly display/render
+*comment 	Unless otherwise noted, all the routines in this module immediately display/render
 *comment 	the menu/choice to the screen, and support and unlimited amount of options, via automatic pagination.
 *comment 
 *comment # Assumptions
@@ -266,4 +266,4 @@
 *bug "_paginated_menu: unreachable"
 *label _return
 *return
-   *if variable "Example #10"
+

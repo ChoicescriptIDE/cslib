@@ -55,5 +55,5 @@
 	*else
 		All tests passed.
 *else
-	*comment allow user to select individual tests, view ogs etc.
+	*comment allow user to select individual tests, view logs etc.
 	*goto_scene _test_entry main

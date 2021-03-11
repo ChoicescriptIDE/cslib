@@ -93,6 +93,3 @@ For ${attr[n]} you rolled a ${attr_val[n]}.
 *else
     *set cslib_ret 0
 *return
-
-
-*gosub_scene cslib_number min
