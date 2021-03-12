@@ -44,10 +44,6 @@
 *comment	returns: 
 *comment		(string): the concatenated string
 *label concat
-*if (cslib_script)
-	*script let p = this.temps.param; this.setVar("cslib_ret", p.slice(1).reverse().reduce((str, acc) => acc += (p[0] + str)));
-	*line_break
-	*return
 *params p_concat_sep
 *comment param2+ strings to concatenate
 *gosub_scene cslib_assert custom (param_count > 2) "cslib.string.concat: expected at least three arguments (seperator, string, string, ...)"
@@ -107,9 +103,6 @@
 *comment		(string): the substring
 *label substring
 *params p_str p_s_index p_e_index
-*if (cslib_script)
-	*script this.setVar("cslib_ret", this.temps.p_str.substring(this.temps.p_s_index - 1, this.temps.p_e_index));
-	*return
 *gosub_scene cslib_assert custom (p_str != "") "cslib.string.substring: string must not be empty"
 *gosub_scene cslib_assert custom (p_s_index > 0) "cslib.string.substring: start index (${p_s_index}) can not be less than 1"
 *gosub_scene cslib_assert custom not(p_s_index > p_e_index) "cslib.string.substring: start index (${p_s_index}) should be less than or equal to end index (${p_e_index})"
@@ -139,9 +132,6 @@
 *comment returns a positive number (the start_char) of a string within a string, or 0
 *label find
 *params p_str p_find_str
-*if (cslib_script)
-	*script let i = this.temps.p_str.indexOf(this.temps.p_find_str); this.setVar("cslib_ret", i === -1 ? 0 : i + 1);
-	*return
 *temp p_str_len length(p_str)
 *temp p_find_str_len length(p_find_str)
 *if (p_find_str = p_str)
@@ -178,9 +168,6 @@
 *comment		(string): the modified string 
 *label replace
 *params p_str p_old_str p_new_str
-*if (cslib_script)
-	*script this.setVar("cslib_ret", this.temps.p_str.replaceAll(this.temps.p_old_str, this.temps.p_new_str));
-	*return
 *temp p_str_len length(p_str)
 *temp p_old_str_len length(p_old_str)
 *temp replace_result ""
