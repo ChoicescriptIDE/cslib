@@ -58,9 +58,6 @@
 *comment	returns: 
 *comment		(number): the mean of the given numbers
 *label mean
-*if (cslib_script)
-	*script this.setVar("cslib_ret", this.temps.param.reduce((n, acc) => parseFloat(acc) + parseFloat(n)) / this.temps.param.length);
-	*return
 *params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *label mean_loop_top
@@ -84,9 +81,6 @@
 *comment	returns: 
 *comment		(number): the largest number
 *label max
-*if (cslib_script)
-	*script this.setVar("cslib_ret", Math.max.call(...this.temps.param));
-	*return
 *params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]
@@ -110,9 +104,6 @@
 *comment	returns: 
 *comment		(number): the smallest number
 *label min
-*if (cslib_script)
-	*script this.setVar("cslib_ret", Math.min.call(...this.temps.param));
-	*return
 *params arr_ref
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]

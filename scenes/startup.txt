@@ -9,8 +9,6 @@
 *create cslib_ret 0
 *comment captures ...
 *create cslib_assert true
-*comment allow cslib to use faster *script calls where possible
-*create cslib_script false
 
 *comment MODULE TEST REGISTRATION
 *create module_count 4
