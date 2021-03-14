@@ -103,6 +103,28 @@
 *gosub test_finish result_expected cslib_ret
 
 
+*comment :::::: CONSISTS_OF tests ::::::
+*gosub test_start "CONSISTS_OF #1 (numbers)"
+*gosub_scene cslib_string consists_of "14756598573756237350" "0123456789"
+*temp result_expected true
+*gosub test_finish result_expected cslib_ret
+
+*gosub test_start "CONSISTS_OF #2 (spaces)"
+*gosub_scene cslib_string consists_of "       " " "
+*temp result_expected true
+*gosub test_finish result_expected cslib_ret
+
+*gosub test_start "CONSISTS_OF #3 (neg)"
+*gosub_scene cslib_string consists_of "       cslib" " "
+*temp result_expected false
+*gosub test_finish result_expected cslib_ret
+
+*gosub test_start "CONSISTS_OF #1 (single)"
+*gosub_scene cslib_string consists_of "!" "@!$%^"
+*temp result_expected true
+*gosub test_finish result_expected cslib_ret
+
+
 *comment :::::: EXTRACT TOKEN tests ::::::
 *comment *gosub test_start "EXTRACT_TOKEN #1"
 *comment *temp result_expected "VAL=TRUE"

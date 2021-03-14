@@ -279,3 +279,38 @@
 	*goto contains_loop
 *set cslib_ret false
 *return
+
+
+*comment CONSISTS_OF
+*comment ------------------------------
+*comment Checks if the given string consists
+*comment only of characters in a given list.
+*comment ------------------------------
+*comment 		params:
+*comment 			p_string(string): the string to check for the presence of the given cheracters. 
+*comment 			p_char_list(string): a string of characters allowed in the given string
+*comment 		returns:
+*comment 			(boolean): true if p_string consists only of chars in p_char_list, else false
+*label consists_of
+*params p_string p_char_list
+*set cslib_ret true
+*if (p_char_list = "")
+	*bug cslib_string.consists_of: Character list must not be empty.
+*if (p_string = "")
+	*set cslib_ret false
+	*return
+*temp p_string_len length(p_string)
+*temp p_char_list_len length(p_char_list)
+*temp p_string_index 1
+*label consists_of_string_loop
+*temp p_char_list_index 1
+*if (p_string_index <= p_string_len)
+	*label consists_of_char_list_loop
+	*if (p_char_list_index <= p_char_list_len)
+		*if ((p_string#p_string_index) = (p_char_list#p_char_list_index))
+			*set p_string_index +1
+			*goto consists_of_string_loop
+		*set p_char_list_index +1
+		*goto consists_of_char_list_loop
+	*set cslib_ret false
+*return
