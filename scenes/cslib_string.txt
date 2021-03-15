@@ -287,7 +287,7 @@
 *comment only of characters in a given list.
 *comment ------------------------------
 *comment 		params:
-*comment 			p_string(string): the string to check for the presence of the given cheracters. 
+*comment 			p_string(string): the string to check for the presence of the given characters. 
 *comment 			p_char_list(string): a string of characters allowed in the given string
 *comment 		returns:
 *comment 			(boolean): true if p_string consists only of chars in p_char_list, else false
