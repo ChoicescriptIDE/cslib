@@ -40,6 +40,8 @@
 
 *create str_buffer ""
 
+*create cslib_catch_bug false
+
 *set implicit_control_flow true
 
 *if (automatic_testing)

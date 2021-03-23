@@ -62,6 +62,20 @@
 *gosub test_finish result_expected cslib_ret
 
 
+*comment :::::: INDEX tests ::::::
+*gosub test_start "INDEX #1"
+*temp result_expected 3
+*gosub_scene cslib_string index "ABCDEF" "C"
+*gosub test_finish result_expected cslib_ret
+
+*gosub test_start "INDEX #2"
+*set cslib_catch_bug true
+*temp result_expected "Bug: p_char should be a single character, not \"\""
+*gosub_scene cslib_string index "ABCDEF" ""
+*set cslib_catch_bug false
+*gosub test_finish result_expected cslib_bug_message
+
+
 *comment :::::: LOWERCASE tests ::::::
 *gosub test_start "LOWERCASE #1"
 *temp result_expected "lowercase"

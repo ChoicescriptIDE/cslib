@@ -29,6 +29,7 @@ jobs:
         run: |
           rm choicescript/web/mygame/scenes/*
           cp cslib/scenes/* choicescript/web/mygame/scenes
+          cp cslib/mygame.js choicescript/web/mygame
       - name: Run randomtest
         run: |
           cd choicescript
