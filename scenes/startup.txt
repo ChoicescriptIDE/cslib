@@ -44,38 +44,6 @@
 
 *set implicit_control_flow true
 
-
-
-*comment We modify Scene.prototype.bug to make *bug 'catchable'.
-*comment If the stat cslib_catch_bug is set to true, in case of a bug a function
-*comment will simply return. The error message will be available in cslib_bug_message.
-*comment Make sure cslib_catch_bug is immediately reset to false.
-
-*comment Example usage:
-
-*comment    *set cslib_catch_bug true
-*comment    *gosub_scene cslib_... ... ...
-*comment    *set cslib_catch_bug false
-*comment    *gosub test_finish "Expected message" cslib_bug_message
-
-*comment The updated code:
-
-*comment   Scene.prototype.bug = function scene_bug(message) {
-*comment     if (message) {
-*comment       message = "Bug: " + this.replaceVariables(message);
-*comment     } else {
-*comment       message = "Bug";
-*comment     }
-*comment     if (this.stats.cslib_catch_bug) {
-*comment       this.stats.cslib_bug_message = message;
-*comment       this.return();
-*comment     } else {
-*comment       throw new Error(this.lineMsg() + message);
-*comment     }
-*comment   }
-
-*script Scene.prototype.bug = function scene_bug(message) {if (message) {message = "Bug: " + this.replaceVariables(message);} else {message = "Bug";} if (this.stats.cslib_catch_bug) {this.stats.cslib_bug_message = message;  this.return();} else {throw new Error(this.lineMsg() + message);}}
-
 *if (automatic_testing)
 	*comment automatic 'test all' for CI, quicktest etc.
 	*gosub_scene _test_entry test_all_modules
