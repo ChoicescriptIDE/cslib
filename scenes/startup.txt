@@ -50,6 +50,8 @@
 	*if (total_tests_passed < total_tests_run)
 		*comment print all module logs
 		*gosub_scene cslib_loop repeat "_test_display_templates" "display_log" module_count
+		*comment force everything to print before we fail
+		*page_break
 		*comment force quicktest + randomtest to fail
 		*bug ${total_tests_passed}/${total_tests_run} tests passed (${total_tests_run - total_tests_passed} failed)
 	*else
