@@ -42,7 +42,21 @@
 
 *create cslib_catch_bug false
 
+*comment ARRAY USED AS RESULT FROM TOKENIZATION
+*create tokens_1 ""
+*create tokens_2 ""
+*create tokens_3 ""
+*create tokens_4 ""
+*create tokens_5 ""
+*comment The max number of entries (storage size).
+*create tokens_max 5
+*comment The number of valid entries.
+*create tokens_count 0
+
 *set implicit_control_flow true
+*looplimit 0
+
+HERE
 
 *if (automatic_testing)
 	*comment automatic 'test all' for CI, quicktest etc.

@@ -314,3 +314,61 @@
 		*goto consists_of_char_list_loop
 	*set cslib_ret false
 *return
+
+
+*comment EXTRACT_TOKENS
+*comment ------------------------------
+*comment Split a given string using a separator.
+*comment The tokens are stored in a given array, up to its max.
+*comment ------------------------------
+*comment 		params:
+*comment 			p_source: the string to be split.
+*comment 			p_separator: one character to be used as a separator.
+*comment			p_array(string): the array name/reference (prefix)
+*comment 		returns:
+*comment 			(boolean): the number of tokens in the string.
+*label extract_tokens
+*params p_source p_separator p_array
+
+*set cslib_ret 0
+*set {p_array & "_count"} 0
+
+*temp source_len length(p_source)
+*temp array_max {p_array & "_max"}
+
+*if p_separator = ""
+	*bug Separator should not be empty in extract_tokens.
+*if length(p_separator) > 1
+	*bug Separator should be a single char in extract_tokens.
+
+*comment Clean up the destination array.
+*temp array_idx 1
+*label loop_clean_array
+*set {(p_array & "_") & array_idx} ""
+*set array_idx +1
+*if array_idx <= array_max
+	*goto loop_clean_array
+
+*temp source_idx 1
+*set array_idx 1
+*temp target (p_array & "_") & array_idx
+
+*if source_len = 0
+	*return
+
+*label source_loop
+*temp next_char p_source#source_idx
+*if next_char = p_separator
+	*set array_idx +1
+*else
+	*if array_idx <= array_max
+		*set target (p_array & "_") & array_idx
+		*set {target} &next_char
+		*set {p_array & "_count"} array_idx
+
+*set source_idx +1
+*if source_idx <= source_len
+	*goto source_loop
+
+*set cslib_ret array_idx
+*return

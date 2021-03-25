@@ -139,44 +139,134 @@
 *gosub test_finish result_expected cslib_ret
 
 
-*comment :::::: EXTRACT TOKEN tests ::::::
-*comment *gosub test_start "EXTRACT_TOKEN #1"
-*comment *temp result_expected "VAL=TRUE"
-*comment *set str_buffer "VAL=TRUE|VAL=FALSE|VAL=TRUE"
-*comment *gosub_scene cslib_string extract_token "str_buffer" "|"
-*comment *gosub test_finish result_expected cslib_ret
+:::::: EXTRACT TOKENS tests ::::::
+*comment Extract 3 tokens into an array of 5.
+*gosub test_start "EXTRACT_TOKENS #1"
+*set str_buffer "VAL=TRUE|VAL=FALSE|VAL=TRUE"
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*gosub test_finish 3 cslib_ret
+*gosub test_finish "VAL=TRUE" tokens_1
+*gosub test_finish "VAL=FALSE" tokens_2
+*gosub test_finish "VAL=TRUE" tokens_3
+*comment The rest of the array is still empty.
+*gosub test_finish "" tokens_4
+*gosub test_finish "" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 3 tokens_count
 
-*comment *gosub test_start "EXTRACT_TOKEN #2"
-*comment *temp result_expected "VAL=FALSE|VAL=TRUE"
-*comment *set str_buffer "VAL=TRUE|VAL=FALSE|VAL=TRUE"
-*comment *gosub_scene cslib_string extract_token "str_buffer" "|"
-*comment *gosub test_finish result_expected str_buffer
+*comment Extract 2 tokens into an array of 5. Remaining entries are reset.
+*gosub test_start "EXTRACT_TOKENS #2"
+*set str_buffer "VAL=HERE|VAL=THERE"
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*gosub test_finish 2 cslib_ret
+*gosub test_finish "VAL=HERE" tokens_1
+*gosub test_finish "VAL=THERE" tokens_2
+*comment The rest of the array is wiped clean.
+*gosub test_finish "" tokens_3
+*gosub test_finish "" tokens_4
+*gosub test_finish "" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 2 tokens_count
 
-*comment *gosub test_start "EXTRACT_TOKEN #3"
-*comment *temp result_expected "VAL=TRUE, VAL=FALSE, VAL=TRUE"
-*comment *temp result_actual ""
-*comment *set str_buffer "VAL=TRUE|VAL=FALSE|VAL=TRUE"
-*comment *label test_extact_token_3_loop
-*comment *gosub_scene cslib_string extract_token "str_buffer" "|"
-*comment *if cslib_ret != ""
-	*comment *set result_actual &("@{(result_actual = \"\") |, }${cslib_ret}")
-	*comment *goto test_extact_token_3_loop
-*comment *gosub test_finish result_expected result_actual
+*comment Extract 6 tokens into an array of 5 (only 5 are copied).
+*gosub test_start "EXTRACT_TOKENS #3"
+*set str_buffer "A|B|C|D|E|F"
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*comment There are actually 6 values, but only 5 are used.
+*comment The user may check for this condition.
+*gosub test_finish 6 cslib_ret
+*gosub test_finish "A" tokens_1
+*gosub test_finish "B" tokens_2
+*gosub test_finish "C" tokens_3
+*gosub test_finish "D" tokens_4
+*gosub test_finish "E" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 5 tokens_count
 
+*comment Empty source.
+*gosub test_start "EXTRACT_TOKENS #4"
+*set str_buffer ""
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*gosub test_finish 0 cslib_ret
+*gosub test_finish "" tokens_1
+*gosub test_finish "" tokens_2
+*gosub test_finish "" tokens_3
+*gosub test_finish "" tokens_4
+*gosub test_finish "" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 0 tokens_count
+
+*comment Only one token.
+*gosub test_start "EXTRACT_TOKENS #5"
+*set str_buffer "HI"
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*gosub test_finish 1 cslib_ret
+*gosub test_finish "HI" tokens_1
+*gosub test_finish "" tokens_2
+*gosub test_finish "" tokens_3
+*gosub test_finish "" tokens_4
+*gosub test_finish "" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 1 tokens_count
+
+*comment Empty tokens.
+*gosub test_start "EXTRACT_TOKENS #6"
+*set str_buffer "|A||C|"
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*gosub test_finish 5 cslib_ret
+*gosub test_finish "" tokens_1
+*gosub test_finish "A" tokens_2
+*gosub test_finish "" tokens_3
+*gosub test_finish "C" tokens_4
+*gosub test_finish "" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 4 tokens_count
+
+*comment Missing separator.
+*gosub test_start "EXTRACT TOKENS #7"
+*temp result_expected "Bug: Separator should not be empty in extract_tokens."
+*set str_buffer "|A||C|"
+
+*set cslib_catch_bug true
+*gosub_scene cslib_string extract_tokens str_buffer "" "tokens"
+*set cslib_catch_bug false
+*gosub test_finish cslib_bug_message result_expected
+
+*comment Multiple separators.
+*gosub test_start "EXTRACT TOKENS #8"
+*temp result_expected "Bug: Separator should be a single char in extract_tokens."
+*set str_buffer "|A||C|"
+
+*set cslib_catch_bug true
+*gosub_scene cslib_string extract_tokens str_buffer "|-()" "tokens"
+*set cslib_catch_bug false
+*gosub test_finish cslib_bug_message result_expected
+
+*comment Empty source.
+*gosub test_start "EXTRACT_TOKENS #9"
+*set str_buffer ""
+*gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
+*gosub test_finish 0 cslib_ret
+*gosub test_finish "" tokens_1
+*gosub test_finish "" tokens_2
+*gosub test_finish "" tokens_3
+*gosub test_finish "" tokens_4
+*gosub test_finish "" tokens_5
+*gosub test_finish 5 tokens_max
+*gosub test_finish 0 tokens_count
 
 *set cslib_ret "${tests_passed}|${test_count}"
 *return
 
-
 *comment :::::: UTILITY routines ::::::
 *label test_start
 *params p_test_name
-*set test_count + 1
 *set {log_buffer} &"TEST ${p_test_name}: "
 *return
 
 *label test_finish
 *params p_result_expected p_result_actual
+*set test_count + 1
 *temp result (p_result_expected = p_result_actual)
 *set {log_buffer} &"@{result PASS|FAIL}[n/]"
 *if result
