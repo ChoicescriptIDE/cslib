@@ -54,9 +54,6 @@
 *create tokens_count 0
 
 *set implicit_control_flow true
-*looplimit 0
-
-HERE
 
 *if (automatic_testing)
 	*comment automatic 'test all' for CI, quicktest etc.
