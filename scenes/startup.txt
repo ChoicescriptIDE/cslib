@@ -42,6 +42,11 @@
 
 *create cslib_catch_bug false
 
+*comment Some stats for min/max
+*create test_stat_strength 100
+*create test_stat_charisma 50
+*create test_stat_wisdom 10
+
 *set implicit_control_flow true
 
 *if (automatic_testing)
