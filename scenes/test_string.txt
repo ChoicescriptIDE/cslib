@@ -171,17 +171,28 @@
 *comment :::::: UTILITY routines ::::::
 *label test_start
 *params p_test_name
+*temp test_result true
 *set test_count + 1
 *set {log_buffer} &"TEST ${p_test_name}: "
 *return
 
-*label test_finish
+*label test_assert_equal
 *params p_result_expected p_result_actual
-*temp result (p_result_expected = p_result_actual)
-*set {log_buffer} &"@{result PASS|FAIL}[n/]"
-*if result
+*gosub test_assert (p_result_expected = p_result_actual) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
+*return
+
+*label test_assert
+*params p_test_condition p_test_message
+*if not(p_test_condition)
+	*set test_result false
+	*set {log_buffer} &("[n/]"&(p_test_message&"[n/]"))
+*return
+
+*label test_finish
+*params
+*if (param_count = 2)
+	*gosub test_assert_equal param_1 param_2
+*set {log_buffer} &"@{test_result PASS|FAIL}[n/]"
+*if test_result
 	*set tests_passed + 1
-*else
-	*set {log_buffer} &"=> Expected - ${p_result_expected}[n/]"
-	*set {log_buffer} &"=> Received - ${p_result_actual}[n/]"
 *return
