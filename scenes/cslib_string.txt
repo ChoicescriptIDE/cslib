@@ -2,7 +2,7 @@
 
 *comment static reference table for converting
 *comment alphabet letters to lowercase
-*label lowercase_init
+*label _lowercase_init
 *temp lowercase_A "a"
 *temp lowercase_B "b"
 *temp lowercase_C "c"
@@ -47,15 +47,14 @@
 *params p_concat_sep
 *comment param2+ strings to concatenate
 *gosub_scene cslib_assert custom (param_count > 2) "cslib.string.concat: expected at least three arguments (seperator, string, string, ...)"
-*label concat_loop_top
 *temp concat_param_num 2
 *temp concat_result ""
-*label concat_loop
+*label _concat_loop
 *if (concat_param_num < param_count)
 	*set concat_result &param[concat_param_num]
 	*set concat_result &p_concat_sep
 	*set concat_param_num + 1
-	*goto concat_loop
+	*goto _concat_loop
 *comment last item should not have a separator
 *set concat_result &param[concat_param_num]
 *set cslib_ret concat_result
@@ -73,19 +72,19 @@
 *comment		(string): the all lowercase form of the original string
 *label lowercase
 *params p_string
-*gosub lowercase_init
+*gosub _lowercase_init
 *comment lowercase all
 *temp string_len length(p_string)
 *temp lower_string ""
 *temp c 1
-*label lowercase_loop
+*label _lowercase_loop
 *if (c <= string_len)
 	*if ((p_string#c) != " ")
 		*set lower_string & (lowercase[p_string#c])
 	*else
 		*set lower_string & " "
 	*set c + 1
-	*goto lowercase_loop
+	*goto _lowercase_loop
 *set cslib_ret lower_string
 *return
 
@@ -110,11 +109,11 @@
 *comment TODO: CAN WE ASSERT PARAMETER TYPES?
 *temp substring_char p_s_index
 *temp substring_result ""
-*label substring_loop
+*label _substring_loop
 *if (substring_char <= p_e_index)
 	*set substring_result &(p_str#substring_char)
 	*set substring_char + 1
-	*goto substring_loop
+	*goto _substring_loop
 *set cslib_ret substring_result
 *return
 
@@ -142,7 +141,7 @@
 	*return
 *temp find_e_index 0
 *temp find_s_index 1
-*label find_loop
+*label _find_loop
 *set find_e_index (find_s_index + (p_find_str_len - 1))
 *if (find_e_index <= p_str_len)
 	*gosub_scene cslib_string substring p_str find_s_index (find_s_index + (p_find_str_len - 1))
@@ -150,7 +149,7 @@
 		*set cslib_ret find_s_index
 		*return
 	*set find_s_index + 1
-	*goto find_loop
+	*goto _find_loop
 *set cslib_ret 0
 *return
 
@@ -173,7 +172,7 @@
 *temp replace_result ""
 *temp replace_s_index 1
 *temp replace_to_search_str ""
-*label replace_loop
+*label _replace_loop
 *comment grab the unsearched part of the original string, and search it
 *gosub_scene cslib_string substring p_str replace_s_index p_str_len
 *set replace_to_search_str cslib_ret
@@ -190,7 +189,7 @@
 	*set replace_result &p_new_str
 	*comment continue search _after_ the last match
 	*set replace_s_index replace_s_index + ((replace_r + p_old_str_len))
-	*goto replace_loop
+	*goto _replace_loop
 *set replace_result &replace_to_search_str
 *set cslib_ret replace_result
 *return
@@ -214,13 +213,13 @@
 	*bug p_char should be a single character, not "${p_char}"
 *temp c 1
 *temp str_len length(p_str)
-*label index_loop
+*label _index_loop
 *if (c <= str_len)
 	*if (p_str#c) = p_char
 		*set cslib_ret c
 		*return
 	*set c + 1
-	*goto index_loop
+	*goto _index_loop
 *set cslib_ret 0
 *return
 
@@ -238,11 +237,11 @@
 *temp reversed_string ""
 *temp string_len length(p_str)
 *temp c string_len
-*label reverse_loop
+*label _reverse_loop
 *if (c >= 1)
 	*set reversed_string & (p_str#c)
 	*set c - 1
-	*goto reverse_loop
+	*goto _reverse_loop
 *set cslib_ret reversed_string
 *return
 
@@ -265,18 +264,18 @@
 *temp string_index length(p_string)
 *temp char_list_len length(p_char_list)
 *temp char_list_index char_list_len
-*label contains_loop
+*label _contains_loop
 *if (string_index >= 1)
-	*label contains_char_list_loop
+	*label _contains_char_list_loop
 	*if ((p_string#string_index) = (p_char_list#char_list_index))
 		*set cslib_ret true
 		*return
 	*elsif (char_list_index > 1)
 		*set char_list_index -1
-		*goto contains_char_list_loop
+		*goto _contains_char_list_loop
 	*set string_index -1
 	*set char_list_index char_list_len
-	*goto contains_loop
+	*goto _contains_loop
 *set cslib_ret false
 *return
 
@@ -302,15 +301,15 @@
 *temp p_string_len length(p_string)
 *temp p_char_list_len length(p_char_list)
 *temp p_string_index 1
-*label consists_of_string_loop
+*label _consists_of_string_loop
 *temp p_char_list_index 1
 *if (p_string_index <= p_string_len)
-	*label consists_of_char_list_loop
+	*label _consists_of_char_list_loop
 	*if (p_char_list_index <= p_char_list_len)
 		*if ((p_string#p_string_index) = (p_char_list#p_char_list_index))
 			*set p_string_index +1
-			*goto consists_of_string_loop
+			*goto _consists_of_string_loop
 		*set p_char_list_index +1
-		*goto consists_of_char_list_loop
+		*goto _consists_of_char_list_loop
 	*set cslib_ret false
 *return

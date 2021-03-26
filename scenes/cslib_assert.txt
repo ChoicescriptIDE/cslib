@@ -5,12 +5,12 @@
 *if not(cslib_assert)
 	*return
 *temp len param_count
-*label strings_not_zero_loop
+*label _strings_not_zero_loop
 *if (len > 0)
 	*temp value param[len]
 	*gosub string_not_empty value
 	*set len - 1
-	*goto strings_not_zero_loop
+	*goto _strings_not_zero_loop
 *set cslib_ret true
 *return
 
@@ -29,12 +29,12 @@
 *if not(cslib_assert)
 	*return
 *temp len param_count
-*label numbers_not_zero_loop
+*label _numbers_not_zero_loop
 *if (len > 0)
 	*temp value param[len]
 	*gosub number_not_zero value
 	*set len - 1
-	*goto numbers_not_zero_loop
+	*goto _numbers_not_zero_loop
 *set cslib_ret true
 *return
 
