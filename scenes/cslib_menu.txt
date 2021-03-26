@@ -154,14 +154,14 @@
 *temp item_count 0
 *temp cur_option 1
 *temp cur_item "@{invert_order ${{prefix&\"_len\"}}|1}"
-*label filter_loop
+*label _filter_loop
 *if (filter = "")
 	*goto _do_not_filter
 *if ({((prefix&"_")&(filter&"_"))&cur_item} = filter_value)
 	*if (filter_type = "NOT_MATCH")
-		*goto acc
+		*goto _acc
 *elseif (filter_type != "NOT_MATCH")
-	*goto acc
+	*goto _acc
 *label _do_not_filter
 *set item_count + 1
 *if (ignore < 1) and (cur_option <= items_per_page)
@@ -169,15 +169,15 @@
 	*set cur_option + 1
 *if (ignore > 0)
 	*set ignore -1
-*label acc
+*label _acc
 *if (invert_order)
 	*if (cur_item > 1)
 		*set cur_item - 1
-		*goto filter_loop
+		*goto _filter_loop
 *else
 	*if (cur_item < {prefix&"_count"})
 		*set cur_item + 1
-		*goto filter_loop
+		*goto _filter_loop
 *if (item_count = 0) and not(allow_cancel)
 	*bug cslib_menu: menu construction failed as there were 0 matching items — consider allowing cancellation
 
