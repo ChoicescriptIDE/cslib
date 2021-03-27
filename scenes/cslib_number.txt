@@ -103,7 +103,7 @@
 *comment	returns: 
 *comment		(number): the smallest number
 *label min
-*params arr_ref
+*params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]
 *temp n 2
@@ -115,6 +115,52 @@
 	*set current param[n]
 *set n + 1
 *goto _min_loop
+
+
+*comment MAX_STAT
+*comment ------------------------------
+*comment Returns the variable name of the largest of a set of given stats.
+*comment ------------------------------
+*comment 	params:
+*comment		param_n(string): the name of a stat variable
+*comment	returns: 
+*comment		(string): the variable name of the stat with the largest value
+*label max_stat
+*params
+*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*temp current param[1]
+*temp n 2
+*label max_stat_loop
+*if (n > param_count)
+	*set cslib_ret current
+	*return
+*if ({param[n]} > {current})
+	*set current param[n]
+*set n + 1
+*goto max_stat_loop
+
+
+*comment MIN_STAT
+*comment ------------------------------
+*comment Returns the variable name of the smallest of a set of given stats.
+*comment ------------------------------
+*comment 	params:
+*comment		param_n(string): the name of a stat variable
+*comment	returns: 
+*comment		(string): the variable name of the stat with the smallest value
+*label min_stat
+*params
+*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*temp current param[1]
+*temp n 2
+*label min_stat_loop
+*if (n > param_count)
+	*set cslib_ret current
+	*return
+*if ({param[n]} < {current})
+	*set current param[n]
+*set n + 1
+*goto min_stat_loop
 
 
 *label _char_is_number
