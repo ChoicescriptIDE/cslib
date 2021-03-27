@@ -318,56 +318,59 @@
 *comment EXTRACT_TOKENS
 *comment ------------------------------
 *comment Split a given string using a separator.
-*comment The tokens are stored in a given array, up to its max.
+*comment The tokens are stored in a given array, up to its _max.
+*comment The array's _count will be updated with the number of valid items.
+*comment Note that, if the array is too small to contain all values,
+*comment only _max will be stored, _count will be equal _max and
+*comment cslib_ret will have the full token count.
 *comment ------------------------------
 *comment 		params:
-*comment 			p_source: the string to be split.
-*comment 			p_separator: one character to be used as a separator.
+*comment 			p_source(string): the string to be split.
+*comment 			p_separator(string): a character upon which to split the string.
 *comment			p_array(string): the array name/reference (prefix)
 *comment 		returns:
-*comment 			(boolean): the number of tokens in the string.
+*comment 			(integer): the number of tokens in the string.
 *label extract_tokens
 *params p_source p_separator p_array
 
-*set cslib_ret 0
-*set {p_array & "_count"} 0
+*if p_separator = ""
+	*bug cslib_string.extract_tokens: Separator should not be empty in extract_tokens.
+*if length(p_separator) > 1
+	*bug cslib_string.extract_tokens: Separator should be a single char in extract_tokens, not: '${p_separator}'.
 
 *temp source_len length(p_source)
 *temp array_max {p_array & "_max"}
+*set {p_array & "_count"} 0
 
-*if p_separator = ""
-	*bug Separator should not be empty in extract_tokens.
-*if length(p_separator) > 1
-	*bug Separator should be a single char in extract_tokens.
+*if source_len = 0
+	*set cslib_ret 0
+	*return
 
 *comment Clean up the destination array.
 *temp array_idx 1
-*label loop_clean_array
+*label _loop_clean_array
 *set {(p_array & "_") & array_idx} ""
 *set array_idx +1
 *if array_idx <= array_max
-	*goto loop_clean_array
+	*goto _loop_clean_array
 
 *temp source_idx 1
 *set array_idx 1
 *temp target (p_array & "_") & array_idx
 
-*if source_len = 0
-	*return
-
-*label source_loop
+*label _source_loop
 *temp next_char p_source#source_idx
 *if next_char = p_separator
 	*set array_idx +1
+	*set target (p_array & "_") & array_idx
 *else
 	*if array_idx <= array_max
-		*set target (p_array & "_") & array_idx
 		*set {target} &next_char
 		*set {p_array & "_count"} array_idx
 
 *set source_idx +1
 *if source_idx <= source_len
-	*goto source_loop
+	*goto _source_loop
 
 *set cslib_ret array_idx
 *return
