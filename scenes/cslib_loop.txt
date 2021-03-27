@@ -37,9 +37,9 @@
 *params target_scene target_label count
 *gosub_scene cslib_assert greater_or_equal_to param_count 3
 *temp n 1
-*label repeat_loop
+*label _repeat_loop
 *if (n <= count)
 	*gosub_scene {target_scene} {target_label} n
 	*set n + 1
-	*goto repeat_loop
+	*goto _repeat_loop
 *return

@@ -1,0 +1,101 @@
+*comment --------------------------------------
+*comment ###  TESTING THE TEST FRAMEWORK ###
+*comment --------------------------------------
+*comment This is a special test module that houses
+*comment tests that confirm parts of the 'test framework'
+*comment are working as intended; it is not testing cslib.
+*comment
+*comment It's important to note that most of the routines
+*comment tested here are hand-duplicated across the modules:
+*comment test_start, test_finish and test_assert.
+*comment
+*comment So in the event of any issues, please first
+*comment ensure that all modules contain up-to-date copies
+*comment of those routines.
+*comment
+*comment It is unfortunately not possible to share them via
+*comment *gosub_scene due to their reliance on local variables.
+
+*label entry
+*params module log_buffer
+*temp test_count 0
+*temp tests_passed 0
+
+
+*comment :::::: ASSERT tests ::::::
+*gosub test_start "TEST FRAMEWORK - ASSERTS #1"
+*comment ensure that test_result is initially set to 'true'
+*gosub test_assert (test_result) "Error: test_result should be 'true' not '${test_result}' at test_start"
+*comment perform some very basic assertions
+*gosub test_assert_equal true true
+*gosub test_assert_equal false false "Error: false isn't equal to false"
+*gosub test_assert ("" = "") "Error: '' isn't equal to ''"
+*comment and make sure they didn't fail the test
+*gosub test_assert (test_result) "Error: test_result should be 'true' not '${test_result}'"
+*gosub test_finish
+
+*gosub test_start "TEST FRAMEWORK - ASSERTS #2"
+*comment force an assertion to fail
+*gosub test_assert (true = false) "Success: I should fail and appear in the log. This is not an error."
+*if (test_result)
+	*comment something went wrong, soaks let's check if test_assert itself is broken
+	*gosub test_assert false "Error: test_result should be 'false' not '${test_result}' after a failed assertion"
+	*if (test_result)
+		*comment if a false assertion passes here we give up — something is seriously broken
+		*bug Error: test_assert utility routine is broken
+*else
+	*comment hackily set test_result back to 'true' so we don't report our earlier forced failure
+	*set test_result true
+*gosub test_finish
+
+
+*comment :::::: SHORTHAND tests ::::::
+*gosub test_start "TEST FRAMEWORK - SHORTHAND #1"
+*gosub test_finish true true
+
+
+*comment :::::: RESULT tests ::::::
+*gosub test_start "TEST FRAMEWORK - PASSES"
+*gosub test_assert (tests_passed <= test_count) "Error: value of tests_passed (${tests_passed}) shouldn't be greater than test_count (${test_count})"
+*gosub test_assert (tests_passed >= 0) "Error: value of tests_passed should not be negative but was '${test_count}'"
+*gosub test_finish
+
+*gosub test_start "TEST FRAMEWORK - COUNT"
+*comment NOTE: you'll need to update me when you add framework tests above
+*temp const_test_count_expected 5
+*gosub test_assert (test_count = const_test_count_expected) "Error: expectected test_count value was '${const_test_count_expected}' not '${test_count}'"
+*gosub test_finish
+
+
+*set cslib_ret "${tests_passed}|${test_count}"
+*return
+
+
+*comment :::::: UTILITY routines ::::::
+*label test_start
+*params p_test_name
+*temp test_result true
+*set test_count + 1
+*set {log_buffer} &"TEST ${p_test_name}: "
+*return
+
+*label test_assert_equal
+*params p_result_expected p_result_actual
+*gosub test_assert (p_result_expected = p_result_actual) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
+*return
+
+*label test_assert
+*params p_test_condition p_test_message
+*if not(p_test_condition)
+	*set test_result false
+	*set {log_buffer} &("[n/]"&(p_test_message&"[n/]"))
+*return
+
+*label test_finish
+*params
+*if (param_count = 2)
+	*gosub test_assert_equal param_1 param_2
+*set {log_buffer} &"@{test_result PASS|FAIL}[n/]"
+*if test_result
+	*set tests_passed + 1
+*return

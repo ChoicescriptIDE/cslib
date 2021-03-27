@@ -16,7 +16,7 @@
 		*temp tests_passed cslib_ret
 		*gosub_scene cslib_string substring test_data (index + 1) length(test_data)
 		*temp tests_run cslib_ret
-		*gosub_scene _test_display_templates display_module_summary module[module_id] tests_passed tests_run
+		*gosub_scene _test_display_templates display_module_summary module[module_id] tests_run tests_passed
 		Results have been logged.
 		*page_break
 		*goto main
@@ -25,9 +25,6 @@
 	*goto main
 *elseif cslib_ret = 3
 	*gosub view_logs
-	*goto main
-*elseif cslib_ret = 4
-	*gosub test_templates
 	*goto main
 *else
 	*bug bad selection at main menu!
@@ -71,8 +68,4 @@ Results have been logged.
 	*gosub_scene _test_display_templates display_log cslib_ret
 	*page_break
 	*goto log_selection
-*return
-
-*label test_templates
-*gosub_scene cslib_template
 *return

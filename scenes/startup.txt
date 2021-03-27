@@ -11,17 +11,20 @@
 *create cslib_assert true
 
 *comment MODULE TEST REGISTRATION
-*create module_count 4
+*create module_count 5
 *create module_0 ""
 *create module_log_0 ""
-*create module_1 "string"
+*create module_1 "test_framework"
 *create module_log_1 ""
-*create module_2 "number"
+*create module_2 "string"
 *create module_log_2 ""
-*create module_3 "assert"
+*create module_3 "number"
 *create module_log_3 ""
-*create module_4 "loop"
+*create module_4 "assert"
 *create module_log_4 ""
+*create module_5 "loop"
+*create module_log_5 ""
+
 
 *comment GLOBAL TEST VARIABLES
 *create total_tests_run 0
@@ -61,6 +64,8 @@
 	*if (total_tests_passed < total_tests_run)
 		*comment print all module logs
 		*gosub_scene cslib_loop repeat "_test_display_templates" "display_log" module_count
+		*comment force everything to print before we fail
+		*page_break
 		*comment force quicktest + randomtest to fail
 		*bug ${total_tests_passed}/${total_tests_run} tests passed (${total_tests_run - total_tests_passed} failed)
 	*else
