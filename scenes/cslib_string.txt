@@ -329,7 +329,7 @@
 *comment 			p_separator(string): a character upon which to split the string.
 *comment			p_array(string): the array name/reference (prefix)
 *comment 		returns:
-*comment 			(integer): the number of tokens in the string.
+*comment 			(number): the number of tokens in the string.
 *label extract_tokens
 *params p_source p_separator p_array
 
