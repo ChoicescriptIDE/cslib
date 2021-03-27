@@ -27,6 +27,9 @@
 
 *comment :::::: MAX_STAT tests ::::::
 *gosub test_start "MAX_STAT #1"
+*set test_stat_strength 100
+*set test_stat_charisma 50
+*set test_stat_wisdom 10
 *temp result_expected "test_stat_strength"
 *gosub_scene cslib_number max_stat "test_stat_strength" "test_stat_charisma" "test_stat_wisdom"
 *gosub test_finish result_expected cslib_ret

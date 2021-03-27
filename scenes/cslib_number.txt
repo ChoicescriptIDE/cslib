@@ -120,12 +120,12 @@
 
 *comment MAX_STAT
 *comment ------------------------------
-*comment Returns the largest of a set of given stats.
+*comment Returns the variable name of the largest of a set of given stats.
 *comment ------------------------------
 *comment 	params:
-*comment		param_n(string): a stat (passed by name)
+*comment		param_n(string): the name of a stat variable
 *comment	returns: 
-*comment		(string): the stat with the largest value
+*comment		(string): the variable name of the stat with the largest value
 *label max_stat
 *params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
@@ -143,12 +143,12 @@
 
 *comment MIN_STAT
 *comment ------------------------------
-*comment Returns the smallest of a set of given stats.
+*comment Returns the variable name of the smallest of a set of given stats.
 *comment ------------------------------
 *comment 	params:
-*comment		param_n(string): a stat (passed by name)
+*comment		param_n(string): the name of a stat variable
 *comment	returns: 
-*comment		(string): the stat with the smallest value
+*comment		(string): the variable name of the stat with the smallest value
 *label min_stat
 *params
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
