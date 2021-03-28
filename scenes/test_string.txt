@@ -154,17 +154,13 @@
 *gosub test_assert_equal 5 tokens_max
 *gosub test_finish 3 tokens_count
 
-*comment Extract 2 tokens into an array of 5. Remaining entries are reset.
+*comment Extract 2 tokens into an array of 5. Remaining entries are undefined.
 *gosub test_start "EXTRACT_TOKENS #2"
 *set str_buffer "VAL=HERE|VAL=THERE"
 *gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
 *gosub test_assert_equal 2 cslib_ret
 *gosub test_assert_equal "VAL=HERE" tokens_1
 *gosub test_assert_equal "VAL=THERE" tokens_2
-*comment The rest of the array is wiped clean.
-*gosub test_assert_equal "" tokens_3
-*gosub test_assert_equal "" tokens_4
-*gosub test_assert_equal "" tokens_5
 *gosub test_assert_equal 5 tokens_max
 *gosub test_finish 2 tokens_count
 
@@ -183,16 +179,11 @@
 *gosub test_assert_equal 5 tokens_max
 *gosub test_finish 5 tokens_count
 
-*comment Empty source. The array is unchanged.
+*comment Empty source. The array is not manipulated.
 *gosub test_start "EXTRACT_TOKENS #4"
 *set str_buffer ""
 *gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
 *gosub test_assert_equal 0 cslib_ret
-*gosub test_assert_equal "A" tokens_1
-*gosub test_assert_equal "B" tokens_2
-*gosub test_assert_equal "C" tokens_3
-*gosub test_assert_equal "D" tokens_4
-*gosub test_assert_equal "E" tokens_5
 *gosub test_assert_equal 5 tokens_max
 *gosub test_finish 0 tokens_count
 
@@ -202,10 +193,6 @@
 *gosub_scene cslib_string extract_tokens str_buffer "|" "tokens"
 *gosub test_assert_equal 1 cslib_ret
 *gosub test_assert_equal "HI" tokens_1
-*gosub test_assert_equal "" tokens_2
-*gosub test_assert_equal "" tokens_3
-*gosub test_assert_equal "" tokens_4
-*gosub test_assert_equal "" tokens_5
 *gosub test_assert_equal 5 tokens_max
 *gosub test_finish 1 tokens_count
 

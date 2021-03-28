@@ -346,23 +346,18 @@
 	*set cslib_ret 0
 	*return
 
-*comment Clean up the destination array.
-*temp array_idx 1
-*label _loop_clean_array
-*set {(p_array & "_") & array_idx} ""
-*set array_idx +1
-*if array_idx <= array_max
-	*goto _loop_clean_array
-
 *temp source_idx 1
-*set array_idx 1
+*temp array_idx 1
 *temp target (p_array & "_") & array_idx
+*set {target} ""
 
 *label _source_loop
 *temp next_char p_source#source_idx
 *if next_char = p_separator
 	*set array_idx +1
 	*set target (p_array & "_") & array_idx
+	*if array_idx <= array_max
+		*set {target} ""
 *else
 	*if array_idx <= array_max
 		*set {target} &next_char
