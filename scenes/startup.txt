@@ -45,7 +45,18 @@
 
 *create cslib_catch_bug false
 
-*comment Some stats for min/max
+*comment ARRAY USED AS RESULT FROM TOKENIZATION
+*create tokens_1 ""
+*create tokens_2 ""
+*create tokens_3 ""
+*create tokens_4 ""
+*create tokens_5 ""
+*comment The max number of entries (storage size).
+*create tokens_max 5
+*comment The number of valid entries.
+*create tokens_count 0
+
+*comment SOME STATS FOR MIN/MAX
 *create test_stat_strength 0
 *create test_stat_charisma 0
 *create test_stat_wisdom 0
