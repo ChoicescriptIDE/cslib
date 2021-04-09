@@ -11,7 +11,7 @@
 *create cslib_assert true
 
 *comment MODULE TEST REGISTRATION
-*create module_count 5
+*create module_count 6
 *create module_0 ""
 *create module_log_0 ""
 *create module_1 "test_framework"
@@ -24,13 +24,32 @@
 *create module_log_4 ""
 *create module_5 "loop"
 *create module_log_5 ""
-
+*create module_6 "menu"
+*create module_log_6 ""
 
 *comment GLOBAL TEST VARIABLES
 *create total_tests_run 0
 *create total_tests_passed 0
 
+*comment ARRAY TEST DATA
+*create test_menu_opt_count 7
+*create test_menu_opt_1 ""
+*create test_menu_opt_visible_1 false
+*create test_menu_opt_2 ""
+*create test_menu_opt_visible_2 false
+*create test_menu_opt_3 ""
+*create test_menu_opt_visible_3 false
+*create test_menu_opt_4 ""
+*create test_menu_opt_visible_4 false
+*create test_menu_opt_5 ""
+*create test_menu_opt_visible_5 false
+*create test_menu_opt_6 ""
+*create test_menu_opt_visible_6 false
+*create test_menu_opt_7 ""
+*create test_menu_opt_visible_7 false
+
 *comment GLOBAL VALUES
+*create const_num_count 9
 *create const_num_1 1
 *create const_num_2 2
 *create const_num_3 3
@@ -44,6 +63,8 @@
 *create str_buffer ""
 
 *create cslib_catch_bug false
+*create cslib_catch_choice false
+*create cslib_choice_select 0
 
 *comment ARRAY USED AS RESULT FROM TOKENIZATION
 *create tokens_1 ""
@@ -62,6 +83,10 @@
 *create test_stat_wisdom 0
 
 *set implicit_control_flow true
+
+*if choice_randomtest
+	*comment override randomtest's Scene.prototype.choice so we can perform automated testing (original source in mygame.js)
+	*script Scene.prototype.choice=function(i){var t=["choice"];i&&(t=i.split(/ /));var n=this.parseOptions(this.indent,t),e=this;timeout=function(){println(""),e.renderOptions(t,n,function(i){e.standardResolution(i)})},this.finished=!0};
 
 *if (automatic_testing)
 	*comment automatic 'test all' for CI, quicktest etc.
