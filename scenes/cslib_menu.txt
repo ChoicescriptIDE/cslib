@@ -1,4 +1,4 @@
-*bug "cslib_menu is a cslib module and must not be accessed directly"
+*bug cslib_menu is a cslib module and must not be accessed directly
 
 *comment --------------------------------------
 *comment ###  MENU / CHOICE module: README ###
@@ -38,8 +38,8 @@
 *comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
 *label build_array
 *params p_prefix p_cancel
-*gosub _common p_prefix p_cancel "" "" ""
-*gosub _init
+*gosub _build_array_common p_prefix p_cancel "" "" ""
+*gosub _render_choice
 *return
 
 
@@ -68,8 +68,8 @@
 *comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
 *label build_array_filter
 *params p_prefix p_cancel p_filter p_filter_type p_filter_value
-*gosub _common p_prefix p_cancel p_filter p_filter_type p_filter_value
-*gosub _init
+*gosub _build_array_common p_prefix p_cancel p_filter p_filter_type p_filter_value
+*gosub _render_choice
 *return
 
 
@@ -87,7 +87,9 @@
 *label build_simple
 *params
 *temp allow_cancel false
-*goto _build_simple_common
+*gosub _build_simple_common
+*gosub _render_choice
+*return
 
 
 *comment BUILD_SIMPLE_CANCEL
@@ -105,38 +107,54 @@
 *label build_simple_with_cancel
 *params
 *temp allow_cancel true
-*goto _build_simple_common
+*gosub _build_simple_common
+*gosub _render_choice
+*return
 
 
-*comment INTERNAL FUNCTIONS (DO NOT CALL DIRECTLY):
-*label _common
+*comment ::: INTERNAL FUNCTIONS BELOW (DO NOT CALL DIRECTLY!) :::
+*label _build_simple_common
+*gosub _init_state
+*temp prefix "param_"
+*temp filter ""
+*temp filter_value ""
+*temp page_count "@{(param_count <= const_items_per_page) 1|${(param_count / const_items_per_page)}}"
+*if ((page_count modulo 1) > 0)
+	*set page_count ((page_count - (page_count modulo 1)) + 1)
+*gosub _populate_page
+*return
+
+
+*label _build_array_common
 *params p_prefix p_cancel p_filter p_filter_type p_filter_value
-*temp prefix p_prefix
+*gosub _init_state
+*temp prefix p_prefix&"_"
 *temp filter p_filter
 *temp filter_value p_filter_value
 *temp filter_type p_filter_type
 *if (filter != "") and ((filter_type != "MATCH") and (filter_type != "NOT_MATCH"))
 	*bug filter_type was "${filter_type}" but should be "MATCH" or "NOT_MATCH"
 *temp allow_cancel p_cancel
+*gosub _reset_filter_and_populate_page
 *return
 
-*label _build_simple_common
-*temp prefix "param"
-*temp filter ""
-*temp filter_value ""
 
-*label _init
-*comment CONSTANT CONFIG VALUES:
-*comment swap the next/prev buttons intelligently for smoother navigation
-*temp next_preference true
+*label _init_state
+*comment determines the next/prev option position for smoother navigation
+*temp next_pref true
 *comment determines the direction in which options are displayed
-*temp invert_order false
-*comment the amount of options per 'page':
-*temp items_per_page 5
+*temp const_invert_order false
+*comment the max amount of options to display per 'page'
+*temp const_items_per_page 5
+*if (const_items_per_page > 10)
+	*bug cslib_menu._init_state: const_items_per_page cannot be greater than 10
+*comment the text displayed on the cancel/return button
+*temp const_cancel_text "[return]"
 
 *temp cur_page 1
+*return
 
-*label _soft_reset
+*label _reset_filter_and_populate_page
 *comment (re-)calculate the visible options (after a page navigation)
 *temp option_slot_id_1 0
 *temp option_slot_id_2 0
@@ -149,121 +167,202 @@
 *temp option_slot_id_9 0
 *temp option_slot_id_10 0
 
-*temp ignore 0
-*set ignore ((cur_page - 1) * items_per_page)
-*temp item_count 0
-*temp cur_option 1
-*temp cur_item "@{invert_order ${{prefix&\"_len\"}}|1}"
-*label _filter_loop
-*if (filter = "")
-	*goto _do_not_filter
-*if ({((prefix&"_")&(filter&"_"))&cur_item} = filter_value)
-	*if (filter_type = "NOT_MATCH")
-		*goto _acc
-*elseif (filter_type != "NOT_MATCH")
-	*goto _acc
-*label _do_not_filter
-*set item_count + 1
-*if (ignore < 1) and (cur_option <= items_per_page)
-	*set option_slot_id[cur_option] cur_item
-	*set cur_option + 1
-*if (ignore > 0)
-	*set ignore -1
-*label _acc
-*if (invert_order)
-	*if (cur_item > 1)
-		*set cur_item - 1
-		*goto _filter_loop
-*else
-	*if (cur_item < {prefix&"_count"})
-		*set cur_item + 1
-		*goto _filter_loop
-*if (item_count = 0) and not(allow_cancel)
-	*bug cslib_menu: menu construction failed as there were 0 matching items — consider allowing cancellation
+*temp total_item_count 0
+*temp cur_option_index 1
+*temp cur_item_index "@{const_invert_order ${{prefix&\"count\"}}|1}"
+*temp items_off_page ((cur_page - 1) * const_items_per_page)
 
-*label _render
-*temp page_count 0
-*if (item_count < items_per_page)
-	*set page_count 1
+*label filter_loop
+*if (filter != "")
+	*gosub _apply_filter {((prefix)&(filter&"_"))&cur_item_index} filter_value
+	*if not(cslib_ret)
+		*gosub _add_item
 *else
-	*set page_count (item_count / items_per_page)
-*comment this *if might be redundant?
-*if (page_count < 1)
-	*set cslib_ret 0
-	*goto _return
-*if ((page_count modulo 1) > 0)
-	*set page_count ((page_count - (page_count modulo 1)) + 1)
-*temp page_modifier (items_per_page * (cur_page - 1))
+	*gosub _add_item
+*if (items_off_page > 0)
+	*set items_off_page -1
+*gosub _next_item
+*if (cslib_ret)
+	*goto filter_loop
 
+*gosub _set_page_count
+*gosub _populate_page
+*return
+
+*label _populate_page
+*comment populate the choice items and check the guards
+*temp page_item_count 0
+*temp slot 1
+*gosub _init_option_vars
+*label _populate_page_loop
+*if (slot <= const_items_per_page)
+	*if (prefix = "param_")
+		*comment special handling for simple menus
+		*temp offset slot+(const_items_per_page * (cur_page -1))
+		*set option_guard[slot] ({prefix&"count"} >= offset) and (const_items_per_page >= slot)
+		*if (option_guard[slot])
+			*set page_item_count + 1
+			*set option_text[slot] "${param[offset]}"
+			*set option_ret_val[slot] offset
+	*else
+		*set option_guard[slot] ((option_slot_id[slot] > 0) and (const_items_per_page >= slot))
+		*if (option_guard[slot])
+			*set page_item_count + 1
+			*set option_text[slot] "${{(prefix)&{\"option_slot_id_\"&slot}}}"
+			*set option_ret_val[slot] option_slot_id[slot]
+	*set slot + 1
+	*goto _populate_page_loop
+*comment catch 'no selectable options' errors
+*if (page_item_count = 0) and not(allow_cancel)
+	*bug cslib_menu._reset_filter: menu construction failed as there were 0 matching items — consider allowing cancellation
+*return
+
+*label _render_choice
+*comment render the choice to the screen
+*temp set_page "@{(prefix=\"param_\") _populate_page|_reset_filter_and_populate_page}"
 *fake_choice
 	*if (page_count > 1)
 		*comment when there is more than one page, display a page indicator
 		*selectable_if (false) # Page (${cur_page} / ${page_count})
-			*bug "cslib_menu error: this option should not be selectable"
-	*if (((cur_page < page_count) and (next_preference)) or ((cur_page = 1) and (page_count > 1)))
+			*bug cslib_menu._render_choice: this option should not be selectable
+	*if (((cur_page < page_count) and (next_pref)) or ((cur_page = 1) and (page_count > 1)))
 		#[i]Next -->[/i]
-			*set next_preference true
+			*set next_pref true
 			*set cur_page + 1
-			*goto _soft_reset
-	*if ((cur_page > 1) and ((cur_page = page_count) or (next_preference != true)))
+			*gosub {set_page}
+			*goto _render_choice
+	*if ((cur_page > 1) and ((cur_page = page_count) or (next_pref != true)))
 		#[i]<-- Previous[/i]
-			*set next_preference false
+			*set next_pref false
 			*set cur_page - 1
-			*goto _soft_reset
-	*if ((option_slot_id_1 > 0) and (items_per_page > 0)) 
-		# ${{(prefix&"_")&{option_slot_id_1}}}
-			*set cslib_ret option_slot_id_1
+			*gosub {set_page}
+			*goto _render_choice
+	*if (option_guard_1)
+		#${option_text_1}
+			*set cslib_ret option_ret_val_1
 			*goto _return
-	*if ((option_slot_id_2 > 0) and (items_per_page > 1)) 
-		# ${{(prefix&"_")&{option_slot_id_2}}}
-			*set cslib_ret option_slot_id_2
+	*if (option_guard_2)
+		#${option_text_2}
+			*set cslib_ret option_ret_val_2
 			*goto _return
-	*if ((option_slot_id_3 > 0) and (items_per_page > 2)) 
-		# ${{(prefix&"_")&{option_slot_id_3}}}
-			*set cslib_ret option_slot_id_3
+	*if (option_guard_3)
+		#${option_text_3}
+			*set cslib_ret option_ret_val_3
 			*goto _return
-	*if ((option_slot_id_4 > 0) and (items_per_page > 3))
-		# ${{(prefix&"_")&{option_slot_id_4}}}
-			*set cslib_ret option_slot_id_4
+	*if (option_guard_4)
+		#${option_text_4}
+			*set cslib_ret option_ret_val_4
 			*goto _return
-	*if ((option_slot_id_5 > 0) and (items_per_page > 4)) 
-		# ${{(prefix&"_")&{option_slot_id_5}}}
-			*set cslib_ret option_slot_id_5
+	*if (option_guard_5)
+		#${option_text_5}
+			*set cslib_ret option_ret_val_5
 			*goto _return
-	*if ((option_slot_id_6 > 0) and (items_per_page > 5)) 
-		# ${{(prefix&"_")&{option_slot_id_6}}}
-			*set cslib_ret option_slot_id_6
+	*if (option_guard_6)
+		#${option_text_6}
+			*set cslib_ret option_ret_val_6
 			*goto _return
-	*if ((option_slot_id_7 > 0) and (items_per_page > 6)) 
-		# ${{(prefix&"_")&{option_slot_id_7}}}
-			*set cslib_ret option_slot_id_7
+	*if (option_guard_7)
+		#${option_text_7}
+			*set cslib_ret option_ret_val_7
 			*goto _return
-	*if ((option_slot_id_8 > 0) and (items_per_page > 7)) 
-		# ${{(prefix&"_")&{option_slot_id_8}}}
-			*set cslib_ret option_slot_id_8
+	*if (option_guard_8)
+		#${option_text_8}
+			*set cslib_ret option_ret_val_8
 			*goto _return
-	*if ((option_slot_id_9 > 0) and (items_per_page > 8)) 
-		# ${{(prefix&"_")&{option_slot_id_9}}}
-			*set cslib_ret option_slot_id_9
+	*if (option_guard_9)
+		#${option_text_9}
+			*set cslib_ret option_ret_val_9
 			*goto _return
-	*if ((option_slot_id_10 > 0) and (items_per_page > 9))
-		# ${{(prefix&"_")&{option_slot_id_10}}}
-			*set cslib_ret option_slot_id_10
+	*if (option_guard_10)
+		#${option_text_10}
+			*set cslib_ret option_ret_val_10
 			*goto _return
-	*if (((cur_page < page_count) and (next_preference != true)) and (cur_page != 1)) 
+	*if (((cur_page < page_count) and (next_pref != true)) and (cur_page != 1))
 		#[i]Next -->[/i]
-			*set next_preference true
+			*set next_pref true
 			*set cur_page + 1
-			*goto _soft_reset
-	*if (((cur_page > 1) and (next_preference)) and (cur_page != page_count))
+			*gosub {set_page}
+			*goto _render_choice
+	*if (((cur_page > 1) and (next_pref)) and (cur_page != page_count))
 		#[i]<-- Previous[/i]
-			*set next_preference false
+			*set next_pref false
 			*set cur_page - 1
-			*goto _soft_reset
-	*if (allow_cancel) #Return
+			*gosub {set_page}
+			*goto _render_choice
+	*if (allow_cancel) #${const_cancel_text}
 		*set cslib_ret 0
 		*goto _return
-*bug "_paginated_menu: unreachable"
+*bug cslib_menu._render_choice: unreachable
 *label _return
 *return
 
+
+*label _apply_filter
+*set cslib_ret false
+*if ({((prefix)&(filter&"_"))&cur_item_index} = filter_value)
+	*if (filter_type = "NOT_MATCH")
+		*set cslib_ret true
+*elseif (filter_type != "NOT_MATCH")
+	*set cslib_ret true
+*return
+
+
+*label _add_item
+*set total_item_count + 1
+*if (items_off_page < 1) and (cur_option_index <= const_items_per_page)
+	*set option_slot_id[cur_option_index] cur_item_index
+	*set cur_option_index + 1
+*return
+
+
+*label _next_item
+*temp left "@{const_invert_order ${cur_item_index}|${{prefix&\"count\"}}}"
+*temp right "@{const_invert_order 1|${cur_item_index}}"
+*set cur_item_index "@{const_invert_order ${(cur_item_index - 1)}|${cur_item_index + 1}}"
+*set cslib_ret (left > right)
+*return
+
+
+*label _set_page_count
+*comment
+*temp page_count 0
+*if (total_item_count <= const_items_per_page)
+	*set page_count 1
+*else
+	*set page_count (total_item_count / const_items_per_page)
+*if ((page_count modulo 1) > 0)
+	*set page_count ((page_count - (page_count modulo 1)) + 1)
+*return
+
+*label _init_option_vars
+*temp option_guard_1 false
+*temp option_guard_2 false
+*temp option_guard_3 false
+*temp option_guard_4 false
+*temp option_guard_5 false
+*temp option_guard_6 false
+*temp option_guard_7 false
+*temp option_guard_8 false
+*temp option_guard_9 false
+*temp option_guard_10 false
+*temp option_text_1 ""
+*temp option_text_2 ""
+*temp option_text_3 ""
+*temp option_text_4 ""
+*temp option_text_5 ""
+*temp option_text_6 ""
+*temp option_text_7 ""
+*temp option_text_8 ""
+*temp option_text_9 ""
+*temp option_text_10 ""
+*temp option_ret_val_1 0
+*temp option_ret_val_2 0
+*temp option_ret_val_3 0
+*temp option_ret_val_4 0
+*temp option_ret_val_5 0
+*temp option_ret_val_6 0
+*temp option_ret_val_7 0
+*temp option_ret_val_8 0
+*temp option_ret_val_9 0
+*temp option_ret_val_10 0
+*return
