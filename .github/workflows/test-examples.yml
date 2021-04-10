@@ -1,0 +1,31 @@
+name: test-examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.4
+        with:
+          # Version Spec of the version to use.  Examples: 10.x, 10.15.1, >=10.15.0
+          node-version: 12.x
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: cslib
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          repository: 'dfabulich/choicescript'
+          path: choicescript
+      - name: Test Examples
+        run: |
+          cp cslib/examples/test-examples.sh .
+          ./test-examples.sh

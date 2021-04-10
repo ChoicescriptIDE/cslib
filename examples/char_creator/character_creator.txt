@@ -4,7 +4,11 @@
 *comment use numbers and percentages and asterisks etc?
 *label name_input
 Please enter your name
-*input_text name
+*if choice_randomtest
+    *comment avoid infinite loop
+    *set name "Name"
+*else
+    *input_text name
 *comment We can ask cslib to check the string against
 *comment a blocklist defined in startup.txt:
 *gosub_scene cslib_string contains name const_invalid_chars
