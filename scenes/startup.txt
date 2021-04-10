@@ -37,23 +37,14 @@
 *create test_menu_opt_max 9
 *create test_menu_opt_count 9
 *create test_menu_opt_1 ""
-*create test_menu_opt_visible_1 false
 *create test_menu_opt_2 ""
-*create test_menu_opt_visible_2 false
 *create test_menu_opt_3 ""
-*create test_menu_opt_visible_3 false
 *create test_menu_opt_4 ""
-*create test_menu_opt_visible_4 false
 *create test_menu_opt_5 ""
-*create test_menu_opt_visible_5 false
 *create test_menu_opt_6 ""
-*create test_menu_opt_visible_6 false
 *create test_menu_opt_7 ""
-*create test_menu_opt_visible_7 false
 *create test_menu_opt_8 ""
-*create test_menu_opt_visible_8 false
 *create test_menu_opt_9 ""
-*create test_menu_opt_visible_9 false
 
 *comment GLOBAL VALUES
 *create const_num_max 9

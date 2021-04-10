@@ -83,19 +83,12 @@
 *comment array - init test data
 *set test_menu_opt_count 7
 *set test_menu_opt_1 "Odd"
-*set test_menu_opt_visible_1 false
 *set test_menu_opt_2 "Even"
-*set test_menu_opt_visible_2 true
 *set test_menu_opt_3 "Odd"
-*set test_menu_opt_visible_3 false
 *set test_menu_opt_4 "Even"
-*set test_menu_opt_visible_4 true
 *set test_menu_opt_5 "Odd"
-*set test_menu_opt_visible_5 false
 *set test_menu_opt_6 "Even"
-*set test_menu_opt_visible_6 true
 *set test_menu_opt_7 "Odd"
-*set test_menu_opt_visible_7 false
 
 *gosub test_start "array - multi-page (with return, page 1, selecting '4')"
 *set cslib_choice_select "6"
@@ -127,13 +120,38 @@
 *gosub test_finish
 
 *gosub test_start "array - filter"
-*set cslib_choice_select "2"
-*gosub_scene cslib_menu build_array_filter "test_menu_opt" false "visible" "MATCH" true
-*gosub test_assert_equal 3 cslib_choice_count
-*gosub test_assert_equal 4 cslib_ret
-*gosub test_assert_equal "Even" cslib_choice_1
-*gosub test_assert_equal "Even" cslib_choice_2
-*gosub test_assert_equal "Even" cslib_choice_3
+*set cslib_choice_select "2,2,3"
+*set test_arr_1 "Badger"
+*set test_arr_2 ""
+*set test_arr_3 "Dog"
+*set test_arr_4 ""
+*set test_arr_5 "Cat"
+*set test_arr_6 "Fish"
+*set test_arr_7 "Monkey"
+*set test_arr_8 ""
+*set test_arr_9 "Toad"
+*set test_arr_count 9
+*gosub_scene cslib_array filter_by_routine "test_arr" "test_menu_opt" "test_menu" "_filter_is_not_empty"
+
+*goto _skip_filter_is_not_empty
+*label _filter_is_not_empty
+*params value index
+*set cslib_ret true
+*if (value = "")
+	*set cslib_ret false
+*return
+
+*label _skip_filter_is_not_empty
+*gosub_scene cslib_menu build_array "test_menu_opt" false
+*gosub test_assert_equal 7 cslib_choice_count
+*gosub test_assert_equal 1 cslib_ret
+*gosub test_assert_equal "Page (1 / 2)" cslib_choice_1
+*gosub test_assert_equal "[i]Next -->[/i]" cslib_choice_2
+*gosub test_assert_equal "Badger" cslib_choice_3
+*gosub test_assert_equal "Dog" cslib_choice_4
+*gosub test_assert_equal "Cat" cslib_choice_5
+*gosub test_assert_equal "Fish" cslib_choice_6
+*gosub test_assert_equal "Monkey" cslib_choice_7
 *gosub test_finish
 
 *comment re-enable UI driven choices
