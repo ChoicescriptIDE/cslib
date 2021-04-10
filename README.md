@@ -1,95 +1,108 @@
-## ChoiceScript Library (cslib)
+<h1><img src="./res/logo/cslib_logo%20flat.png" alt="C.S.Lib logo" width="43" align="left"/> ChoiceScript Library</h1>
 
-The ChoiceScript library (cslib) is a collection of common, re-usable routines (i.e. functions) for use in development of ChoiceScript games. 
+![Release](https://img.shields.io/github/release/ChoicescriptIDE/cslib) ![GitHub](https://img.shields.io/github/license/ChoicescriptIDE/cslib) ![GitHub all releases](https://img.shields.io/github/downloads/ChoicescriptIDE/cslib/total) ![Discourse topics](https://img.shields.io/discourse/topics?server=https%3A%2F%2Fforum.choiceofgames.com%2F) 
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FChoicescriptIDE%2Fcslib%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/ChoicescriptIDE/cslib/goto?ref=main)
 
-cslib is written entirely in ChoiceScript itself, so is easy to understand, configure and use.
+The ChoiceScript Library (cslib) is a collection of common, re-usable routines (i.e. functions) for use in development of ChoiceScript games. It's an attempt to extend ChoiceScript's core functionalities using vanilla ChoiceScript only. It relies heavily on string parsing and string manipulation.
 
-The idea is to provide a community built (and driven) collection of routines that provide ChoiceScript with extended functionality and usage patterns. 
+[ChoiceScript](https://github.com/dfabulich/choicescript) is a simple programming language created by Dan Fabulich to aid non-programmers to write and code interactive fiction text-based gamebooks in the style of [Choose Your Own Adventure](https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure). The language is proprietary and governed by its own [license](https://github.com/dfabulich/choicescript/blob/master/LICENSE.txt).
 
-- **Unblock Creation**
-    cslib can aid in ChoiceScript development by providing complicated functionality out of the box, or allowing certain code patterns to be written more concisely.
+The idea is to provide a community built (and driven) collection of routines, so [contribute](#-contributing) with ideas, code or feedback!
 
-- **Stimulate Learning**
-    cslib is written in ChoiceScript, so it's easy for any ChoiceScript author to read, understand, and learn from the cslib code. In time, they may even choose to contribute themselves.
+**Create, Learn and Experiment!**
 
-- **Encourage Experimentation**
-    This one needs little explanation. Whether you're helping create cslib, just using it your games, all that matters is that you're enjoying the experience.
+## Use It!
 
-## Overview 
+### Installation
+- Copy the file to your game folder together with your scene files.
 
-cslib is organized into 'modules' (scene files) that represent certain categories of functionality, for example, string (cslib_string), or number manipulation (cslib_number).
+- Create a global variable called `cslib_ret` to hold return values.
 
-### Usage
+```choicescript
+__startup.txt__
 
-To use cslib, you need only include the cslib_ prefixed scene files in your project, and define a few configuration variables in your startup scene (details further below). You can then call each individual routine as required, via gosub_scene. Documentation on each routine, including its functionality and required parameters (arguments) can be found in the commented source files.
+*create cslib_ret 0
+```
 
-### Limitations
+- That's it! :partying_face:
 
-Sadly, cslib is not always going to be a one-size-fits all solution to your ChoiceScript woes. There are inherent limitations in ChoiceScript that cannot be overcome, no matter how much extra ChoiceScript we write. In addition, when writing a utility like cslib (that aims to appeal to a large number of people), certain tradeoffs have to be made. So, if you plan to use it, you should keep the following limitations in mind:
+You can now call any of the routines described in the file. :muscle:
 
-- **Performance**
-ChoiceScript isn't built for performance, and cslib isn't going to make that any better. The library relies heavily on usage of *gosub_scene, which is costly but it's also the only reliable way to handle complex variable scoping. If you're using the odd function or two as a utility here and there, then you shouldn't have any problems. If, however, you're planning on a super awesome complex simulator that loops through thousands of strings which it passes to cslib:replace or cslib:find... At that point, you might want to consider other options (including a different scripting language!).
+Routines that need to return a value will generally do so through the dedicated global variable: `cslib_ret`. So make sure to capture its value into another variable!
 
-- **\*temp scope**
-Due to the usage of \*gosub_scene, and inherent limitations in ChoiceScript, access to current game state stored in temporary (\*temp) variables from inside cslib functions isn't going to be possible. Most of the time this isn't a problem as you can (and should!) be passing your values as parameters. However, there are definitely some desirable use-cases that aren't currently possible. The best example is passing an "array" (mytemp_1, mytemp_2, mytemp_3) to a function. You can't reliably do this with parameters as you can't change the amount of parameters you're passing at runtime. You can get around it with globals (\*create'd) arrays by passing the variable "prefix" (e.g. 'myvar' in myvar_1, myvar_2) as an argument and de-referencing it via {} syntax (and providing a length). However, having to create every array in the global scope is far from ideal.
+Note that some routines will need you to create more global variables, or follow a naming convention, make sure you read the documentation on the routine before using it.
 
-## Technical Details
+Also, remember that ChoiceScript is by nature not performant, which is fine, given its primary purpose. This library aims to extend ChoiceScript's core functionality, but don't go too crazy with it. Okay? :sweat_smile:
 
-Below follow some extra technical details that will be beneficial to anyone wishing to learn more about the cslib internals, or plan to contribute to its source code.
-
-### Global Configuration Variables
-
-You must define all of the following variables in your startup scene (via \*create).
-
-Note that cslib modules (scenes) should not refer to any global variable other than those listed below (or those accessed via a reference passed as a parameter).
-
-- **cslib_ret** — *anything* (default: "")
-This variable is how all cslib functions return their results. Each function should set this global before \*return with their 'result' (if there is one). If you wish to return more than one value, consider taking the refs (names) of global variables as parameters, which you can assign to via indirect reference.
-
-- **cslib_script** — *boolean* (recommended default: false)
-This variable is used to guard against any usage of \*script in cslib modules. If set to true any cslib function *may* switch to using \*script implementations in order to improve performance. Not all functions have \*script implementations, in which case they will continue to use the ChoiceScript variation.
-
-- **cslib_assert** — *boolean* (recommended default: false)
-Used to guard cslib asserts.
-If set to true cslib functions are permitted to use \*bug more liberally. Best set to true when testing or debugging, particularly if you're having issues with any cslib code.
-
-### Coding Conventions
-
-Any contributions to the cslib source code should adhere to the following guidelines wherever possible.
-
-#### Coding
-
-Below follows guidance on code style when contributing to cslib.
-
-- **Plain ChoiceScript first** 
-All code in cslib modules MUST have a standard ChoiceScript implementation. It may optionally feature a \*script variant of each routine, for performance reasons, but it **must** be guarded by the *cslib_script* config variable, and be functionally equivalent to the ChoiceScript implementation.
-- **Only \*gosub_scene dependencies**
-Public cslib functions can depend on (call) one another (for e.g. string:find uses string:substring) but they **must** use \*gosub_scene and **not** \*gosub, even if they reside within the same scene. Yes, this is horrible for performance, but it guarantees correct scoping (preventing different function's variables overwriting one another) and removes a whole category of nasty bugs for end-users.
-- **cslib_ret must be set**
-All cslib functions **must** \*set cslib_ret to a value before they \*return. If the function doesn't need to return a value, it should still set cslib_ret to an empty string: "". This will help discourage over-reliance on cslib_ret, which could lead to nasty bugs, or code that is difficult to read.
-- **config variables**
-Adding any new global config variables to cslib is invasive and increases  configuration effort. Adding one should be considered a breaking change, and only ever be done as a last resort.
--  **Use \*bug for unrecoverable errors**
-Any unrecoverable error state in a function should be handled by \*bug, and contain as much useful info as possible: file name, function name, variable values etc. It should not try to print the error message to the game screen.
-- **Tests**
-All cslib functions should have tests covering at least the basic use-cases. If the function is something that isn't easily tested (like a lot of cslib:menu), try to break it down into smaller (internal) functions that can be.
-- **Comments**
-All public cslib functions should be self-documenting, i.e. contain \*comment lines before them that briefly describe: the purpose of the function, its arguments and its return value (if any).
+Credits are not mandatory but very much appreciated. :pray:
 
 
-#### Naming
+## Examples:
+### Lowercase
 
-Below follows guidance on naming variables and routines etc., when contributing code to cslib.
+It is very common that mobile keyboards automatically enable uppercase for the first letter of a text input. So you asked your reader to insert a colour for the character's eyes and now, every time, it comes up like this? 
 
-##### Functions
-Private functions should be prefixed with an underscore, e.g.: `*label _replace_helper`.
-Public functions, i.e. functions you intend a user (or another cslib scene) to call with \*gosub_scene, should be named as simply and intuitively as possible. They should **not** be prefixed with an underscore, e.g.: `*label replace`. Try to avoid special characters or numbers (without good reason). Words should be separated by an underscore.
-##### Parameters
-Named parameters (created via \*params) should similarly be free of special characters and numbers. They should also be prefixed with p_, e.g.: `*params p_start p_end`.
-Automatic `param_N` variables are, of course, exempt.
+> He looks into your sweet *Brown* eyes…
 
-##### Config Variables
-All global cslib config variables should start with 'cslib_' and be as short and informatively named as possible.
+*Oof!* :joy: What if you could be sure every letter is in lowercase?
 
-##### Scenes
-Public scenes (modules) should be named `cslib_modulename` (all lowercase) and avoid numbers or special characters (aside from underscores to separate words). All `test` scenes should be named as: `test_modulename`.
+```choicescript
+*gosub_scene cslib_string lowercase eye_colour
+*set eye_colour cslib_ret
+```
+
+### Highest Stat
+
+Very often authors need to check which of the stats is the highest one, whether to display flavour text or decide which branch to follow in the story. Writing a loop in ChoiceScript is not trivial and some authors even prefer to write many lines of `*if` statements just to work around it. But what if you could check it in a single line of code?!
+
+```
+*gosub_scene cslib_number max_stat "strength" "dexterity" "constitution" "intelligence" "wisdom" "charisma"
+*goto {"flavour_text_" & cslib_ret}
+
+--------------------------------
+
+*label flavour_text_strength
+
+The highest stat is "strength"! Amazing! 
+```
+
+### Modules
+
+|    Module    |               Description               | Version | Depends on |                          Routines                          |
+|:------------:|:---------------------------------------:|:-------:|:----------:|:----------------------------------------------------------:|
+| cslib_string | Routines to manipulate text (strings).  |  1.0.0  |            | concat, lowercase, substring, find, replace, reverse, etc. |
+| cslib_number |     Routines to manipulate numbers.     |  1.0.0  |            |                    mean, max_stat, max, min, etc.                    |
+|  cslib_menu  | Routines to generate menus and choices. |  1.0.0  |           |                                                            |
+|  cslib_loop  |   Repeat the execution of a routine.    |  1.0.0  |            |                           repeat                           |
+
+### Contributing
+
+Every contribution is valid. Did you use one of the modules? Let us know! You decided not to use it? Tell us why, was it difficult to understand/use? Or there wasn't anything you found useful?
+
+Do you have a routine in mind you believe would be useful? Shoot it! Or do you want to try it yourself and contribute with code? Great! Just make sure to read the [contributing guidelines](./CONTRIBUTING.md) for the code style conventions and other more technical stuff.
+
+The idea is for the project to be driven by the community, so everyone is welcome.
+
+### Attributions
+
+`cslib`'s logo makes free and fair use of a modified `compass` [icon](https://fontawesome.com/icons/compass?style=regular) from Font Awesome, version 5.11.1, used under the Creative Commons Attribution 4.0 International license.
+
+As required, these are links to Font Awesome licenses:
+
+- [Pro](https://fontawesome.com/license)
+- [Free](https://fontawesome.com/license/free)
+
+Font Awesome is a private company, which is not connected to this project and may not endorse it.
+
+---
+
+`cslib`'s logo also makes free and fair use of a modified version of a maze icon by Freepik.
+
+As required, here's the attribution:
+
+<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
+
+---
+
+`cslib` is released under a permissive license, it--however--does not apply to the logo. You may not use or repurpose the logo without consulting the available licenses of the original owners. 
