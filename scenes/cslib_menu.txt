@@ -43,36 +43,6 @@
 *return
 
 
-*comment BUILD_ARRAY_FILTER
-*comment ------------------------------
-*comment Renders a choice menu from a given array, but filters out entries
-*comment based on a provided filter and filter value.
-*comment 
-*comment 	Example usage:
-*comment		*create item_1 "Sword"
-*comment		*create item_type_1 "weapon"
-*comment		*create item_2 "Shield"
-*comment 		*create item_type_2 "armour"
-*comment		...
-*comment		*create myvar_count 5
-*comment 		Select a weapon:
-*comment		*gosub_scene cslib_menu build_array_filter "item" false "type" "MATCH" "weapon"
-*comment ------------------------------
-*comment 	params:
-*comment		p_prefix(string): the array name/reference (prefix)
-*comment		p_cancel(boolean): include a 'cancel' option
-*comment		p_filter(string): the array attribute to test against
-*comment		p_filter_type(string): one of "MATCH" or "NOT_MATCH" - determines filter comparison operation
-*comment		p_filter_value(any): the value to check against the filter attribute
-*comment	returns: 
-*comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
-*label build_array_filter
-*params p_prefix p_cancel p_filter p_filter_type p_filter_value
-*gosub _build_array_common p_prefix p_cancel p_filter p_filter_type p_filter_value
-*gosub _render_choice
-*return
-
-
 *comment BUILD_SIMPLE
 *comment ------------------------------
 *comment Renders a choice menu containing the given strings as individual options.
@@ -114,28 +84,18 @@
 
 *comment ::: INTERNAL FUNCTIONS BELOW (DO NOT CALL DIRECTLY!) :::
 *label _build_simple_common
-*gosub _init_state
 *temp prefix "param_"
-*temp filter ""
-*temp filter_value ""
-*temp page_count "@{(param_count <= const_items_per_page) 1|${(param_count / const_items_per_page)}}"
-*if ((page_count modulo 1) > 0)
-	*set page_count ((page_count - (page_count modulo 1)) + 1)
+*gosub _init_state
 *gosub _populate_page
 *return
 
 
 *label _build_array_common
-*params p_prefix p_cancel p_filter p_filter_type p_filter_value
-*gosub _init_state
+*params p_prefix p_cancel
 *temp prefix p_prefix&"_"
-*temp filter p_filter
-*temp filter_value p_filter_value
-*temp filter_type p_filter_type
-*if (filter != "") and ((filter_type != "MATCH") and (filter_type != "NOT_MATCH"))
-	*bug filter_type was "${filter_type}" but should be "MATCH" or "NOT_MATCH"
+*gosub _init_state
 *temp allow_cancel p_cancel
-*gosub _reset_filter_and_populate_page
+*gosub _populate_page
 *return
 
 
@@ -150,43 +110,11 @@
 	*bug cslib_menu._init_state: const_items_per_page cannot be greater than 10
 *comment the text displayed on the cancel/return button
 *temp const_cancel_text "[return]"
-
+*temp arr_count {{prefix&"count"}}
+*temp page_count "@{(arr_count <= const_items_per_page) 1|${(arr_count / const_items_per_page)}}"
+*if ((page_count modulo 1) > 0)
+	*set page_count ((page_count - (page_count modulo 1)) + 1)
 *temp cur_page 1
-*return
-
-*label _reset_filter_and_populate_page
-*comment (re-)calculate the visible options (after a page navigation)
-*temp option_slot_id_1 0
-*temp option_slot_id_2 0
-*temp option_slot_id_3 0
-*temp option_slot_id_4 0
-*temp option_slot_id_5 0
-*temp option_slot_id_6 0
-*temp option_slot_id_7 0
-*temp option_slot_id_8 0
-*temp option_slot_id_9 0
-*temp option_slot_id_10 0
-
-*temp total_item_count 0
-*temp cur_option_index 1
-*temp cur_item_index "@{const_invert_order ${{prefix&\"count\"}}|1}"
-*temp items_off_page ((cur_page - 1) * const_items_per_page)
-
-*label filter_loop
-*if (filter != "")
-	*gosub _apply_filter {((prefix)&(filter&"_"))&cur_item_index} filter_value
-	*if not(cslib_ret)
-		*gosub _add_item
-*else
-	*gosub _add_item
-*if (items_off_page > 0)
-	*set items_off_page -1
-*gosub _next_item
-*if (cslib_ret)
-	*goto filter_loop
-
-*gosub _set_page_count
-*gosub _populate_page
 *return
 
 *label _populate_page
@@ -196,30 +124,22 @@
 *gosub _init_option_vars
 *label _populate_page_loop
 *if (slot <= const_items_per_page)
-	*if (prefix = "param_")
-		*comment special handling for simple menus
-		*temp offset slot+(const_items_per_page * (cur_page -1))
-		*set option_guard[slot] ({prefix&"count"} >= offset) and (const_items_per_page >= slot)
-		*if (option_guard[slot])
-			*set page_item_count + 1
-			*set option_text[slot] "${param[offset]}"
-			*set option_ret_val[slot] offset
-	*else
-		*set option_guard[slot] ((option_slot_id[slot] > 0) and (const_items_per_page >= slot))
-		*if (option_guard[slot])
-			*set page_item_count + 1
-			*set option_text[slot] "${{(prefix)&{\"option_slot_id_\"&slot}}}"
-			*set option_ret_val[slot] option_slot_id[slot]
+	*comment special handling for simple menus
+	*temp offset slot+(const_items_per_page * (cur_page -1))
+	*set option_guard[slot] (arr_count >= offset) and (const_items_per_page >= slot)
+	*if (option_guard[slot])
+		*set page_item_count + 1
+		*set option_text[slot] {prefix&offset}
+		*set option_ret_val[slot] offset
 	*set slot + 1
 	*goto _populate_page_loop
 *comment catch 'no selectable options' errors
 *if (page_item_count = 0) and not(allow_cancel)
-	*bug cslib_menu._reset_filter: menu construction failed as there were 0 matching items — consider allowing cancellation
+	*bug cslib_menu._populate_page: menu construction failed as there were 0 matching items — consider allowing cancellation
 *return
 
 *label _render_choice
 *comment render the choice to the screen
-*temp set_page "@{(prefix=\"param_\") _populate_page|_reset_filter_and_populate_page}"
 *fake_choice
 	*if (page_count > 1)
 		*comment when there is more than one page, display a page indicator
@@ -229,13 +149,13 @@
 		#[i]Next -->[/i]
 			*set next_pref true
 			*set cur_page + 1
-			*gosub {set_page}
+			*gosub _populate_page
 			*goto _render_choice
 	*if ((cur_page > 1) and ((cur_page = page_count) or (next_pref != true)))
 		#[i]<-- Previous[/i]
 			*set next_pref false
 			*set cur_page - 1
-			*gosub {set_page}
+			*gosub _populate_page
 			*goto _render_choice
 	*if (option_guard_1)
 		#${option_text_1}
@@ -281,57 +201,19 @@
 		#[i]Next -->[/i]
 			*set next_pref true
 			*set cur_page + 1
-			*gosub {set_page}
+			*gosub _populate_page
 			*goto _render_choice
 	*if (((cur_page > 1) and (next_pref)) and (cur_page != page_count))
 		#[i]<-- Previous[/i]
 			*set next_pref false
 			*set cur_page - 1
-			*gosub {set_page}
+			*gosub _populate_page
 			*goto _render_choice
 	*if (allow_cancel) #${const_cancel_text}
 		*set cslib_ret 0
 		*goto _return
 *bug cslib_menu._render_choice: unreachable
 *label _return
-*return
-
-
-*label _apply_filter
-*set cslib_ret false
-*if ({((prefix)&(filter&"_"))&cur_item_index} = filter_value)
-	*if (filter_type = "NOT_MATCH")
-		*set cslib_ret true
-*elseif (filter_type != "NOT_MATCH")
-	*set cslib_ret true
-*return
-
-
-*label _add_item
-*set total_item_count + 1
-*if (items_off_page < 1) and (cur_option_index <= const_items_per_page)
-	*set option_slot_id[cur_option_index] cur_item_index
-	*set cur_option_index + 1
-*return
-
-
-*label _next_item
-*temp left "@{const_invert_order ${cur_item_index}|${{prefix&\"count\"}}}"
-*temp right "@{const_invert_order 1|${cur_item_index}}"
-*set cur_item_index "@{const_invert_order ${(cur_item_index - 1)}|${cur_item_index + 1}}"
-*set cslib_ret (left > right)
-*return
-
-
-*label _set_page_count
-*comment
-*temp page_count 0
-*if (total_item_count <= const_items_per_page)
-	*set page_count 1
-*else
-	*set page_count (total_item_count / const_items_per_page)
-*if ((page_count modulo 1) > 0)
-	*set page_count ((page_count - (page_count modulo 1)) + 1)
 *return
 
 *label _init_option_vars
