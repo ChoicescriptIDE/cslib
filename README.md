@@ -32,7 +32,7 @@ You can now call any of the public routines described in the files. :muscle:
 
 Routines that need to return a value will always do so (unless otherwise specified) through the dedicated global variable: `cslib_ret`. So make sure to capture its value into another variable!
 
-Note that some routines will need you to create more global variables, or follow a naming convention, this is true, for instance, for array-based functions. Make sure you read the documentation on the routine before using it.
+Note that some routines will need you to create more global variables, or follow a naming convention, this is true, for instance, for array-based routines. Make sure you read the documentation on the routine before using it.
 
 Also, remember that ChoiceScript is by nature not performant, which is fine, given its primary purpose. This library aims to extend ChoiceScript's core functionality, but don't go too crazy with it. Okay? :sweat_smile:
 
