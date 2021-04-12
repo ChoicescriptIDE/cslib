@@ -1,3 +1,15 @@
+*comment PI
+*comment ------------------------------
+*comment Returns an approximation of the constant PI.
+*comment ------------------------------
+*comment	returns: 
+*comment		(number) PI
+
+*label pi
+*set cslib_ret 3.1415926535
+*return
+
+
 *comment SIN
 *comment ------------------------------
 *comment Determines the sine of an angle (in radians).
