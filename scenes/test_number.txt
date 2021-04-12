@@ -65,56 +65,6 @@
 *gosub_scene cslib_number are_numbers "12345" "onetwothree"
 *gosub test_finish result_expected cslib_ret
 
-
-
-TAYLOR
-*gosub test_start "ARE_NUMBERS #1"
-*temp result_expected 0
-*gosub_scene cslib_number sin 3.14159
-*gosub test_assert_close result_expected cslib_ret
-
-
-
-*gosub test_start "ARE_NUMBERS #2"
-*temp result_expected (0-1)
-*gosub_scene cslib_number cos 3.14159
-*gosub test_assert_close result_expected cslib_ret
-
-
-
-*gosub test_start "ARE_NUMBERS #3"
-*temp result_expected 0
-*gosub_scene cslib_number sinh 0
-*gosub test_assert_close result_expected cslib_ret
-
-
-*gosub test_start "ARE_NUMBERS #4"
-*temp result_expected 1
-*gosub_scene cslib_number cosh 0
-*gosub test_assert_close result_expected cslib_ret
-
-
-*gosub test_start "ARE_NUMBERS #5"
-*gosub_scene cslib_number cosh 0.4
-*temp cosh_res cslib_ret
-*gosub_scene cslib_number sinh 0.4
-*temp sinh_res cslib_ret
-*gosub test_assert_close 1 ((cosh_res * cosh_res)-(sinh_res*sinh_res))
-
-
-
-
-*gosub test_start "ARE_NUMBERS #5"
-*gosub_scene cslib_number cos 0.4
-*temp cos_res cslib_ret
-*gosub_scene cslib_number sin 0.4
-*temp sin_res cslib_ret
-*gosub test_assert_close 1 ((cos_res * cos_res)+(sin_res*sin_res))
-
-
-
-*gosub test_finish  
-
 *set cslib_ret "${tests_passed}|${test_count}"
 *return
 
@@ -129,13 +79,6 @@ TAYLOR
 *label test_assert_equal
 *params p_result_expected p_result_actual
 *gosub test_assert (p_result_expected = p_result_actual) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
-*return
-
-*label test_assert_close
-*params p_result_expected p_result_actual
-*temp delta (p_result_expected - p_result_actual)
-*set delta * delta
-*gosub test_assert (delta < 0.0001) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
 *return
 
 *label test_assert

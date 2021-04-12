@@ -1,0 +1,96 @@
+*label entry
+*params module log_buffer
+*temp test_count 0
+*temp tests_passed 0
+
+
+*comment :::::: SIN tests ::::::
+*gosub test_start "SIN #1"
+*temp result_expected 0
+*gosub_scene cslib_math sin 3.14159
+*gosub test_assert_close result_expected cslib_ret
+*gosub test_finish
+
+
+*comment :::::: COS tests ::::::
+*gosub test_start "COS #1"
+*temp result_expected (0-1)
+*gosub_scene cslib_math cos 3.14159
+*gosub test_assert_close result_expected cslib_ret
+*gosub test_finish
+
+
+*comment :::::: SINH tests ::::::
+*gosub test_start "SINH #1"
+*temp result_expected 0
+*gosub_scene cslib_math sinh 0
+*gosub test_assert_close result_expected cslib_ret
+*gosub test_finish
+
+
+*comment :::::: COSH tests ::::::
+*gosub test_start "COSH #1"
+*temp result_expected 1
+*gosub_scene cslib_math cosh 0
+*gosub test_assert_close result_expected cslib_ret
+*gosub test_finish
+
+
+*comment :::::: SIN + COS tests ::::::
+*gosub test_start "SIN + COS #1"
+*gosub_scene cslib_math cosh 0.4
+*temp cosh_res cslib_ret
+*gosub_scene cslib_math sinh 0.4
+*temp sinh_res cslib_ret
+*gosub test_assert_close 1 ((cosh_res * cosh_res)-(sinh_res*sinh_res))
+*gosub test_finish
+
+
+*comment :::::: SINH + COSH tests ::::::
+*gosub test_start "SINH + COSH #1"
+*gosub_scene cslib_math cos 0.4
+*temp cos_res cslib_ret
+*gosub_scene cslib_math sin 0.4
+*temp sin_res cslib_ret
+*gosub test_assert_close 1 ((cos_res * cos_res)+(sin_res*sin_res))
+*gosub test_finish
+
+
+*set cslib_ret "${tests_passed}|${test_count}"
+*return
+
+*comment :::::: UTILITY routines ::::::
+*label test_start
+*params p_test_name
+*temp test_result true
+*set test_count + 1
+*set {log_buffer} &"TEST ${p_test_name}: "
+*return
+
+*label test_assert_equal
+*params p_result_expected p_result_actual
+*gosub test_assert (p_result_expected = p_result_actual) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
+*return
+
+*label test_assert_close
+*params p_result_expected p_result_actual
+*temp delta (p_result_expected - p_result_actual)
+*set delta * delta
+*gosub test_assert (delta < 0.0001) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
+*return
+
+*label test_assert
+*params p_test_condition p_test_message
+*if not(p_test_condition)
+	*set test_result false
+	*set {log_buffer} &("[n/]"&(p_test_message&"[n/]"))
+*return
+
+*label test_finish
+*params
+*if (param_count = 2)
+	*gosub test_assert_equal param_1 param_2
+*set {log_buffer} &"@{test_result PASS|FAIL}[n/]"
+*if test_result
+	*set tests_passed + 1
+*return

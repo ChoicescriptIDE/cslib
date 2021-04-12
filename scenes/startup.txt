@@ -11,7 +11,7 @@
 *create cslib_assert true
 
 *comment MODULE TEST REGISTRATION
-*create module_count 5
+*create module_count 6
 *create module_0 ""
 *create module_log_0 ""
 *create module_1 "test_framework"
@@ -24,6 +24,8 @@
 *create module_log_4 ""
 *create module_5 "loop"
 *create module_log_5 ""
+*create module_6 "math"
+*create module_log_6 ""
 
 
 *comment GLOBAL TEST VARIABLES
