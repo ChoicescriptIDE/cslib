@@ -39,8 +39,9 @@
 *comment a given seperator.
 *comment ------------------------------
 *comment 	params:
-*comment        p_concat_sep: the separating value 
-*comment		param_n(string): the values to concatenate
+*comment        p_concat_sep(string): a value to insert between strings
+*comment		param_n(string): a string value to concatenate
+*comment		…
 *comment	returns: 
 *comment		(string): the concatenated string
 *label concat
@@ -95,11 +96,11 @@
 *comment (substring) between two given points.
 *comment ------------------------------
 *comment 	params:
-*comment		p_str(string): the full string
-*comment		p_s_index(string): the full string
-*comment		p_e_index(string): the full string
+*comment		p_str(string): the original string
+*comment		p_s_index(string): the start character of the substring (inclusive)
+*comment		p_e_index(string): the end character of the substring (inclusive)
 *comment	returns: 
-*comment		(string): the substring
+*comment		(string): the portion of the string between p_s_index and p_e_index (inclusive)
 *label substring
 *params p_str p_s_index p_e_index
 *gosub_scene cslib_assert custom (p_str != "") "cslib.string.substring: string must not be empty"
@@ -120,15 +121,14 @@
 
 *comment FIND
 *comment ------------------------------
-*comment Returns a positive number (the start char) of the first match of a
-*comment a specified substring within a string.
+*comment Returns a positive number (the start char) of the
+*comment first match of a specified substring within a string.
 *comment ------------------------------
 *comment 	params:
-*comment		p_str(string): the string to modify
-*comment		p_find_str(string): the old substring to match
+*comment		p_str(string): the string to search for p_find_str
+*comment		p_find_str(string): the string value to search for
 *comment	returns: 
 *comment		(number): the first char of the first match, or 0 (no match)
-*comment returns a positive number (the start_char) of a string within a string, or 0
 *label find
 *params p_str p_find_str
 *temp p_str_len length(p_str)
@@ -161,10 +161,10 @@
 *comment ------------------------------
 *comment 	params:
 *comment		p_str(string): the string to modify
-*comment		p_old(string): the old substring to match
-*comment		p_new(string): the new substring to replace those matches
+*comment		p_old_str(string): the string value to replace
+*comment		p_new_str(string): the string value to replace instances of p_old_str with
 *comment	returns: 
-*comment		(string): the modified string 
+*comment		(string): the modified string
 *label replace
 *params p_str p_old_str p_new_str
 *temp p_str_len length(p_str)
@@ -203,10 +203,10 @@
 *comment Inputs of a length not equal to 1 will cause an error to be thrown.
 *comment ------------------------------
 *comment 	params:
-*comment		p_str(string): a string to search for p_char
-*comment		p_char(string): a string of length 1
+*comment		p_str(string): a string in which to search for p_char
+*comment		p_char(string): a character (str of length 1) to search for
 *comment	returns: 
-*comment		(number): the position of the first 
+*comment		(number): the position of the first match of p_char in p_str, or 0 (no match)
 *label index
 *params p_str p_char
 *if (length(p_char) != 1)
@@ -229,9 +229,9 @@
 *comment Returns the given string reversed.
 *comment ------------------------------
 *comment 	params:
-*comment		p_str(string): a string
+*comment		p_str(string): a string to reverse
 *comment	returns: 
-*comment		(string): p_str reversed
+*comment		(string): the reversed string
 *label reverse
 *params p_str
 *temp reversed_string ""
@@ -249,13 +249,13 @@
 *comment CONTAINS
 *comment ------------------------------
 *comment Checks if the given string contains
-*comment any characters in a given list.
+*comment ANY characters in a given list.
 *comment ------------------------------
 *comment 	params:
-*comment		p_string(string): a string
-*comment        p_char_list(string): a string of characters
+*comment		p_string(string): the string to check
+*comment        p_char_list(string): a string of the characters to check against p_string
 *comment	returns:
-*comment		(boolean): true if p_string contains chars in char_list, else false
+*comment		(boolean): true if p_string contains one or more characters in p_char_list, else false
 *label contains
 *params p_string p_char_list
 *if (p_string = "") or (p_char_list = "")
@@ -283,7 +283,7 @@
 *comment CONSISTS_OF
 *comment ------------------------------
 *comment Checks if the given string consists
-*comment only of characters in a given list.
+*comment ONLY of characters in a given list.
 *comment ------------------------------
 *comment 		params:
 *comment 			p_string(string): the string to check for the presence of the given characters. 
