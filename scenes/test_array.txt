@@ -1,0 +1,276 @@
+*label entry
+*params module log_buffer
+*temp test_count 0
+*temp tests_passed 0
+
+
+*comment :::::: SET_ALL and CLEAN tests ::::::
+*gosub test_start "set all"
+*gosub_scene cslib_array set_all "test_arr" "JACKPOT"
+*gosub test_assert_equal "JACKPOT" test_arr_1
+*gosub test_assert_equal "JACKPOT" test_arr_2
+*gosub test_assert_equal "JACKPOT" test_arr_3
+*gosub test_assert_equal "JACKPOT" test_arr_4
+*gosub test_assert_equal "JACKPOT" test_arr_5
+*gosub test_assert_equal "JACKPOT" test_arr_6
+*gosub test_assert_equal "JACKPOT" test_arr_7
+*gosub test_assert_equal "JACKPOT" test_arr_8
+*gosub test_assert_equal "JACKPOT" test_arr_9
+*gosub test_assert (((test_arr_max = test_arr_count)) and (test_arr_max = 9)) "test_arr_max (${test_arr_max}) and test_arr_count (${test_arr_count}) should both be equal to 9"
+*gosub test_finish
+
+*gosub test_start "clean array"
+*gosub_scene cslib_array clean "test_arr"
+*gosub test_assert_equal "" test_arr_1
+*gosub test_assert_equal "" test_arr_2
+*gosub test_assert_equal "" test_arr_3
+*gosub test_assert_equal "" test_arr_4
+*gosub test_assert_equal "" test_arr_5
+*gosub test_assert_equal "" test_arr_6
+*gosub test_assert_equal "" test_arr_7
+*gosub test_assert_equal "" test_arr_8
+*gosub test_assert_equal "" test_arr_9
+*gosub test_assert_equal 0 test_arr_count
+*gosub test_finish
+
+*gosub test_start "set n"
+*gosub_scene cslib_array set_all "test_arr" true 5
+*gosub test_assert_equal true test_arr_1
+*gosub test_assert_equal true test_arr_2
+*gosub test_assert_equal true test_arr_3
+*gosub test_assert_equal true test_arr_4
+*gosub test_assert_equal true test_arr_5
+*gosub test_assert_equal "" test_arr_6
+*gosub test_assert_equal "" test_arr_7
+*gosub test_assert_equal "" test_arr_8
+*gosub test_assert_equal "" test_arr_9
+*gosub test_assert_equal 5 test_arr_count
+*gosub test_finish
+
+*comment :::::: CLONE tests ::::::
+*gosub test_start "clone array"
+*gosub_scene cslib_array clone "const_num" "test_arr"
+*comment check test_arr now contains const_num data
+*gosub test_assert_equal 1 test_arr_1
+*gosub test_assert_equal 2 test_arr_2
+*gosub test_assert_equal 3 test_arr_3
+*gosub test_assert_equal 4 test_arr_4
+*gosub test_assert_equal 5 test_arr_5
+*gosub test_assert_equal 6 test_arr_6
+*gosub test_assert_equal 7 test_arr_7
+*gosub test_assert_equal 8 test_arr_8
+*gosub test_assert_equal 9 test_arr_9
+*gosub test_assert_equal 9 test_arr_count
+*gosub test_finish
+
+*gosub test_start "clone array (target too small)"
+*comment pretend test_arr's max is smaller than it is:
+*temp test_arr_max_store test_arr_max
+*set test_arr_max 5
+*set cslib_catch_bug true
+*gosub_scene cslib_array clone "const_num" "test_arr"
+*set cslib_catch_bug false
+*gosub test_assert_equal "Bug: cslib_array.clone: Target array 'test_arr' is too small" cslib_bug_message
+*comment restore test_arr max
+*set test_arr_max test_arr_max_store
+*gosub test_finish
+
+*gosub test_start "clone array (source empty)"
+*comment pretend const_num is empty:
+*temp const_num_count_store const_num_count
+*set const_num_count 0
+*gosub_scene cslib_array clone "const_num" "test_arr"
+*gosub test_assert_equal test_arr_count 0
+*gosub test_assert_equal test_arr_count const_num_count
+*comment restore const_num count
+*set const_num_count const_num_count_store
+*gosub test_finish
+
+
+*comment :::::: PUSH and INSERT tests ::::::
+*gosub test_start "unshift"
+*set test_arr_count 0
+*gosub_scene cslib_array unshift "test_arr" "!"
+*gosub test_assert_equal "!" test_arr_1
+*gosub test_assert_equal 1 test_arr_count
+*gosub_scene cslib_array unshift "test_arr" "World"
+*gosub test_assert_equal "World" test_arr_1
+*gosub test_assert_equal "!" test_arr_2
+*gosub test_assert_equal 2 test_arr_count
+*gosub_scene cslib_array unshift "test_arr" "Hello"
+*gosub test_assert_equal "Hello" test_arr_1
+*gosub test_assert_equal "World" test_arr_2
+*gosub test_assert_equal "!" test_arr_3
+*gosub test_assert_equal 3 test_arr_count
+*gosub test_finish
+
+*gosub test_start "push"
+*gosub_scene cslib_array clean "test_arr"
+*gosub_scene cslib_array push "test_arr" "first item"
+*gosub_scene cslib_array push "test_arr" "second item"
+*gosub_scene cslib_array push "test_arr" "third item"
+*gosub test_assert_equal "first item" test_arr_1
+*gosub test_assert_equal "second item" test_arr_2
+*gosub test_assert_equal "third item" test_arr_3
+*gosub test_assert_equal 3 test_arr_count
+*gosub test_finish
+
+*gosub test_start "insert"
+*gosub_scene cslib_array set_all "test_arr" "5" 3
+*gosub test_assert_equal 3 test_arr_count
+
+*gosub_scene cslib_array insert "test_arr" "first item" 1
+*gosub test_assert_equal 4 test_arr_count
+*gosub_scene cslib_array insert "test_arr" "second item" 3
+*gosub test_assert_equal 5 test_arr_count
+*gosub_scene cslib_array insert "test_arr" "third item" 7
+*gosub test_assert_equal "first item" test_arr_1
+*gosub test_assert_equal "5" test_arr_2
+*gosub test_assert_equal "second item" test_arr_3
+*gosub test_assert_equal "5" test_arr_4
+*gosub test_assert_equal "5" test_arr_5
+*gosub test_assert_equal "" test_arr_6
+*gosub test_assert_equal "third item" test_arr_7
+*gosub test_assert_equal 7 test_arr_count
+*gosub test_finish
+
+
+*comment :::::: POP and REMOVE tests ::::::
+*gosub test_start "shift"
+*set test_arr_1 1
+*set test_arr_2 2
+*set test_arr_3 3
+*set test_arr_count 3
+*gosub_scene cslib_array shift "test_arr"
+*gosub test_assert_equal 1 cslib_ret
+*gosub test_assert_equal 2 test_arr_count
+*gosub_scene cslib_array shift "test_arr"
+*gosub test_assert_equal 2 cslib_ret
+*gosub test_assert_equal 1 test_arr_count
+*gosub_scene cslib_array shift "test_arr"
+*gosub test_assert_equal 3 cslib_ret
+*gosub test_assert_equal 0 test_arr_count
+*gosub test_finish
+
+*gosub test_start "pop"
+*set test_arr_1 "first item"
+*set test_arr_2 "second item"
+*set test_arr_3 "third item"
+*set test_arr_count 3
+*gosub_scene cslib_array pop "test_arr"
+*gosub test_assert_equal "third item" cslib_ret
+*gosub test_assert_equal 2 test_arr_count
+*gosub_scene cslib_array pop "test_arr"
+*gosub test_assert_equal "second item" cslib_ret
+*gosub test_assert_equal 1 test_arr_count
+*gosub_scene cslib_array pop "test_arr"
+*gosub test_assert_equal "first item" cslib_ret
+*gosub test_assert_equal 0 test_arr_count
+*gosub test_finish
+
+*gosub test_start "remove #1"
+*set test_arr_1 "first item"
+*set test_arr_2 "second item"
+*set test_arr_3 "third item"
+*set test_arr_4 "fourth item"
+*set test_arr_5 "fifth item"
+*set test_arr_count 5
+*gosub_scene cslib_array remove "test_arr" 3
+*gosub test_assert_equal "first item" test_arr_1
+*gosub test_assert_equal "second item" test_arr_2
+*gosub test_assert_equal "fourth item" test_arr_3
+*gosub test_assert_equal "fifth item" test_arr_4
+*gosub test_assert_equal 4 test_arr_count
+*gosub test_finish
+
+*gosub test_start "remove #2 (first item)"
+*set test_arr_1 "first item"
+*set test_arr_2 "second item"
+*set test_arr_3 "third item"
+*set test_arr_4 "fourth item"
+*set test_arr_5 "fifth item"
+*set test_arr_count 5
+*gosub_scene cslib_array remove "test_arr" 1
+*gosub test_assert_equal "second item" test_arr_1
+*gosub test_assert_equal "third item" test_arr_2
+*gosub test_assert_equal "fourth item" test_arr_3
+*gosub test_assert_equal "fifth item" test_arr_4
+*gosub test_assert_equal 4 test_arr_count
+*gosub test_finish
+
+*gosub test_start "remove #2 (single item)"
+*set test_arr_1 "first item"
+*set test_arr_count 1
+*gosub_scene cslib_array remove "test_arr" 1
+*gosub test_assert_equal 0 test_arr_count
+*gosub test_finish
+
+
+*comment :::::: FILTER tests ::::::
+
+*comment our comparison routine applied to each array element to
+*comment determine whether it should be included in the filtered result
+*goto _skip_filter_test_is_even
+*label _filter_test_is_even
+*params value index
+*set cslib_ret false
+*if ((value modulo 2) = 0)
+    *comment include even items
+    *set cslib_ret true
+*return
+*label _skip_filter_test_is_even
+
+*gosub test_start "filter by routine"
+*gosub_scene cslib_array set_all "test_arr" ""
+*gosub_scene cslib_array filter_by_routine "const_num" "test_arr" "test_array" "_filter_test_is_even"
+*gosub test_assert_equal 2 test_arr_1
+*gosub test_assert_equal 4 test_arr_2
+*gosub test_assert_equal 6 test_arr_3
+*gosub test_assert_equal 8 test_arr_4
+*gosub test_assert_equal 4 test_arr_count
+*gosub test_finish
+
+*gosub test_start "filter by routine (too small)"
+*gosub_scene cslib_array set_all "test_arr" ""
+*comment pretend test_arr is smaller:
+*temp test_arr_max_store test_arr_max
+*set test_arr_max 3
+*set cslib_catch_bug true
+*gosub_scene cslib_array filter_by_routine "const_num" "test_arr" "test_array" "_filter_test_is_even"
+*set cslib_catch_bug false
+*temp test_arr_max test_arr_max_store
+*gosub test_finish "Bug: cslib_array.filter_by_routine: Target array 'test_arr' of max size 3 is too small to hold all filtered values" cslib_bug_message 
+
+
+*comment :::::: END of tests ::::::
+*set cslib_ret "${tests_passed}|${test_count}"
+*return
+
+*comment :::::: UTILITY routines ::::::
+*label test_start
+*params p_test_name
+*temp test_result true
+*set test_count + 1
+*set {log_buffer} &"TEST ${p_test_name}: "
+*return
+
+*label test_assert_equal
+*params p_result_expected p_result_actual
+*gosub test_assert (p_result_expected = p_result_actual) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
+*return
+
+*label test_assert
+*params p_test_condition p_test_message
+*if not(p_test_condition)
+	*set test_result false
+	*set {log_buffer} &("[n/]"&(p_test_message&"[n/]"))
+*return
+
+*label test_finish
+*params
+*if (param_count = 2)
+	*gosub test_assert_equal param_1 param_2
+*set {log_buffer} &"@{test_result PASS|FAIL}[n/]"
+*if test_result
+	*set tests_passed + 1
+*return

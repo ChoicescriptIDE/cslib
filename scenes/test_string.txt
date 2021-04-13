@@ -139,7 +139,7 @@
 *gosub test_finish result_expected cslib_ret
 
 
-:::::: EXTRACT TOKENS tests ::::::
+*comment :::::: EXTRACT TOKENS tests ::::::
 *comment Extract 3 tokens into an array of 5.
 *gosub test_start "EXTRACT_TOKENS #1"
 *set str_buffer "VAL=TRUE|VAL=FALSE|VAL=TRUE"
