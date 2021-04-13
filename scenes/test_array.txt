@@ -238,8 +238,345 @@
 *set cslib_catch_bug true
 *gosub_scene cslib_array filter_by_routine "const_num" "test_arr" "test_array" "_filter_test_is_even"
 *set cslib_catch_bug false
-*temp test_arr_max test_arr_max_store
+*set test_arr_max test_arr_max_store
 *gosub test_finish "Bug: cslib_array.filter_by_routine: Target array 'test_arr' of max size 3 is too small to hold all filtered values" cslib_bug_message 
+
+*comment :::::: REVERSE tests ::::::
+*gosub test_start "reverse #1 (even)"
+*set test_arr_1 1
+*set test_arr_2 2
+*set test_arr_3 3
+*set test_arr_4 4
+*set test_arr_5 5
+*set test_arr_6 6
+*set test_arr_count 6
+*gosub_scene cslib_array reverse "test_arr"
+*gosub test_assert_equal 6 test_arr_1
+*gosub test_assert_equal 5 test_arr_2
+*gosub test_assert_equal 4 test_arr_3
+*gosub test_assert_equal 3 test_arr_4
+*gosub test_assert_equal 2 test_arr_5
+*gosub test_assert_equal 1 test_arr_6
+*gosub test_finish
+
+*gosub test_start "reverse #2 (odd)"
+*set test_arr_1 1
+*set test_arr_2 2
+*set test_arr_3 3
+*set test_arr_count 3
+*gosub_scene cslib_array reverse "test_arr"
+*gosub test_assert_equal 3 test_arr_1
+*gosub test_assert_equal 2 test_arr_2
+*gosub test_assert_equal 1 test_arr_3
+*gosub test_finish
+
+*gosub test_start "reverse #3 (single)"
+*set test_arr_1 1
+*set test_arr_count 1
+*gosub_scene cslib_array reverse "test_arr"
+*gosub test_assert_equal 1 test_arr_1
+*gosub test_finish
+
+*gosub test_start "reverse #4 (empty)"
+*set test_arr_1 1
+*set test_arr_count 0
+*gosub_scene cslib_array reverse "test_arr"
+*gosub test_finish 1 test_arr_1
+
+
+*comment :::::: TO_STRING tests ::::::
+*gosub test_start "join #1"
+*set test_arr_1 1
+*set test_arr_2 2
+*set test_arr_3 3
+*set test_arr_count 3
+*gosub_scene cslib_array join "test_arr"
+*gosub test_finish "123" cslib_ret
+
+*gosub test_start "join #2"
+*set test_arr_1 "Hello"
+*set test_arr_2 "World"
+*set test_arr_count 2
+*gosub_scene cslib_array join "test_arr" " "
+*gosub test_finish "Hello World" cslib_ret
+
+*gosub test_start "join #3 (empty)"
+*set test_arr_count 0
+*gosub_scene cslib_array join "test_arr" " "
+*gosub test_finish "" cslib_ret
+
+*gosub test_start "join #4 (single)"
+*set test_arr_1 "Vanilla"
+*set test_arr_count 1
+*gosub_scene cslib_array join "test_arr" "DONOTUSEME"
+*gosub test_finish "Vanilla" cslib_ret
+
+
+*comment :::::: FOR_EACH tests ::::::
+*gosub test_start "for_each #1"
+*set test_arr_1 "john"
+*set test_arr_2 "jane"
+*set test_arr_count 2
+*gosub_scene cslib_array for_each "test_arr" "test_array" "for_each_capitalize"
+*if (false)
+	*label for_each_capitalize
+	*params value index
+	*set cslib_ret "$!{value}"
+	*return
+*gosub test_assert_equal "John" test_arr_1
+*gosub test_assert_equal "Jane" test_arr_2
+*gosub test_finish
+
+*gosub test_start "for_each #1 (empty)"
+*set test_arr_count 0
+*comment basically just test this doesn't crash
+*gosub_scene cslib_array for_each "test_arr" "test_array" "for_each_capitalize"
+*gosub test_finish
+
+
+*comment :::::: TEST_ANY tests ::::::
+*gosub test_start "test_any #1 (fail)"
+*set test_arr_1 "-1"
+*set test_arr_2 "2"
+*set test_arr_3 "1"
+*set test_arr_4 "-4"
+*set test_arr_count 4
+*gosub_scene cslib_array test_any "test_arr" "test_array" "test_any_is_positive"
+*if (false)
+	*label test_any_is_positive
+	*params value index
+	*set cslib_ret (value >= 0)
+	*return
+*gosub test_finish false cslib_ret
+
+*gosub test_start "test_any #2 (pass)"
+*set test_arr_1 "1"
+*set test_arr_2 "2"
+*set test_arr_3 "3"
+*set test_arr_4 "4"
+*set test_arr_count 4
+*gosub_scene cslib_array test_any "test_arr" "test_array" "test_any_is_positive"
+*gosub test_finish true cslib_ret
+
+*gosub test_start "test_any #3 (empty)"
+*set test_arr_count 0
+*gosub_scene cslib_array test_any "test_arr" "test_array" "test_any_is_positive"
+*gosub test_finish true cslib_ret
+
+*gosub test_start "test_any #4 (complex, fail)"
+*set test_arr_1 "A"
+*set test_arr_2 "A"
+*set test_arr_3 "B"
+*set test_arr_4 "B"
+*set test_arr_5 "C"
+*set test_arr_6 "D"
+*set test_arr_count 6
+*gosub_scene cslib_array test_any "test_arr" "test_array" "is_ABC"
+*if (false)
+	*comment check every 2nd element is identical
+	*comment to the one before it
+	*label is_ABC
+	*params value index
+	*set cslib_ret false
+	*comment ignore odd lines
+	*if (value = "A") or ((value = "B") or (value = "C"))
+		*set cslib_ret true
+	*return
+*gosub test_finish false cslib_ret
+
+*gosub test_start "test_any #4 (complex, pass)"
+*set test_arr_1 "A"
+*set test_arr_2 "A"
+*set test_arr_3 "B"
+*set test_arr_4 "B"
+*set test_arr_5 "C"
+*set test_arr_6 "C"
+*set test_arr_count 6
+*gosub_scene cslib_array test_any "test_arr" "test_array" "is_ABC"
+*gosub test_finish true cslib_ret
+
+*comment :::::: TEST_SOME tests ::::::
+*gosub test_start "test_some #1 (fail)"
+*set test_arr_1 "lost"
+*set test_arr_2 "lost"
+*set test_arr_3 "lost"
+*set test_arr_4 "lost"
+*set test_arr_count 4
+*gosub_scene cslib_array test_some "test_arr" "test_array" "test_some_won_match"
+*if (false)
+	*label test_some_won_match
+	*params match_result index
+	*set cslib_ret false
+	*if (match_result = "won")
+		*set cslib_ret true
+	*return
+*gosub test_finish false cslib_ret
+
+*gosub test_start "test_some #2 (success)"
+*set test_arr_1 "lost"
+*set test_arr_2 "won"
+*set test_arr_3 "lost"
+*set test_arr_4 "won"
+*set test_arr_count 4
+*gosub_scene cslib_array test_some "test_arr" "test_array" "test_some_won_match"
+*gosub test_assert_equal true cslib_ret
+*comment we're still a winner if we shrink the array
+*set test_arr_count 3
+*gosub_scene cslib_array test_some "test_arr" "test_array" "test_some_won_match"
+*gosub test_assert_equal true cslib_ret
+*gosub test_finish
+
+*gosub test_start "test_some #3 (empty)"
+*set test_arr_count 0
+*gosub_scene cslib_array test_some "test_arr" "test_array" "test_some_won_match"
+*gosub test_finish false cslib_ret
+
+*gosub test_start "test_some #4 (complex, fail)"
+*set test_arr_1 "museum"
+*set test_arr_2 "palindrome"
+*set test_arr_3 "loop"
+*set test_arr_4 "software"
+*set test_arr_5 "holiday"
+*comment civic, radar, level, rotor, kayak
+*set test_arr_count 5
+*gosub_scene cslib_array test_some "test_arr" "test_array" "is_palindrome"
+*if (false)
+	*comment check if a word spells itself backwards
+	*label is_palindrome
+	*params value index
+	*set cslib_ret true
+	*temp s_index 1
+	*temp e_index length(value)
+	*label is_palindrome_loop
+	*if (s_index < e_index)
+		*if not((value#s_index) = (value#e_index))
+			*set cslib_ret false
+		*set s_index + 1
+		*set e_index - 1
+		*goto is_palindrome_loop
+	*return
+*gosub test_finish false cslib_ret
+
+*gosub test_start "test_some #4 (complex, true)"
+*set test_arr_1 "museum"
+*set test_arr_2 "civic"
+*set test_arr_3 "loop"
+*set test_arr_4 "software"
+*set test_arr_5 "radar"
+*comment civic, radar, level, rotor, kayak
+*set test_arr_count 5
+*gosub_scene cslib_array test_some "test_arr" "test_array" "is_palindrome"
+*gosub test_assert_equal true cslib_ret
+*set test_arr_count 3
+*gosub_scene cslib_array test_some "test_arr" "test_array" "is_palindrome"
+*gosub test_assert_equal true cslib_ret
+*gosub test_finish
+
+
+*comment :::::: SET tests ::::::
+*gosub test_start "set #1"
+*gosub_scene cslib_array set "test_arr" "civic" "loop" "software" "radar"
+*gosub test_assert_equal "civic" test_arr_1
+*gosub test_assert_equal "loop" test_arr_2
+*gosub test_assert_equal "software" test_arr_3
+*gosub test_assert_equal "radar" test_arr_4
+*gosub test_assert_equal 4 test_arr_count
+*gosub test_assert_equal 4 cslib_ret
+*gosub test_finish
+
+*gosub test_start "set #2"
+*gosub_scene cslib_array set "test_arr" ""
+*gosub test_assert_equal "" test_arr_1
+*gosub test_assert_equal 1 test_arr_count
+*gosub test_assert_equal 1 cslib_ret
+*gosub test_finish
+
+*gosub test_start "set #3 (fail, size)"
+*temp result_expected ""
+*set cslib_catch_bug true
+*gosub_scene cslib_array set "test_arr" 1 2 3 4 5 6 7 8 9 10
+*set cslib_catch_bug false
+*gosub test_finish "Bug: cslib_array.set: Array 'test_arr' (_max of 9) does not have enough space for 10 values from position 1" cslib_bug_message
+
+*comment :::::: SET FROM tests ::::::
+*gosub test_start "set_from #1"
+*set test_arr_1 "museum"
+*set test_arr_2 "civic"
+*set test_arr_3 "loop"
+*set test_arr_4 "software"
+*set test_arr_count 4
+*gosub_scene cslib_array set_from "test_arr" 3 "" ""
+*gosub test_assert_equal "museum" test_arr_1
+*gosub test_assert_equal "civic" test_arr_2
+*gosub test_assert_equal "" test_arr_3
+*gosub test_assert_equal "" test_arr_4
+*gosub test_assert_equal 4 test_arr_count
+*gosub test_assert_equal 4 cslib_ret
+*gosub test_finish
+
+*gosub test_start "set_from #2"
+*set test_arr_1 "museum"
+*set test_arr_2 "civic"
+*set test_arr_3 "loop"
+*set test_arr_4 ""
+*set test_arr_count 3
+*gosub_scene cslib_array set_from "test_arr" 4 "" ""
+*gosub test_assert_equal "museum" test_arr_1
+*gosub test_assert_equal "civic" test_arr_2
+*gosub test_assert_equal "loop" test_arr_3
+*gosub test_assert_equal "" test_arr_4
+*gosub test_assert_equal "" test_arr_5
+*gosub test_assert_equal 5 test_arr_count
+*gosub test_assert_equal 5 cslib_ret
+*gosub test_finish
+
+*gosub test_start "set_from #3"
+*set test_arr_1 "museum"
+*set test_arr_2 ""
+*set test_arr_3 ""
+*set test_arr_4 ""
+*set test_arr_count 1
+*gosub_scene cslib_array set_from "test_arr" 2 "loop" "civic" "software"
+*gosub test_assert_equal "museum" test_arr_1
+*gosub test_assert_equal "loop" test_arr_2
+*gosub test_assert_equal "civic" test_arr_3
+*gosub test_assert_equal "software" test_arr_4
+*gosub test_assert_equal 4 test_arr_count
+*gosub test_assert_equal 4 cslib_ret
+*gosub test_finish
+
+*gosub test_start "set_from #4"
+*set test_arr_1 "Apple"
+*set test_arr_2 ""
+*set test_arr_3 ""
+*set test_arr_4 ""
+*set test_arr_count 4
+*gosub_scene cslib_array set_from "test_arr" 1 "Snacks"
+*gosub test_assert_equal "Snacks" test_arr_1
+*gosub test_assert_equal "" test_arr_2
+*gosub test_assert_equal "" test_arr_3
+*gosub test_assert_equal "" test_arr_4
+*gosub test_assert_equal 1 test_arr_count
+*gosub test_assert_equal 1 cslib_ret
+*gosub test_finish
+
+*gosub test_start "set_from #5 (fail, size)"
+*set test_arr_1 "museum"
+*set test_arr_2 "trade"
+*set test_arr_3 ""
+*set test_arr_4 ""
+*set test_arr_count 4
+*set cslib_catch_bug true
+*gosub_scene cslib_array set_from "test_arr" 3 "loop" "civic" "software"
+*set cslib_catch_bug false
+*gosub test_assert_equal "museum" test_arr_1
+*gosub test_assert_equal "trade" test_arr_2
+*gosub test_assert_equal "loop" test_arr_3
+*gosub test_assert_equal "civic" test_arr_4
+*gosub test_assert_equal "software" test_arr_5
+*gosub test_assert_equal 5 test_arr_count
+*gosub test_assert_equal 5 cslib_ret
+*gosub test_finish "Bug: cslib_array.set: Array 'test_arr' (_max of ${test_arr_max}) does not have enough space for 10 values from position 1" cslib_bug_message
 
 
 *comment :::::: END of tests ::::::
