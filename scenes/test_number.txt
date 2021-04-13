@@ -65,7 +65,6 @@
 *gosub_scene cslib_number are_numbers "12345" "onetwothree"
 *gosub test_finish result_expected cslib_ret
 
-
 *set cslib_ret "${tests_passed}|${test_count}"
 *return
 
