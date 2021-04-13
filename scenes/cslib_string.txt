@@ -332,25 +332,20 @@
 *comment 			(number): the number of tokens in the string.
 *label extract_tokens
 *params p_source p_separator p_array
-
 *if p_separator = ""
 	*bug cslib_string.extract_tokens: Separator should not be empty in extract_tokens.
 *if length(p_separator) > 1
 	*bug cslib_string.extract_tokens: Separator should be a single char in extract_tokens, not: '${p_separator}'.
-
 *temp source_len length(p_source)
 *temp array_max {p_array & "_max"}
 *set {p_array & "_count"} 0
-
 *if source_len = 0
 	*set cslib_ret 0
 	*return
-
 *temp source_idx 1
 *temp array_idx 1
 *temp target (p_array & "_") & array_idx
 *set {target} ""
-
 *label _source_loop
 *temp next_char p_source#source_idx
 *if next_char = p_separator
@@ -362,10 +357,8 @@
 	*if array_idx <= array_max
 		*set {target} &next_char
 		*set {p_array & "_count"} array_idx
-
 *set source_idx +1
 *if source_idx <= source_len
 	*goto _source_loop
-
 *set cslib_ret array_idx
 *return
