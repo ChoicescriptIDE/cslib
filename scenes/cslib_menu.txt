@@ -110,7 +110,7 @@
 	*bug cslib_menu._init_state: const_items_per_page cannot be greater than 10
 *comment the text displayed on the cancel/return button
 *temp const_cancel_text "[return]"
-*temp arr_count {{prefix&"count"}}
+*temp arr_count {prefix&"count"}
 *temp page_count "@{(arr_count <= const_items_per_page) 1|${(arr_count / const_items_per_page)}}"
 *if ((page_count modulo 1) > 0)
 	*set page_count ((page_count - (page_count modulo 1)) + 1)

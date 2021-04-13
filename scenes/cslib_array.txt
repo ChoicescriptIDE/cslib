@@ -155,7 +155,7 @@
 *comment        p_value(any): the value to be added to the end of the array
 *label push
 *params p_array_ref p_value
-*gosub insert p_array_ref p_value ({{p_array_ref&"_count"}} + 1)
+*gosub insert p_array_ref p_value ({p_array_ref&"_count"} + 1)
 *return
 
 
@@ -215,7 +215,7 @@
 *comment        (any): the value removed from the array
 *label pop
 *params p_array_ref
-*gosub remove p_array_ref {{p_array_ref&"_count"}}
+*gosub remove p_array_ref {p_array_ref&"_count"}
 *return
 
 
