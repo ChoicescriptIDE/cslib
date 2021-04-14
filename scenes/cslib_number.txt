@@ -1,3 +1,5 @@
+*bug "cslib_number is a cslib module and must not be accessed directly"
+
 *comment IS_NUMBER
 *comment ------------------------------
 *comment Determines if a given string is a number.
