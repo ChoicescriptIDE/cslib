@@ -13,7 +13,6 @@
 *comment MODULE TEST REGISTRATION
 *create module_count 8
 *create module_0 ""
-*create module_log_0 ""
 *create module_1 "test_framework"
 *create module_log_1 ""
 *create module_2 "string"
@@ -106,7 +105,7 @@
 	*gosub_scene _test_entry test_all_modules
 	*if (total_tests_passed < total_tests_run)
 		*comment print all module logs
-		*gosub_scene cslib_loop repeat "_test_display_templates" "display_log" module_count
+		*gosub_scene cslib_array for_each "module" "_test_display_templates" "display_log"
 		*comment force everything to print before we fail
 		*page_break
 		*comment force quicktest + randomtest to fail

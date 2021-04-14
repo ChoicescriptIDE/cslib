@@ -31,8 +31,9 @@
 
 *label test_module
 *params p_module_id
-*set {"module_log_"&p_module_id} ""
-*gosub_scene _test_framework test_module p_module_id ("module_log_"&p_module_id)
+*temp log "module_log_"&p_module_id
+*set {log} ""
+*gosub_scene _test_framework test_module p_module_id log
 *temp test_data cslib_ret
 *gosub_scene cslib_string index test_data "|"
 *temp index cslib_ret
@@ -61,7 +62,14 @@ Results have been logged.
 *label view_logs
 *label log_selection
 [b]Viewing test logs[/b]
-*gosub_scene cslib_menu build_array_filter "module" true "log" "NOT_MATCH" ""
+*gosub_scene cslib_menu build_array_filter "module" true "_test_entry" "is_empty"
+*if (false)
+	*label is_empty
+	*params value index
+	*set cslib_ret true
+	*if (length(module_log[index]) <= 0)
+		*set cslib_ret false
+	*return
 *if cslib_ret = 0
 	*goto main
 *else
