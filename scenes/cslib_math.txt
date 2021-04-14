@@ -1,3 +1,5 @@
+*bug "cslib_math is a cslib module and must not be accessed directly"
+
 *comment PI
 *comment ------------------------------
 *comment Returns an approximation of the constant PI.
