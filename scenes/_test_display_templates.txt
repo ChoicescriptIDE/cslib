@@ -20,6 +20,6 @@ Pass rate: ${pass_rate}%
 *params p_log_id
 [b]Test Report for cslib_${module[p_log_id]}[/b]
 
-${module_log[param_1]}
+${module_log[p_log_id]}
 *line_break
 *return
