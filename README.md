@@ -79,6 +79,7 @@ The highest stat is "strength"! Amazing!
 |  cslib_menu  | Routines to generate menus and choices. |  1.0.0  |           |                                                            |
 |  cslib_loop  |   Repeat the execution of a routine.    |  1.0.0  |            |                           repeat                           |
 |  cslib_array  |  Various array manipulation.  |  1.0.0  |    |  filter, clone, clean, push, pop, etc.  |
+|  cslib_math   | Math functions, including trigonometric and hyperbolic. | 1.0.0 | sin, cos, sinh, cosh, pi |
 
 ### Contributing
 
