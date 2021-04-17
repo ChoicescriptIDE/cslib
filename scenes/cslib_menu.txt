@@ -38,7 +38,39 @@
 *comment		(number): a positive number indicating the selected option (or 0, if cancel is selected)
 *label build_array
 *params p_prefix p_cancel
-*gosub _build_array_common p_prefix p_cancel "" "" ""
+*gosub _build_array_common p_prefix p_cancel "" ""
+*gosub _render_choice
+*return
+
+
+*comment BUILD_ARRAY_FILTER
+*comment ------------------------------
+*comment Renders a choice menu from a given array,
+*comment but filters the options based on a given
+*comment condition routine.
+*comment
+*comment The given condition routine should expect
+*comment to be passed two parameters:
+*comment - The element value
+*comment - The element's source array index
+*comment
+*comment And should return a boolean (true = include in the menu).
+*comment E.g.:
+*comment    *label is_blank
+*comment    *params value index
+*comment    *set cslib_ret true
+*comment    *if (value = "")
+*comment        *set cslib_ret false
+*comment    *return
+*comment ------------------------------
+*comment 	params:
+*comment		p_prefix(string): the array name/reference (prefix)
+*comment		p_cancel(boolean): include a 'cancel' option
+*comment		p_scene(string): the name of the scene containing the condition routine
+*comment		p_label(string): the name of the label denoting the start of the routine
+*label build_array_filter
+*params p_prefix p_cancel p_scene p_label
+*gosub _build_array_common p_prefix p_cancel p_scene p_label
 *gosub _render_choice
 *return
 
@@ -85,17 +117,23 @@
 *comment ::: INTERNAL FUNCTIONS BELOW (DO NOT CALL DIRECTLY!) :::
 *label _build_simple_common
 *temp prefix "param_"
+*temp t_scene ""
+*temp t_label ""
 *gosub _init_state
 *gosub _populate_page
 *return
 
 
 *label _build_array_common
-*params p_prefix p_cancel
+*params p_prefix p_cancel p_scene p_label
+*temp t_scene p_scene
+*temp t_label p_label
 *temp prefix p_prefix&"_"
 *gosub _init_state
 *temp allow_cancel p_cancel
 *gosub _populate_page
+*if cslib_ret = "catch"
+	*return
 *return
 
 
@@ -111,10 +149,16 @@
 *comment the text displayed on the cancel/return button
 *temp const_cancel_text "[return]"
 *temp arr_count {prefix&"count"}
+*if (t_scene != "")
+	*gosub _count
+	*temp store arr_count
+	*set arr_count cslib_ret
 *temp page_count "@{(arr_count <= const_items_per_page) 1|${(arr_count / const_items_per_page)}}"
 *if ((page_count modulo 1) > 0)
 	*set page_count ((page_count - (page_count modulo 1)) + 1)
 *temp cur_page 1
+*if (t_scene != "")
+	*set arr_count store
 *return
 
 *label _populate_page
@@ -122,23 +166,35 @@
 *temp page_item_count 0
 *temp slot 1
 *gosub _init_option_vars
+*temp offset (slot+(const_items_per_page * (cur_page -1)))
+*if (t_scene != "")
+	*temp ignore (offset - 1)
+	*set offset 1
 *label _populate_page_loop
 *if (slot <= const_items_per_page)
-	*comment special handling for simple menus
-	*temp offset slot+(const_items_per_page * (cur_page -1))
 	*set option_guard[slot] (arr_count >= offset) and (const_items_per_page >= slot)
 	*if (option_guard[slot])
+		*if (t_scene != "")
+			*gosub_scene {t_scene} {t_label} {prefix&offset} offset
+			*if not(cslib_ret)
+				*set offset + 1
+				*goto _populate_page_loop
+			*elseif (ignore > 0)
+				*set ignore - 1
+				*set offset + 1
+				*goto _populate_page_loop
 		*set page_item_count + 1
 		*set option_text[slot] {prefix&offset}
 		*set option_ret_val[slot] offset
+	*set offset + 1
 	*set slot + 1
 	*goto _populate_page_loop
-*comment catch 'no selectable options' errors
-*if (page_item_count = 0) and not(allow_cancel)
-	*bug cslib_menu._populate_page: menu construction failed as there were 0 matching items — consider allowing cancellation
 *return
 
 *label _render_choice
+*comment catch 'no selectable options' errors
+*if (page_item_count = 0) and not(allow_cancel)
+	*bug cslib_menu._populate_page: menu construction failed as there were 0 matching items — consider allowing cancellation
 *comment render the choice to the screen
 *fake_choice
 	*if (page_count > 1)
@@ -247,4 +303,17 @@
 *temp option_ret_val_8 0
 *temp option_ret_val_9 0
 *temp option_ret_val_10 0
+*return
+
+*label _count
+*temp i 1
+*temp count 0
+*label _count_loop
+*if (i <= arr_count)
+	*gosub_scene {t_scene} {t_label} {prefix&i} i
+	*if (cslib_ret)
+		*set count + 1
+	*set i + 1
+	*goto _count_loop
+*set cslib_ret count
 *return

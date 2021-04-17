@@ -119,7 +119,7 @@
 *gosub test_assert_equal "[return]" cslib_choice_7
 *gosub test_finish
 
-*gosub test_start "array - filter"
+*gosub test_start "array - cslib_array filter"
 *set cslib_choice_select "2,2,3"
 *set test_arr_1 "Badger"
 *set test_arr_2 ""
@@ -153,6 +153,60 @@
 *gosub test_assert_equal "Fish" cslib_choice_6
 *gosub test_assert_equal "Monkey" cslib_choice_7
 *gosub test_finish
+
+*comment :::::: ARRAY FILTER tests ::::::
+*gosub test_start "build_array_filter #1"
+*set test_arr_1 "Badger"
+*set test_arr_2 ""
+*set test_arr_3 "Dog"
+*set test_arr_4 ""
+*set test_arr_5 "Cat"
+*set test_arr_6 "Fish"
+*set test_arr_7 "Monkey"
+*set test_arr_8 ""
+*set test_arr_9 "Toad"
+*set test_arr_count 9
+*set cslib_choice_select "2,2,4"
+*comment P1: Page (1 / 2), next —>, Badger, Dog, Cat, Fish, Monkey
+*gosub_scene cslib_menu build_array_filter "test_arr" false "test_menu" "_filter_is_not_empty"
+*gosub test_assert_equal 7 cslib_choice_count
+*gosub test_assert_equal 3 cslib_ret
+*gosub test_assert_equal "Page (1 / 2)" cslib_choice_1
+*gosub test_assert_equal "[i]Next -->[/i]" cslib_choice_2
+*gosub test_assert_equal "Badger" cslib_choice_3
+*gosub test_assert_equal "Dog" cslib_choice_4
+*gosub test_assert_equal "Cat" cslib_choice_5
+*gosub test_assert_equal "Fish" cslib_choice_6
+*gosub test_assert_equal "Monkey" cslib_choice_7
+*gosub test_finish
+
+*gosub test_start "build_array_filter #2"
+*set cslib_choice_select "2,3"
+*comment P2: Page (2 / 2), <— previous, Toad
+*gosub_scene cslib_menu build_array_filter "test_arr" false "test_menu" "_filter_is_not_empty"
+*gosub test_assert_equal 3 cslib_choice_count
+*gosub test_assert_equal 9 cslib_ret
+*gosub test_assert_equal "Page (2 / 2)" cslib_choice_1
+*gosub test_assert_equal "[i]<-- Previous[/i]" cslib_choice_2
+*gosub test_assert_equal "Toad" cslib_choice_3
+*gosub test_finish
+
+*gosub test_start "build_array_filter #3 (empty, return)"
+*set test_arr_count 0
+*set cslib_choice_select "1"
+*gosub_scene cslib_menu build_array_filter "test_arr" true "test_menu" "_filter_is_not_empty"
+*gosub test_assert_equal "[return]" cslib_choice_1
+*gosub test_assert_equal 1 cslib_choice_count
+*gosub test_finish
+
+*gosub test_start "build_array_filter #4 (fail, no items)"
+*set test_arr_count 0
+*set cslib_catch_bug true
+*gosub_scene cslib_menu build_array_filter "test_arr" false "test_menu" "_filter_is_not_empty"
+*set cslib_catch_bug false
+*gosub test_assert_equal "Bug: cslib_menu._populate_page: menu construction failed as there were 0 matching items — consider allowing cancellation" cslib_bug_message
+*gosub test_finish
+
 
 *comment re-enable UI driven choices
 *set cslib_catch_choice false
