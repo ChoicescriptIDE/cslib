@@ -50,14 +50,15 @@
 *comment condition routine.
 *comment
 *comment The given condition routine should expect
-*comment to be passed two parameters:
+*comment to be passed three parameters:
 *comment - The element value
 *comment - The element's source array index
+*comment - The name of the source array
 *comment
 *comment And should return a boolean (true = include in the menu).
 *comment E.g.:
 *comment    *label is_blank
-*comment    *params value index
+*comment    *params value index array_ref
 *comment    *set cslib_ret true
 *comment    *if (value = "")
 *comment        *set cslib_ret false

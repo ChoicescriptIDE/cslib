@@ -8,14 +8,15 @@
 *comment which will be applied to each element.
 *comment
 *comment The given condition routine should expect
-*comment to be passed two parameters:
+*comment to be passed three parameters:
 *comment - The element value
 *comment - The element's source array index
+*comment - The name of the source array
 *comment
 *comment And should return a boolean (true = include in the new array).
 *comment E.g.:
 *comment    *label is_short_string
-*comment    *params value index
+*comment    *params value index array_ref
 *comment    *set cslib_ret false
 *comment    *if (length(value) < 10)
 *comment        *set cslib_ret true
@@ -44,7 +45,7 @@
     *if (src_index > tar_max)
         *bug cslib_array.filter_by_routine: Target array '${p_array_ref_tar}' of max size ${tar_max} is too small to hold all filtered values
     *comment pass current element to filter function
-    *gosub_scene {p_scene} {p_label} {p_array_ref_src&"_${src_index}"} src_index
+    *gosub_scene {p_scene} {p_label} {p_array_ref_src&"_${src_index}"} src_index p_array_ref_src
     *temp filter_result cslib_ret
     *if (filter_result)
         *comment only copy to tar_array on a true result
@@ -365,14 +366,15 @@
 *comment element in the array.
 *comment
 *comment The given routine should expect
-*comment to be passed two parameters:
+*comment to be passed three parameters:
 *comment - The element value
 *comment - The element's source array index
+*comment - The name of the source array
 *comment
 *comment And should return a new value for the element.
 *comment E.g.:
 *comment    *label capitalize_str
-*comment    *params value index
+*comment    *params value index array_ref
 *comment    *set cslib_ret "$!!{value}"
 *comment    *return
 *comment ------------------------------
@@ -388,7 +390,7 @@
 *temp n 1
 *label _for_each_loop
 *if (n <= count)
-    *gosub_scene {p_scene} {p_label} {array_&n} n
+    *gosub_scene {p_scene} {p_label} {array_&n} n p_array_ref
     *set {array_&n} cslib_ret
     *set n + 1
     *goto _for_each_loop
@@ -402,14 +404,15 @@
 *comment denoting whether or not ALL elements met it.
 *comment
 *comment The given routine should expect
-*comment to be passed two parameters:
+*comment to be passed three parameters:
 *comment - The element value
 *comment - The element's source array index
+*comment - The name of the source array
 *comment
 *comment And should return a boolean (true = condition met).
 *comment E.g.:
 *comment    *label is_short_string
-*comment    *params value index
+*comment    *params value index array_ref
 *comment    *set cslib_ret false
 *comment    *if (length(value) < 10)
 *comment        *set cslib_ret true
@@ -444,14 +447,15 @@
 *comment denoting whether or not ANY elements met it.
 *comment
 *comment The given routine should expect
-*comment to be passed two parameters:
+*comment to be passed three parameters:
 *comment - The element value
 *comment - The element's source array index
+*comment - The name of the source array
 *comment
 *comment And should return a boolean (true = condition met).
 *comment E.g.:
 *comment    *label is_short_string
-*comment    *params value index
+*comment    *params value index array_ref
 *comment    *set cslib_ret false
 *comment    *if (length(value) < 10)
 *comment        *set cslib_ret true
