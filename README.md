@@ -1,6 +1,6 @@
 <h1><img src="./res/logo/cslib_logo%20flat.png" alt="C.S.Lib logo" width="43" align="left"/> ChoiceScript Library</h1>
 
-![Release](https://img.shields.io/github/release/ChoicescriptIDE/cslib) ![GitHub](https://img.shields.io/github/license/ChoicescriptIDE/cslib) ![GitHub all releases](https://img.shields.io/github/downloads/ChoicescriptIDE/cslib/total) ![Discourse topics](https://img.shields.io/discourse/topics?server=https%3A%2F%2Fforum.choiceofgames.com%2F) 
+![Release](https://img.shields.io/github/release/ChoicescriptIDE/cslib) ![GitHub](https://img.shields.io/github/license/ChoicescriptIDE/cslib) ![GitHub all releases](https://img.shields.io/github/downloads/ChoicescriptIDE/cslib/total) ![Discourse topics](https://img.shields.io/discourse/topics?server=https%3A%2F%2Fforum.choiceofgames.com%2F)
 [![test](https://github.com/ChoicescriptIDE/cslib/actions/workflows/test.yml/badge.svg)](https://github.com/ChoicescriptIDE/cslib/actions/workflows/test.yml)
 
 The ChoiceScript Library (cslib) is a collection of common, re-usable routines (i.e. functions) for use in development of ChoiceScript games. It's an attempt to extend ChoiceScript's core functionalities using vanilla ChoiceScript only.
@@ -28,7 +28,7 @@ __startup.txt__
 
 You can now call any of the public routines described in the files. :muscle:
 
-(Private routines are meant for internal use of the module itself. The name of every private routine starts with an underscore.) 
+(Private routines are meant for internal use of the module itself. The name of every private routine starts with an underscore.)
 
 Routines that need to return a value will always do so (unless otherwise specified) through the dedicated global variable: `cslib_ret`. So make sure to capture its value into another variable!
 
@@ -36,13 +36,13 @@ Note that some routines will need you to create more global variables, or follow
 
 Also, remember that ChoiceScript is by nature not performant, which is fine, given its primary purpose. This library aims to extend ChoiceScript's core functionality, but don't go too crazy with it. Okay? :sweat_smile:
 
-Credits are not mandatory but very much appreciated. :pray: You can mention the name of the `CSLIB` project and include a link to this repository. 
+Credits are not mandatory but very much appreciated. :pray: You can mention the name of the `CSLIB` project and include a link to this repository.
 
 
 ## Examples:
 ### Lowercase
 
-It is very common that mobile keyboards automatically enable uppercase for the first letter of a text input. So you asked your reader to insert a colour for the character's eyes and now, every time, it comes up like this? 
+It is very common that mobile keyboards automatically enable uppercase for the first letter of a text input. So you asked your reader to insert a colour for the character's eyes and now, every time, it comes up like this?
 
 > He looks into your sweet *Brown* eyes…
 
@@ -65,21 +65,21 @@ Very often authors need to check which of the stats is the highest one, whether 
 
 *label flavour_text_strength
 
-The highest stat is "strength"! Amazing! 
+The highest stat is "strength"! Amazing!
 ```
 
 ### Modules
 
 `cslib` is divided into modules and each module might depend on routines present on the other ones. So when including the modules in your game, make sure to include their dependencies as well.
 
-|    Module    |               Description               | Version | Depends on |                          Routines                          |
-|:------------:|:---------------------------------------:|:-------:|:----------:|:----------------------------------------------------------:|
-| cslib_string | Routines to manipulate text (strings).  |  1.0.0  |            | concat, lowercase, substring, find, replace, reverse, etc. |
-| cslib_number |     Routines to manipulate numbers.     |  1.0.0  |            |                    mean, max_stat, max, min, etc.                    |
-|  cslib_menu  | Routines to generate menus and choices. |  1.0.0  |           |                                                            |
-|  cslib_loop  |   Repeat the execution of a routine.    |  1.0.0  |            |                           repeat                           |
-|  cslib_array  |  Various array manipulation.  |  1.0.0  |    |  filter, clone, clean, push, pop, etc.  |
-|  cslib_math   | Math functions, including trigonometric and hyperbolic. | 1.0.0 | sin, cos, sinh, cosh, pi |
+|    Module    |               Description                               | Version       | Depends on  |                          Routines                          |
+|:------------:|:-------------------------------------------------------:|:-------------:|:-----------:|:----------------------------------------------------------:|
+| cslib_string | Routines to manipulate text (strings).                  |  1.0.0        |             | concat, lowercase, substring, find, replace, reverse, etc. |
+| cslib_number | Routines to manipulate numbers.                         |  1.0.0        |             | mean, max_stat, max, min, etc.                             |
+| cslib_menu   | Routines to generate menus and choices.                 |  1.0.0        |             |                                                            |
+| cslib_loop   | Repeat the execution of a routine.                      |  1.0.0        |             | repeat                                                     |
+| cslib_array  | Various array manipulation.                             |  1.0.0        |             | filter, clone, clean, push, pop, etc.                      |
+| cslib_math   | Math functions, including trigonometric and hyperbolic. |  1.0.0        |             | sin, cos, sinh, cosh, pi                                   |
 
 ### Contributing
 
