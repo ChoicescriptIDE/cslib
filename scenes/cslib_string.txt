@@ -47,7 +47,8 @@
 *label concat
 *params p_concat_sep
 *comment param2+ strings to concatenate
-*gosub_scene cslib_assert custom (param_count > 2) "cslib.string.concat: expected at least three arguments (seperator, string, string, ...)"
+*if (param_count < 3)
+	*bug cslib.string.concat: expected at least three arguments (seperator, string, string, ...)
 *temp concat_param_num 2
 *temp concat_result ""
 *label _concat_loop
@@ -103,11 +104,14 @@
 *comment		(string): the portion of the string between p_s_index and p_e_index (inclusive)
 *label substring
 *params p_str p_s_index p_e_index
-*gosub_scene cslib_assert custom (p_str != "") "cslib.string.substring: string must not be empty"
-*gosub_scene cslib_assert custom (p_s_index > 0) "cslib.string.substring: start index (${p_s_index}) can not be less than 1"
-*gosub_scene cslib_assert custom not(p_s_index > p_e_index) "cslib.string.substring: start index (${p_s_index}) should be less than or equal to end index (${p_e_index})"
-*gosub_scene cslib_assert custom (p_e_index <= length(p_str)) "cslib.string.substring: end index (${p_e_index}) can not be greater than the length of string (${length(p_str)})"
-*comment TODO: CAN WE ASSERT PARAMETER TYPES?
+*if (p_str = "")
+	*bug cslib.string.substring: p_str must not be empty
+*if (p_s_index < 1)
+	*bug cslib.string.substring: start index (${p_s_index}) can not be less than 1
+*if (p_s_index > p_e_index)
+	*bug cslib.string.substring: start index (${p_s_index}) should be less than or equal to end index (${p_e_index})
+*if (p_e_index > length(p_str))
+	*bug cslib.string.substring: end index (${p_e_index}) can not be greater than the length of string (${length(p_str)})
 *temp substring_char p_s_index
 *temp substring_result ""
 *label _substring_loop

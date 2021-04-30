@@ -35,7 +35,8 @@
 
 *label repeat
 *params target_scene target_label count
-*gosub_scene cslib_assert greater_or_equal_to param_count 3
+*if (param_count < 3)
+	*bug cslib.loop.repeat: expected three parameters (target_scene, target_label, count)
 *temp n 1
 *label _repeat_loop
 *if (n <= count)
