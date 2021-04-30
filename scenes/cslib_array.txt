@@ -132,7 +132,7 @@
 *comment SET_FROM
 *comment ------------------------------
 *comment Sets an array's elements sequentially from a given
-*comment list set of arguments, and a given start index in
+*comment list set of parameters, and a given start index in
 *comment the array.
 *comment ------------------------------
 *comment    params:
@@ -150,8 +150,8 @@
 *comment SET
 *comment ------------------------------
 *comment Sets an array's elements sequentially from a given
-*comment list set of arguments. The array's _count value
-*comment will be updated to match the number of arguments.
+*comment list set of parameters. The array's _count value
+*comment will be updated to match the number of parameters.
 *comment ------------------------------
 *comment    params:
 *comment        p_array_ref(string): the name of the array

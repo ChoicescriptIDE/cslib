@@ -48,7 +48,7 @@
 *params p_concat_sep
 *comment param2+ strings to concatenate
 *if (param_count < 3)
-	*bug cslib.string.concat: expected at least three arguments (seperator, string, string, ...)
+	*bug cslib.string.concat: expected at least three parameters (seperator, string, string, ...)
 *temp concat_param_num 2
 *temp concat_result ""
 *label _concat_loop
