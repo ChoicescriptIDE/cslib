@@ -132,14 +132,14 @@
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]
 *temp n 2
-*label max_stat_loop
+*label _max_stat_loop
 *if (n > param_count)
 	*set cslib_ret current
 	*return
 *if ({param[n]} > {current})
 	*set current param[n]
 *set n + 1
-*goto max_stat_loop
+*goto _max_stat_loop
 
 
 *comment MIN_STAT
@@ -155,14 +155,14 @@
 *gosub_scene cslib_assert greater_or_equal_to param_count 2
 *temp current param[1]
 *temp n 2
-*label min_stat_loop
+*label _min_stat_loop
 *if (n > param_count)
 	*set cslib_ret current
 	*return
 *if ({param[n]} < {current})
 	*set current param[n]
 *set n + 1
-*goto min_stat_loop
+*goto _min_stat_loop
 
 
 *label _char_is_number
