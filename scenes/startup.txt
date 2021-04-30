@@ -7,11 +7,9 @@
 *comment CSLIB_VARS / CONFIGURATION
 *comment ----------------------------------
 *create cslib_ret 0
-*comment captures ...
-*create cslib_assert true
 
 *comment MODULE TEST REGISTRATION
-*create module_count 8
+*create module_count 7
 *create module_0 ""
 *create module_1 "test_framework"
 *create module_log_1 ""
@@ -19,16 +17,14 @@
 *create module_log_2 ""
 *create module_3 "number"
 *create module_log_3 ""
-*create module_4 "assert"
+*create module_4 "loop"
 *create module_log_4 ""
-*create module_5 "loop"
+*create module_5 "menu"
 *create module_log_5 ""
-*create module_6 "menu"
+*create module_6 "array"
 *create module_log_6 ""
-*create module_7 "array"
+*create module_7 "math"
 *create module_log_7 ""
-*create module_8 "math"
-*create module_log_8 ""
 
 *comment GLOBAL TEST VARIABLES
 *create total_tests_run 0

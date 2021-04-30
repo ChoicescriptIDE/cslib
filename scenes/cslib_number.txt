@@ -61,7 +61,8 @@
 *comment		(number): the mean of the given numbers
 *label mean
 *params
-*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*if (param_count < 2)
+	*bug expected at least two parameters (number, number2, ...)
 *temp sum 0
 *temp n 1
 *label _mean_loop
@@ -83,7 +84,8 @@
 *comment		(number): the largest number
 *label max
 *params
-*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*if (param_count < 2)
+	*bug expected at least two parameters (number, number2, ...)
 *temp current param[1]
 *temp n 2
 *label _max_loop
@@ -106,7 +108,8 @@
 *comment		(number): the smallest number
 *label min
 *params
-*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*if (param_count < 2)
+	*bug expected at least two parameters (number, number2, ...)
 *temp current param[1]
 *temp n 2
 *label _min_loop
@@ -129,7 +132,8 @@
 *comment		(string): the variable name of the stat with the largest value
 *label max_stat
 *params
-*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*if (param_count < 2)
+	*bug expected at least two parameters (number, number2, ...)
 *temp current param[1]
 *temp n 2
 *label _max_stat_loop
@@ -152,7 +156,8 @@
 *comment		(string): the variable name of the stat with the smallest value
 *label min_stat
 *params
-*gosub_scene cslib_assert greater_or_equal_to param_count 2
+*if (param_count < 2)
+	*bug expected at least two parameters (number, number2, ...)
 *temp current param[1]
 *temp n 2
 *label _min_stat_loop
