@@ -31,7 +31,7 @@
 
 *comment :::::: ITERATIVE TEMPLATE file ::::::
 *comment This template is designed to be called with
-*comment cslib_loop's "repeat" routine.
+*comment cslib_util's "repeat" routine.
 *comment
 *comment You can see an example of this in the INCLUDING
 *comment template below.
@@ -60,7 +60,7 @@ ${attr[n]}: ${attr_val[n]}[n/]
 
 *comment Here we're asking cslib to include the "print_attr"
 *comment template for each attribute in the game.
-*gosub_scene cslib_loop repeat "templates" "print_attr" attr_count
+*gosub_scene cslib_util repeat "templates" "print_attr" attr_count
 *return
 
 
