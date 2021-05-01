@@ -17,7 +17,7 @@ Pass rate: ${pass_rate}%
 *return
 
 *label display_log
-*params p_log_id
+*params p_log_value p_log_id
 [b]Test Report for cslib_${module[p_log_id]}[/b]
 
 ${module_log[p_log_id]}
