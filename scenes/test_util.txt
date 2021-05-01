@@ -4,42 +4,43 @@
 *temp tests_passed 0
 
 
-*comment :::::: ACC STR tests ::::::
-*gosub test_start "ACC STR"
-*temp result_expected "Pop[n/]Pop[n/]Fizz[n/]Pop[n/]Buzz[n/]Fizz[n/]Pop[n/]Pop[n/]Fizz[n/]Buzz[n/]Pop[n/]Fizz[n/]Pop[n/]Pop[n/]FizzBuzz"
-*gosub_scene cslib_loop acc_str "test_loop" "acc_loop_fizzbuzz" 15
-*gosub test_finish result_expected cslib_ret
+*comment :::::: REPEAT tests ::::::
+*gosub test_start "REPEAT"
+*set str_buffer ""
+*temp result_expected "1[n/]"
+*set result_expected &"2[n/]"
+*set result_expected &"Fizz[n/]"
+*set result_expected &"4[n/]"
+*set result_expected &"Buzz[n/]"
+*set result_expected &"Fizz[n/]"
+*set result_expected &"7[n/]"
+*set result_expected &"8[n/]"
+*set result_expected &"Fizz[n/]"
+*set result_expected &"Buzz[n/]"
+*set result_expected &"11[n/]"
+*set result_expected &"Fizz[n/]"
+*set result_expected &"13[n/]"
+*set result_expected &"14[n/]"
+*set result_expected &"FizzBuzz[n/]"
 
-
-*comment :::::: ACC NUM tests ::::::
-*gosub test_start "ACC NUM"
-*temp result_expected 256
-*gosub_scene cslib_loop acc_num "test_loop" "acc_loop_square" 3 2
-*gosub test_finish result_expected cslib_ret
-
+*gosub_scene cslib_util repeat "test_util" "fizzbuzz" 15
+*gosub test_finish result_expected str_buffer
 
 *set cslib_ret "${tests_passed}|${test_count}"
 *return
 
-*label acc_loop_fizzbuzz
-*params n acc count
+*label fizzbuzz
+*params n
 *temp str ""
 *if ((n modulo 3) = 0)
 	*set str &"Fizz"
 *if ((n modulo 5) = 0)
 	*set str &"Buzz"
 *if (str = "")
-	*set str &"Pop"
-*if (n != count)
-	*set str &"[n/]"
-*set cslib_ret acc&str
+	*set str &n
+*set str &"[n/]"
+*set str_buffer &str
 *return
-
-*label acc_loop_square
-*params n acc count
-*set cslib_ret acc * acc
-*return
-
 
 *comment :::::: UTILITY routines ::::::
 *label test_start

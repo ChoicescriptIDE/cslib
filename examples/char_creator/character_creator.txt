@@ -44,7 +44,7 @@ What's your race?
 *comment attribute in the game. We could write our own loop,
 *comment but when the task is simple offloading that to cslib
 *comment will help us keep the flow of our code/logic clear.
-*gosub_scene cslib_loop repeat "templates" "roll_attr" attr_count
+*gosub_scene cslib_util repeat "templates" "roll_attr" attr_count
 
 *comment Phew, finally. Now, let's display our character and finish the game!
 *gosub_scene templates display_character
