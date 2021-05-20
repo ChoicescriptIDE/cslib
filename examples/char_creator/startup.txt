@@ -28,14 +28,17 @@
 *comment However, as arrays aren't *really* arrays,
 *comment you will need to help cslib out a bit. Whenever
 *comment a cslib routine asks for an array, it will
-*comment expect there to be a '_count' variable denoting its length.
+*comment expect there to be both a '_count' and '_max' variable,
+*comment denoting its current and max length respectively.
 *create race_count 4
+*create race_max 4
 *create race_1 "Orc"
 *create race_2 "Human"
 *create race_3 "Elf"
 *create race_4 "Dwarf"
 
 *create attr_count 6
+*create attr_max 6
 *create attr_1 "strength"
 *create attr_2 "charisma"
 *create attr_3 "wisdom"
