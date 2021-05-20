@@ -9,11 +9,11 @@
 *create race ""
 
 *comment :::::: CONFIG variables ::::::
-*comment cslib requires these three configuration variables
-*comment and (at present) implicit_control_flow to be enabled
+*comment cslib requires just one variable: cslib_ret, which
+*comment is used to store (and access) the results that are
+*comment "returned" from calls to a routine.
+*comment implicit_control_flow also needs to be enabled.
 *create cslib_ret 0
-*create cslib_assert true
-*create cslib_script false
 *create implicit_control_flow true
 
 *comment :::::: CONST variables ::::::
