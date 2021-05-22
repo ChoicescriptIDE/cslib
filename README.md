@@ -15,12 +15,13 @@ The idea is to provide a community built (and supported) collection of routines,
 
 ### Installation
 - Copy the module files (the ones that start with `cslib_`) to your game folder, together with your scene files.
-
 - Create a global variable called `cslib_ret` to hold return values.
+- Create (or set) `implicit_control_flow` to **true**.
 
 ```choicescript
 __startup.txt__
 
+*create implicit_control_flow true
 *create cslib_ret 0
 ```
 
