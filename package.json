@@ -1,4 +1,7 @@
 {
     "name": "cslib",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "dependencies": {
+        "monaco-editor": "git+https://github.com/ChoicescriptIDE/monaco-editor.git#lib"
+    }
 }
