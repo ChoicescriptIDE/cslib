@@ -46,13 +46,6 @@ Note that cslib modules (scenes) should not refer to any global variable other t
 - **cslib_ret** — *anything* (default: "")
 This variable is how all cslib functions return their results. Each function should set this global before \*return with their 'result' (if there is one). If you wish to return more than one value, consider taking the refs (names) of global variables as parameters, which you can assign to via indirect reference.
 
-- **cslib_script** — *boolean* (recommended default: false)
-This variable is used to guard against any usage of \*script in cslib modules. If set to true any cslib function *may* switch to using \*script implementations in order to improve performance. Not all functions have \*script implementations, in which case they will continue to use the ChoiceScript variation.
-
-- **cslib_assert** — *boolean* (recommended default: false)
-Used to guard cslib asserts.
-If set to true cslib functions are permitted to use \*bug more liberally. Best set to true when testing or debugging, particularly if you're having issues with any cslib code.
-
 ### Coding Conventions
 
 Any contributions to the cslib source code should adhere to the following guidelines wherever possible.
@@ -62,7 +55,7 @@ Any contributions to the cslib source code should adhere to the following guidel
 Below follows guidance on code style when contributing to cslib.
 
 - **Plain ChoiceScript first** 
-All code in cslib modules MUST have a standard ChoiceScript implementation. It may optionally feature a \*script variant of each routine, for performance reasons, but it **must** be guarded by the *cslib_script* config variable, and be functionally equivalent to the ChoiceScript implementation.
+All code in cslib modules MUST be implemented in standard ChoiceScript. No use of \*script or external JavaScript should be permitted.
 - **Only \*gosub_scene dependencies**
 Public cslib functions can depend on (call) one another (for e.g. string:find uses string:substring) but they **must** use \*gosub_scene and **not** \*gosub, even if they reside within the same scene. Yes, this is horrible for performance, but it guarantees correct scoping (preventing different function's variables overwriting one another) and removes a whole category of nasty bugs for end-users.
 - **cslib_ret must be set**
