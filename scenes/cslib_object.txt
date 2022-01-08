@@ -1,0 +1,111 @@
+*comment cslib_object
+*comment Allows the simple manipulation of arrays of sets of variables
+*comment @StephenHart
+*comment
+*comment How it works:
+*comment A object is always accessed through its main instance.
+*comment When you "get" an instance of a object, the data for that particular instance 
+*comment is copied into the main instance
+*comment
+*comment A object definition has the following elements defined in startup.txt:
+*comment	1. A object "fieldname" array defining all the field names
+*comment		objectname_fieldname_N fieldname
+*comment	2. A main instance of this object. This is used to 'return'
+*comment		the object (similar to cslib_ret). Also includes the index
+*comment		of the current instance
+*comment	3. An array of instances of the object
+*comment		
+*comment Public methods
+*comment	get object index
+*comment		copy the instance of the object at index into main instance
+*comment	set object index field value
+*comment		set the specified field to the specified value in the instance
+*comment		of the object at index
+*comment
+*comment ------------------------------------------------------------------
+*comment EXAMPLE - startup.txt - object "dragon"
+*comment 
+*comment *create dragon_fieldname_1 	"name"
+*comment *create dragon_fieldname_2 	"hp"
+*comment *create dragon_fieldname_max	2
+*comment
+*comment *create dragon_name		""
+*comment *create dragon_hp			""
+*comment
+*comment *create dragon_1_name 		"Wally"
+*comment *create dragon_1_hp 		100
+*comment *create dragon_2_name 		"Dave"
+*comment *create dragon_2_hp		150
+*comment
+*comment EXAMPLE of getting a dragon instance
+*comment
+*comment *gosub_scene cslib_object get "dragon" 2
+*comment 	sets dragon_name to "Dave" and dragon_hp to 150 and dragon_index to 2
+*comment
+*comment EXAMPLE of setting a dragon instance
+*comment
+*comment *gosub_scene cslib_object set "dragon" 2 "name" "Sir David"
+*comment    sets dragon_2_name to "Sir David"
+*comment	now when you get dragon 2, dragon_name will be "Sir David"
+*comment	this will persist until you set it again
+
+*comment GET
+*comment ------------------------------------------------------------------
+*comment Takes the instance of a object specified by the index and copies
+*comment the data into the main instance
+*comment ------------------------------------------------------------------
+*comment
+*comment params:
+*comment	p_objectname (string): the name of the object
+*comment	p_index (integer): index of this object instance
+*comment returns:
+*comment	none
+*comment usage example:
+*comment 	cslib_object get "dragon" 2
+*comment ------------------------------------------------------------------
+
+*label get
+*params p_objectname p_index
+*set cslib_ret ""
+*gosub _set_main_instance p_objectname p_index
+*return
+
+*comment SET
+*comment ------------------------------------------------------------------
+*comment Set the value of a particular field in a particular instance of a object
+*comment ------------------------------------------------------------------
+*comment params:
+*comment	p_objectname (string): the name of the object
+*comment	p_index (integer): index of this object instance
+*comment	p_fieldname (string): the field to update
+*comment	p_value (string): the new value
+*comment returns:
+*comment	none
+*comment usage example:
+*comment 	cslib_object set "dragon" 2 "name" "Bruce"
+*comment ------------------------------------------------------------------
+
+*label set
+*params p_objectname p_index p_fieldname p_value
+*set cslib_ret ""
+*set {p_objectname&"_${p_index}_${p_fieldname}"} p_value
+*return
+
+*comment ------------------------------------------------------------------
+*comment --- PRIVATE METHODS
+*comment ------------------------------------------------------------------
+
+*comment --- ------------------------------------------------------------------
+*comment --- Copies the values in the instance at the given index into the main instance
+*comment --- ------------------------------------------------------------------
+*label _set_main_instance
+*params p_object p_index
+*temp n 1
+*temp field_count {p_object&"_fieldname_max"}
+*label _set_main_loop
+*if (n <= field_count)
+	*temp field {p_object&"_fieldname_${n}"}
+	*set {p_object&"_${field}"} {p_object&"_${p_index}_${field}"}
+	*set n + 1
+	*goto _set_main_loop
+*return
