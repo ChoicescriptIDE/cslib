@@ -9,7 +9,7 @@
 *create cslib_ret 0
 
 *comment MODULE TEST REGISTRATION
-*create module_count 7
+*create module_count 8
 *create module_0 ""
 *create module_1 "test_framework"
 *create module_log_1 ""
@@ -25,6 +25,8 @@
 *create module_log_6 ""
 *create module_7 "math"
 *create module_log_7 ""
+*create module_8 "object"
+*create module_log_8 ""
 
 *comment GLOBAL TEST VARIABLES
 *create total_tests_run 0
@@ -89,6 +91,17 @@
 *create test_stat_strength 0
 *create test_stat_charisma 0
 *create test_stat_wisdom 0
+
+*comment TEST DATA for OBJECTS
+*create testobj_fieldname_1		"testfield1"
+*create testobj_fieldname_2		"testfield2"
+*create testobj_fieldname_max	2
+*create testobj_testfield1		""
+*create testobj_testfield2		""
+*create testobj_1_testfield1	"Calvin"
+*create testobj_1_testfield2	100
+*create testobj_2_testfield1	"Hobbes"
+*create testobj_2_testfield2	150
 
 *set implicit_control_flow true
 
