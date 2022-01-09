@@ -1,6 +1,7 @@
+*bug cslib_object is a cslib module and must not be accessed directly
+
 *comment cslib_object
 *comment Allows the simple manipulation of arrays of sets of variables
-*comment @StephenHart
 *comment
 *comment How it works:
 *comment A object is always accessed through its main instance.
@@ -11,8 +12,7 @@
 *comment	1. A object "fieldname" array defining all the field names
 *comment		objectname_fieldname_N fieldname
 *comment	2. A main instance of this object. This is used to 'return'
-*comment		the object (similar to cslib_ret). Also includes the index
-*comment		of the current instance
+*comment		the object (similar to cslib_ret).
 *comment	3. An array of instances of the object
 *comment		
 *comment Public methods
@@ -57,7 +57,7 @@
 *comment
 *comment params:
 *comment	p_objectname (string): the name of the object
-*comment	p_index (integer): index of this object instance
+*comment	p_index (number): index of this object instance
 *comment returns:
 *comment	none
 *comment usage example:
@@ -76,7 +76,7 @@
 *comment ------------------------------------------------------------------
 *comment params:
 *comment	p_objectname (string): the name of the object
-*comment	p_index (integer): index of this object instance
+*comment	p_index (number): index of this object instance
 *comment	p_fieldname (string): the field to update
 *comment	p_value (string): the new value
 *comment returns:

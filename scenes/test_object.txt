@@ -5,17 +5,13 @@
 
 *gosub test_start "get unmodified data"
 *gosub_scene cslib_object get "testobj" 1
-*gosub test_assert (testobj_testfield1 = "Calvin") "=> Expected - Calvin[n/]=> Received - ${testobj_testfield1}[n/]"
+*gosub test_assert (testobj_testfield1 = testobj_1_testfield1) "=> Expected - ${testobj_1_testfield1}[n/]=> Received - ${testobj_testfield1}[n/]"
 *gosub test_finish
 
-*gosub test_start "set (modify) data"
+*gosub test_start "set (modify) and get (modified) data"
 *gosub_scene cslib_object set "testobj" 2 "testfield1" "Locke"
-*gosub test_assert (testobj_2_testfield1 = "Locke") "=> Expected - Locke[n/]=> Received - ${testobj_2_testfield1}[n/]"
-*gosub test_finish
-
-*gosub test_start "get modified data"
 *gosub_scene cslib_object get "testobj" 2
-*gosub test_assert (testobj_testfield1 = "Locke") "=> Expected - Locke[n/]=> Received - ${testobj_testfield1}[n/]"
+*gosub test_assert ((testobj_2_testfield1 = "Locke") and (testobj_testfield1 = testobj_2_testfield1)) "=> Expected - Locke[n/]=> Received - ${testobj_testfield1}[n/]"
 *gosub test_finish
 
 *set cslib_ret "${tests_passed}|${test_count}"
