@@ -93,15 +93,15 @@
 *create test_stat_wisdom 0
 
 *comment TEST DATA for OBJECTS
-*create testobj_fieldname_1 "testfield1"
-*create testobj_fieldname_2 "testfield2"
-*create testobj_fieldname_max 2
-*create testobj_testfield1 ""
-*create testobj_testfield2 ""
-*create testobj_1_testfield1 "Calvin"
-*create testobj_1_testfield2 100
-*create testobj_2_testfield1 "Hobbes"
-*create testobj_2_testfield2 150
+*create dragon_field_1 "name"
+*create dragon_field_2 "hit_points"
+*create dragon_field_max 2
+*create dragon_name ""
+*create dragon_hit_points ""
+*create dragon_1_name "Calvin"
+*create dragon_1_hit_points 100
+*create dragon_2_name "Hobbes"
+*create dragon_2_hit_points 150
 
 *set implicit_control_flow true
 
