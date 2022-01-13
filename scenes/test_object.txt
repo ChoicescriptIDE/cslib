@@ -15,14 +15,10 @@
 *comment dragon_2_hit_points 150
 
 
-*gosub test_start "get unmodified data from first field"
+*gosub test_start "get unmodified data"
 *gosub_scene cslib_object get "dragon" 1
 *gosub test_assert (dragon_name = dragon_1_name) "=> Expected - ${dragon_1_name}[n/]=> Received - ${dragon_name}[n/]"
-*gosub test_finish
-
-*gosub test_start "get unmodified data from second field"
-*gosub_scene cslib_object get "dragon" 2
-*gosub test_assert (dragon_hit_points = dragon_2_hit_points) "=> Expected - ${dragon_2_hit_points}[n/]=> Received - ${dragon_hit_points}[n/]"
+*gosub test_assert (dragon_hit_points = dragon_1_hit_points) "=> Expected - ${dragon_1_hit_points}[n/]=> Received - ${dragon_hit_points}[n/]"
 *gosub test_finish
 
 *gosub test_start "set (modify) and get (modified) data"
