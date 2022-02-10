@@ -102,6 +102,9 @@
 *create dragon_1_hit_points 100
 *create dragon_2_name "Hobbes"
 *create dragon_2_hit_points 150
+*create dragon_3_name "Stebbing"
+*create dragon_3_hit_points 100
+*create dragon_max 3
 
 *set implicit_control_flow true
 

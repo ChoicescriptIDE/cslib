@@ -18,6 +18,9 @@
 *comment Public methods
 *comment	get object index
 *comment		copy the instance of the object at index into main instance
+*comment	get_by_field object field value
+*comment		copy the instance of the first object where the specified field
+*comment		has the specified value into the main instance
 *comment	set object index field value
 *comment		set the specified field to the specified value in the instance
 *comment		of the object at index
@@ -36,11 +39,17 @@
 *comment *create dragon_1_hp 		100
 *comment *create dragon_2_name 		"Dave"
 *comment *create dragon_2_hp		150
+*comment *create dragon_max			2
 *comment
 *comment EXAMPLE of getting a dragon instance
 *comment
 *comment *gosub_scene cslib_object get "dragon" 2
 *comment 	sets dragon_name to "Dave" and dragon_hp to 150 and dragon_index to 2
+*comment
+*comment EXAMPLE of getting a dragon by matching field name and value
+*comment
+*comment *gosub_scene cslib_object get_by_field "dragon" "name" "Wally"
+*comment 	sets dragon_name to "Wally" and dragon_hp to 100 and dragon_index to 1
 *comment
 *comment EXAMPLE of setting a dragon instance
 *comment
@@ -61,13 +70,53 @@
 *comment returns:
 *comment	none
 *comment usage example:
-*comment 	cslib_object get "dragon" 2
+*comment 	*gosub_scene cslib_object get "dragon" 2
 *comment ------------------------------------------------------------------
 
 *label get
 *params p_objectname p_index
 *set cslib_ret ""
 *gosub _set_main_instance p_objectname p_index
+*return
+
+*comment GET_BY_FIELD
+*comment ------------------------------------------------------------------
+*comment Takes the specified field name and field value and finds the
+*comment first instance of a match that it findscl and copies that data
+*comment into the main instance
+*comment If no match is found, all the fields of the main object are set
+*comment to false
+*comment ------------------------------------------------------------------
+*comment
+*comment params:
+*comment	p_objectname (string): the name of the object
+*comment	p_field (string): field to match
+*comment	p_value (string): field to match
+*comment returns:
+*comment	none
+*comment usage example:
+*comment 	*gosub_scene cslib_object get "dragon" "name" "Wally"
+*comment ------------------------------------------------------------------
+
+*label get_by_field
+*params p_object p_field p_value
+*set cslib_ret ""
+*temp foundit false
+*temp n 1
+*temp array_count {p_object&"_max"}
+*temp index ""
+*label _get_by_field_main_loop
+*if (n <= array_count)
+	*if ({p_object&"_${n}_${p_field}"} = p_value)
+		*set foundit true
+		*goto end_search
+	*set n + 1
+	*goto _get_by_field_main_loop
+*label end_search
+*if (foundit)
+	*gosub _set_main_instance p_object n
+*else
+	*gosub _clear_main_instance p_object
 *return
 
 *comment SET
@@ -82,7 +131,7 @@
 *comment returns:
 *comment	none
 *comment usage example:
-*comment 	cslib_object set "dragon" 2 "name" "Bruce"
+*comment 	*gosub_scene cslib_object set "dragon" 2 "name" "Bruce"
 *comment ------------------------------------------------------------------
 
 *label set
@@ -109,4 +158,20 @@
 	*set {p_object&"_${tempfield}"} {p_object&"_${p_index}_${tempfield}"}
 	*set n + 1
 	*goto _set_main_loop
+*return
+
+*comment --- ------------------------------------------------------------------
+*comment --- Sets all the fields of the main instance to false
+*comment --- ------------------------------------------------------------------
+*label _clear_main_instance
+*params p_object
+*temp n 1
+*temp field_count {p_object&"_field_max"}
+*temp field ""
+*label _clear_main_loop
+*if (n <= field_count)
+	*set field {p_object&"_field_${n}"}
+	*set {p_object&"_${field}"} false
+	*set n + 1
+	*goto _clear_main_loop
 *return
