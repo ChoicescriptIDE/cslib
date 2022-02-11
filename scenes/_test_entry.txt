@@ -19,7 +19,6 @@
 		*gosub_scene _test_display_templates display_module_summary module[module_id] tests_run tests_passed
 		Results have been logged.
 		*page_break
-		*gosub view_logs
 		*goto main
 *elseif cslib_ret = 2
 	*gosub test_all_modules
