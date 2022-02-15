@@ -84,14 +84,13 @@
 *comment Takes the specified field name and field value and finds the
 *comment first instance of a match that it finds and copies that data
 *comment into the main instance
-*comment If no match is found, all the fields of the main object are set
-*comment to false
+*comment If no match is found, a *bug is raised
 *comment ------------------------------------------------------------------
 *comment
 *comment params:
 *comment	p_objectname (string): the name of the object
 *comment	p_field (string): field to match
-*comment	p_value (string): field to match
+*comment	p_value (string): value to match
 *comment returns:
 *comment	none
 *comment usage example:
@@ -116,7 +115,7 @@
 *if (found_it)
 	*gosub _set_main_instance p_object n
 *else
-	*gosub _clear_main_instance p_object
+	*bug cslib_object.get_by_field: Value of '${p_value}' not found for field '${p_field}' in object type '${p_object}'
 *return
 
 *comment SET
@@ -161,17 +160,18 @@
 *return
 
 *comment --- ------------------------------------------------------------------
-*comment --- Sets all the fields of the main instance to false
+*comment --- Sets all the fields of the main instance to the given value
 *comment --- ------------------------------------------------------------------
 *label _clear_main_instance
 *params p_object
+*params p_value
 *temp n 1
 *temp field_count {p_object&"_field_max"}
 *temp field ""
 *label _clear_main_loop
 *if (n <= field_count)
 	*set field {p_object&"_field_${n}"}
-	*set {p_object&"_${field}"} false
+	*set {p_object&"_${field}"} p_value
 	*set n + 1
 	*goto _clear_main_loop
 *return
