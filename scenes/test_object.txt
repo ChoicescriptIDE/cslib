@@ -4,6 +4,7 @@
 *temp tests_passed 0
 
 *comment test data (see startup.txt)
+*comment dragon_id ""
 *comment dragon_field_1 "name"
 *comment dragon_field_2 "hit_points"
 *comment dragon_field_max 2
@@ -31,6 +32,9 @@
 *gosub test_assert (dragon_name = dragon_1_name) "=> Expected - ${dragon_1_name}[n/]=> Received - ${dragon_name}[n/]"
 *gosub_scene cslib_object get_by_field "dragon" "hit_points" 150 
 *gosub test_assert (dragon_name = dragon_2_name) "=> Expected - ${dragon_2_name}[n/]=> Received - ${dragon_name}[n/]"
+*gosub test_finish
+
+*gosub test_start "throw a bug on no match"
 *set cslib_catch_bug true
 *gosub_scene cslib_object get_by_field "dragon" "name" "Unknown" 
 *set cslib_catch_bug false

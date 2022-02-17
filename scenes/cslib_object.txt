@@ -15,6 +15,12 @@
 *comment		the object (similar to cslib_ret).
 *comment	3. An array of instances of the object
 *comment		
+*comment Note: each object MUST have an objectname_id field
+*comment This is not part of the object definition and only exists associated
+*comment with the main instance.
+*comment It's purpose is to 'return' the current index of the object, which
+*comment is particularly useful for get_by_field
+*comment
 *comment Public methods
 *comment	get object index
 *comment		copy the instance of the object at index into main instance
@@ -32,6 +38,8 @@
 *comment *create dragon_field_2 "hp"
 *comment *create dragon_field_max 2
 *comment
+*comment NOTE: dragon_id is a required field
+*comment *create dragon_id ""
 *comment *create dragon_name ""
 *comment *create dragon_hp ""
 *comment
@@ -44,12 +52,12 @@
 *comment EXAMPLE of getting a dragon instance
 *comment
 *comment *gosub_scene cslib_object get "dragon" 2
-*comment 	sets dragon_name to "Dave" and dragon_hp to 150 and dragon_index to 2
+*comment 	sets dragon_name to "Dave" and dragon_hp to 150 and dragon_id to 2
 *comment
 *comment EXAMPLE of getting a dragon by matching field name and value
 *comment
 *comment *gosub_scene cslib_object get_by_field "dragon" "name" "Wally"
-*comment 	sets dragon_name to "Wally" and dragon_hp to 100 and dragon_index to 1
+*comment 	sets dragon_name to "Wally" and dragon_hp to 100 and dragon_id to 1
 *comment
 *comment EXAMPLE of setting a dragon instance
 *comment
@@ -108,10 +116,10 @@
 *if (n <= array_count)
 	*if ({p_object&"_${n}_${p_field}"} = p_value)
 		*set found_it true
-		*goto end_search
+		*goto _get_by_field_end_search
 	*set n + 1
 	*goto _get_by_field_main_loop
-*label end_search
+*label _get_by_field_end_search
 *if (found_it)
 	*gosub _set_main_instance p_object n
 *else
@@ -151,6 +159,7 @@
 *temp n 1
 *temp field_count {p_object&"_field_max"}
 *temp tempfield ""
+*set {p_object&"_id"} n
 *label _set_main_loop
 *if (n <= field_count)
 	*set tempfield {p_object&"_field_${n}"}
@@ -168,6 +177,7 @@
 *temp n 1
 *temp field_count {p_object&"_field_max"}
 *temp field ""
+*set {p_object&"_id"} p_value
 *label _clear_main_loop
 *if (n <= field_count)
 	*set field {p_object&"_field_${n}"}

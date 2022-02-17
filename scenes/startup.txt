@@ -93,6 +93,7 @@
 *create test_stat_wisdom 0
 
 *comment TEST DATA for OBJECTS
+*create dragon_id ""
 *create dragon_field_1 "name"
 *create dragon_field_2 "hit_points"
 *create dragon_field_max 2
