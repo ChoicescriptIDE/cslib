@@ -18,8 +18,8 @@
 *comment Note: each object MUST have an objectname_id field
 *comment This is not part of the object definition and only exists associated
 *comment with the main instance.
-*comment It's purpose is to 'return' the current index of the object, which
-*comment is particularly useful for get_by_field
+*comment Its purpose is to 'return' the current index of the object, which
+*comment is particularly useful for get_by_field.
 *comment
 *comment Public methods
 *comment	get object index
