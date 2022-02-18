@@ -78,6 +78,7 @@ The highest stat is "strength"! Amazing!
 | cslib_string | Routines to manipulate text (strings).                  |  1.0.0        |             | concat, lowercase, substring, find, replace, reverse, etc. |
 | cslib_number | Routines to manipulate numbers.                         |  1.0.0        |             | mean, max_stat, max, min, etc.                             |
 | cslib_menu   | Routines to generate menus and choices.                 |  1.0.0        |             |                                                            |
+| cslib_object | Routines to simulate objects.                           |  1.0.0        |             | get, get_by_field, set                                     |
 | cslib_util   | Miscellaneous utility routines.                         |  1.0.0        |             | repeat                                                     |
 | cslib_array  | Various array manipulation.                             |  1.0.0        |             | filter, clone, clean, push, pop, etc.                      |
 | cslib_math   | Math functions, including trigonometric and hyperbolic. |  1.0.0        |             | sin, cos, sinh, cosh, pi                                   |

@@ -7,18 +7,41 @@
 *comment dragon_field_1 "name"
 *comment dragon_field_2 "hit_points"
 *comment dragon_field_max 2
+*comment dragon_id ""
 *comment dragon_name ""
 *comment dragon_hit_points ""
 *comment dragon_1_name "Calvin"
 *comment dragon_1_hit_points 100
 *comment dragon_2_name "Hobbes"
 *comment dragon_2_hit_points 150
+*comment dragon_3_name "Stebbing"
+*comment dragon_3_hit_points 100
+*comment dragon_max 3
 
-
-*gosub test_start "get unmodified data"
+*gosub test_start "get unmodified data by index"
 *gosub_scene cslib_object get "dragon" 1
+*gosub test_assert (dragon_id = 1) "=> Expected - 1[n/]=> Received - ${dragon_id}[n/]"
 *gosub test_assert (dragon_name = dragon_1_name) "=> Expected - ${dragon_1_name}[n/]=> Received - ${dragon_name}[n/]"
 *gosub test_assert (dragon_hit_points = dragon_1_hit_points) "=> Expected - ${dragon_1_hit_points}[n/]=> Received - ${dragon_hit_points}[n/]"
+*gosub test_finish
+
+*gosub test_start "get unmodified data by field"
+*gosub_scene cslib_object get_by_field "dragon" "name" "Hobbes"
+*gosub test_assert (dragon_id = 2) "=> Expected - 2[n/]=> Received - ${dragon_id}[n/]"
+*gosub test_assert (dragon_name = dragon_2_name) "=> Expected - ${dragon_2_name}[n/]=> Received - ${dragon_name}[n/]"
+*gosub_scene cslib_object get_by_field "dragon" "hit_points" 100 
+*gosub test_assert (dragon_id = 1) "=> Expected - 1[n/]=> Received - ${dragon_id}[n/]"
+*gosub test_assert (dragon_name = dragon_1_name) "=> Expected - ${dragon_1_name}[n/]=> Received - ${dragon_name}[n/]"
+*gosub_scene cslib_object get_by_field "dragon" "hit_points" 150 
+*gosub test_assert (dragon_id = 2) "=> Expected - 2[n/]=> Received - ${dragon_id}[n/]"
+*gosub test_assert (dragon_name = dragon_2_name) "=> Expected - ${dragon_2_name}[n/]=> Received - ${dragon_name}[n/]"
+*gosub test_finish
+
+*gosub test_start "throw a bug on no match"
+*set cslib_catch_bug true
+*gosub_scene cslib_object get_by_field "dragon" "name" "Unknown" 
+*set cslib_catch_bug false
+*gosub test_assert_equal "Bug: cslib_object.get_by_field: Value of 'Unknown' not found for field 'name' in object type 'dragon'" cslib_bug_message
 *gosub test_finish
 
 *gosub test_start "set (modify) and get (modified) data"
@@ -26,7 +49,11 @@
 *gosub test_assert (dragon_2_name != "Locke") "=> Expected - anything but Locke[n/]=> Received - ${dragon_2_name}[n/]"
 *gosub_scene cslib_object set "dragon" 2 "name" "Locke"
 *gosub_scene cslib_object get "dragon" 2
+*gosub test_assert (dragon_id = 2) "=> Expected - 2[n/]=> Received - ${dragon_id}[n/]"
 *gosub test_assert (dragon_2_name = "Locke") "=> Expected - Locke[n/]=> Received - ${dragon_2_name}[n/]"
+*gosub test_assert (dragon_name = dragon_2_name) "=> Expected - Locke[n/]=> Received - ${dragon_name}[n/]"
+*gosub_scene cslib_object get_by_field "dragon" "name" "Locke" 
+*gosub test_assert (dragon_id = 2) "=> Expected - 2[n/]=> Received - ${dragon_id}[n/]"
 *gosub test_assert (dragon_name = dragon_2_name) "=> Expected - Locke[n/]=> Received - ${dragon_name}[n/]"
 *gosub test_finish
 
@@ -47,6 +74,10 @@
 	*set {log_buffer} &("[n/]"&(p_test_message&"[n/]"))
 *return
 
+*label test_assert_equal
+*params p_result_expected p_result_actual
+*gosub test_assert (p_result_expected = p_result_actual) "=> Expected - ${p_result_expected}[n/]=> Received - ${p_result_actual}[n/]"
+*return
 
 *label test_finish
 *params
