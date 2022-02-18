@@ -159,7 +159,7 @@
 *temp n 1
 *temp field_count {p_object&"_field_max"}
 *temp tempfield ""
-*set {p_object&"_id"} n
+*set {p_object&"_id"} p_index
 *label _set_main_loop
 *if (n <= field_count)
 	*set tempfield {p_object&"_field_${n}"}
