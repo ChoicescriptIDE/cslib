@@ -1,4 +1,4 @@
-<h1><img src="./res/logo/cslib_logo%20flat.png" alt="C.S.Lib logo" width="43" align="left"/> ChoiceScript Library</h1>
+<h1>ChoiceScript Library</h1>
 
 ![Release](https://img.shields.io/github/v/release/choicescriptIDE/cslib?include_prereleases&style=for-the-badge) ![GitHub](https://img.shields.io/github/license/ChoicescriptIDE/cslib?style=for-the-badge) ![GitHub all releases](https://img.shields.io/github/downloads/ChoicescriptIDE/cslib/total?style=for-the-badge)
 ![test](https://img.shields.io/github/workflow/status/choicescriptide/cslib/test?label=tests&style=for-the-badge)
