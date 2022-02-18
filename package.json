@@ -1,4 +1,7 @@
 {
-    "name": "cslib",
-    "version": "0.1.0"
+    "name": "@ChoicescriptIDE/cslib",
+    "version": "0.1.0",
+    "publishConfig": {
+        "@ChoicescriptIDE:registry": "https://npm.pkg.github.com"
+    }
 }
