@@ -128,23 +128,36 @@
 
 *comment SET
 *comment ------------------------------------------------------------------
-*comment Set the value of a particular field in a particular instance of a object
+*comment Set the value of one or more fields in a particular instance of an object
 *comment ------------------------------------------------------------------
 *comment params:
 *comment	p_objectname (string): the name of the object
-*comment	p_index (number): index of this object instance
-*comment	p_field (string): the field to update
-*comment	p_value (string): the new value
+*comment	p_index      (number): index of this object instance
+*comment	param_n      (string): a field to update
+*comment	param_n+1    (string): the value to update the prior field to
 *comment returns:
 *comment	none
-*comment usage example:
+*comment usage examples:
 *comment 	*gosub_scene cslib_object set "dragon" 2 "name" "Bruce"
+*comment 	*gosub_scene cslib_object set "dragon" 3 "hit_points" 200 "name" "Jack"
 *comment ------------------------------------------------------------------
 
 *label set
-*params p_objectname p_index p_field p_value
+*params
+*comment p_objectname p_index p_field_1 p_value_1 p_field_2 p_value_2 p_field_n p_value_n ...
+*if ((param_count < 4) or ((param_count modulo 2) != 0))
+    *bug cslib_object.set: Expected an even number of 4 or more parameters: 'p_objectname' and 'p_index' followed by at least 1 'field' 'value' pair, but got: '${param_count}' parameters
+*temp p_objectname param_1
+*temp p_index param_2
+*temp p_param 3
+*label _set_loop
+*if (p_param < param_count)
+    *temp p_field param[p_param]
+    *temp p_value param[p_param+1]
+    *set {p_objectname&"_${p_index}_${p_field}"} p_value
+    *set p_param + 2
+    *goto _set_loop
 *set cslib_ret ""
-*set {p_objectname&"_${p_index}_${p_field}"} p_value
 *return
 
 *comment ------------------------------------------------------------------

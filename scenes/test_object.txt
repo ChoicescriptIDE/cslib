@@ -57,6 +57,24 @@
 *gosub test_assert (dragon_name = dragon_2_name) "=> Expected - Locke[n/]=> Received - ${dragon_name}[n/]"
 *gosub test_finish
 
+*gosub test_start "set multiple parameters in one call"
+*gosub_scene cslib_object set "dragon" 2 "name" "Mr. Multiple" "hit_points" 999
+*gosub_scene cslib_object get "dragon" 2
+*gosub test_assert_equal "Mr. Multiple" dragon_name "=> Expected - Mr. Multiple[n/]=> Received - ${dragon_name}[n/]"
+*gosub test_assert_equal dragon_hit_points 999 "=> Expected - 999[n/]=> Received - ${dragon_hit_points}[n/]"
+*gosub test_finish
+
+*gosub test_start "throw a bug on incorrect parameters to set"
+*set cslib_catch_bug true
+*comment too few parameters:
+*gosub_scene cslib_object set "dragon" 3
+*gosub test_assert_equal "Bug: cslib_object.set: Expected an even number of 4 or more parameters: 'p_objectname' and 'p_index' followed by at least 1 'field' 'value' pair, but got: '2' parameters" cslib_bug_message
+*comment not an equal number of fields and values:
+*gosub_scene cslib_object set "dragon" 3 "hit_points" 200 "name"
+*gosub test_assert_equal "Bug: cslib_object.set: Expected an even number of 4 or more parameters: 'p_objectname' and 'p_index' followed by at least 1 'field' 'value' pair, but got: '5' parameters" cslib_bug_message
+*set cslib_catch_bug false
+*gosub test_finish
+
 *set cslib_ret "${tests_passed}|${test_count}"
 *return
 
