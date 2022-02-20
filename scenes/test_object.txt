@@ -61,7 +61,7 @@
 *gosub_scene cslib_object set "dragon" 2 "name" "Mr. Multiple" "hit_points" 999
 *gosub_scene cslib_object get "dragon" 2
 *gosub test_assert_equal "Mr. Multiple" dragon_name "=> Expected - Mr. Multiple[n/]=> Received - ${dragon_name}[n/]"
-*gosub test_assert_equal dragon_hit_points 999 "=> Expected - 900[n/]=> Received - ${dragon_hit_points}[n/]"
+*gosub test_assert_equal dragon_hit_points 999 "=> Expected - 999[n/]=> Received - ${dragon_hit_points}[n/]"
 *gosub test_finish
 
 *gosub test_start "throw a bug on incorrect parameters to set"
