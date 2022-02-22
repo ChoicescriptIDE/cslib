@@ -1,6 +1,9 @@
 *title ChoiceScript Library (cslib)
 *author CSIDE
 
+*comment CSLIB requires implicit control flow
+*create implicit_control_flow true
+
 *comment Set to FALSE for manual test selection
 *create automatic_testing true
 
