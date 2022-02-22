@@ -168,7 +168,7 @@
 *set value {myparamvalue}
 *label _new_loop3
 *if (length(value) > maxlength)
-    *bug Maximum length of ${maxlength} for field ${field} exceeded (value ${value}).
+    *bug Maximum length of ${maxlength} for <${field}> exceeded (${value}).
 *label _new_loop4
 *if (length(value) < maxlength)
     *set value value&"~"
@@ -233,7 +233,7 @@
 *set howmany (length({"db_"&table})-totdlen)/totrlen
 *if (index > howmany)
     *gosub _clear_varset ("db_"&table) retval
-    *bug Trying to fetch the record ${index} but there are ${howmany}
+    *bug Trying to get record ${index} of ${howmany}
 *set pointer ((totdlen + ((index - 1) * totrlen)) + 1)
 *gosub _get_next_block ("db_"&table) "pointer" totrlen retval
 *return
@@ -284,7 +284,7 @@
 *temp index 0
 *gosub _find_record table keyfield keyvalue "index"
 *if (index = 0)
-    *bug No record found where ${keyfield}=${keyvalue}
+    *bug No records where <${keyfield}> is ${keyvalue}
     *return
 *gosub set_by_index table index updfield updvalue
 *return
@@ -316,11 +316,11 @@
 *gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
 *set howmany (length({"db_"&table})-totdlen)/totrlen
 *if (index > howmany)
-    *bug Trying to set a field in the record ${index} but there are ${howmany}
+    *bug Trying to set in record ${index} of ${howmany}
 *label _set_by_index_loop1
 *gosub _get_next_def ("db_"&table) "pointer" "field" "maxlength"
 *if (field = "")
-    *bug Field name ${updfield} not found in table ${table}
+    *bug Field <${updfield}> not found in table ${table}
 *if (field != updfield)
     *set offset +maxlength
     *goto _set_by_index_loop1
@@ -346,6 +346,26 @@
 *return
 
 
+*label count
+*comment ----------------------------------------------------------------------------------------------------
+*comment Counts the number of records in the database
+*comment
+*comment @param table - The table name
+*comment
+*comment @returns retval - The total number of records
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db count "dragon" "howmanydragons"
+*comment (requires the existing global variable howmanydragons, which will contain the result)
+*comment ----------------------------------------------------------------------------------------------------
+*params table retval
+*temp totdlen 0
+*temp totrlen 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*set {retval} (length({"db_"&table})-totdlen)/totrlen
+*return
+
+
 *label delete
 *comment ----------------------------------------------------------------------------------------------------
 *comment Finds the first record that matches a given field-value pair and deletes that record from the table
@@ -361,7 +381,7 @@
 *temp index 0
 *gosub _find_record table keyfield keyvalue "index"
 *if (index = 0)
-    *bug No record found where ${keyfield}=${keyvalue}
+    *bug No record found where <${keyfield}>=${keyvalue}
     *return
 *gosub delete_by_index table index
 *return
@@ -568,7 +588,7 @@
 *gosub _get_next_def ("db_"&table) "pointer" "field" "maxlength"
 *if (field = "")
     *set {pos} 0
-    *bug Field name ${keyfield} not found in table ${table}
+    *bug Field <${keyfield}> not found in table ${table}
     *return
 *if (field != keyfield)
     *set offset +maxlength
