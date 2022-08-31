@@ -112,8 +112,13 @@
 
 *set implicit_control_flow true
 
+*comment CHOICESCRIPT OVERRIDES — These are minified from original sources in mygame.js (please update both with any changes)
+*comment override 'bug' to make it catchable for tests
+*script Scene.prototype.bug=function(s){if(s=s?"Bug: "+this.replaceVariables(s):"Bug",!this.stats.cslib_catch_bug)throw new Error(this.lineMsg()+s);this.stats.cslib_bug_message=s,this.return()};
+*comment override 'renderOptions' so we can control and test choices programatically
+*script Scene.prototype.renderOptions=function(t,s,e){for(var i=0;i<s.length;i++)s[i].name=this.replaceVariables(s[i].name);if(this.stats.cslib_catch_choice){if(0===this.stats.cslib_choice_select.length)throw new Error("Error: stuck in a choice menu but selections (cslib_choice_select) were exhausted.");var c=this.stats.cslib_choice_select.split(","),h=parseInt(c.shift());this.stats.cslib_choice_select=c.join(","),this.stats.cslib_choice_count=s.length;for(i=0;i<s.length;i++)this.stats["cslib_choice_"+(i+1).toString()]=s[i].name;this.standardResolution(s[h-1])}else this.paragraph(),printOptions(t,s,e),this.debugMode&&println(toJson(this.stats)),this.finished&&printFooter()};
 *if choice_randomtest
-	*comment override randomtest's Scene.prototype.choice so we can perform automated testing (original source in mygame.js)
+	*comment override randomtest's Scene.prototype.choice so we can use randomtest to perform automated testing
 	*script Scene.prototype.choice=function(i){var t=["choice"];i&&(t=i.split(/ /));var n=this.parseOptions(this.indent,t),e=this;timeout=function(){println(""),e.renderOptions(t,n,function(i){e.standardResolution(i)})},this.finished=!0};
 
 *if (automatic_testing)

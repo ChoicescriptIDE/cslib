@@ -1,31 +1,37 @@
 nav = new SceneNavigator(["startup"]);
 stats = {};
 
-// We modify Scene.prototype.bug to make *bug 'catchable'.
-// If the stat cslib_catch_bug is set to true, in case of a bug a function
-// will simply return. The error message will be available in cslib_bug_message.
-// Make sure cslib_catch_bug is immediately reset to false.
-//
-// Example usage:
-//
-//    *set cslib_catch_bug true
-//    *gosub_scene cslib_... ... ...
-//    *set cslib_catch_bug false
-//    *gosub test_finish "Expected message" cslib_bug_message
+/*
+ We modify Scene.prototype.bug to make *bug 'catchable'.
+ If the stat cslib_catch_bug is set to true, in case of a bug a function
+ will simply return. The error message will be available in cslib_bug_message.
+ Make sure cslib_catch_bug is immediately reset to false.
 
-Scene.prototype.bug = function scene_bug(message) {
-  if (message) {
-    message = "Bug: " + this.replaceVariables(message);
-  } else {
-    message = "Bug";
+ Example usage:
+
+    *set cslib_catch_bug true
+    *gosub_scene cslib_... ... ...
+    *set cslib_catch_bug false
+    *gosub test_finish "Expected message" cslib_bug_message
+
+  The the code below is only the original source. The executed
+  code is found in startup.txt in a minimized form. If you update
+  the minimized code, please remember to update the source below as well.
+
+  Scene.prototype.bug = function scene_bug(message) {
+    if (message) {
+      message = "Bug: " + this.replaceVariables(message);
+    } else {
+      message = "Bug";
+    }
+    if (this.stats.cslib_catch_bug) {
+      this.stats.cslib_bug_message = message;
+      this.return();
+    } else {
+      throw new Error(this.lineMsg() + message);
+    }
   }
-  if (this.stats.cslib_catch_bug) {
-    this.stats.cslib_bug_message = message;
-    this.return();
-  } else {
-    throw new Error(this.lineMsg() + message);
-  }
-}
+*/
 
 /*  AUTOMATIC CHOICE SELECTION #1
     ---------------------------------
@@ -69,40 +75,45 @@ Scene.prototype.bug = function scene_bug(message) {
 
     A few helper variables are also created to help confirm that the length/number
     (cslib_choice_count) of options and their text content (cslib_choice_n) is as expected.
+
+    The the code below is only the original source. The executed
+    code is found in startup.txt in a minimized form. If you update
+    the minimized code, please remember to update the source below as well.
+
+    Scene.prototype.renderOptions = function renderOptions(groups, options, callback) {
+      var self = this;
+      for (var i = 0; i < options.length; i++)
+        options[i].name = self.replaceVariables(options[i].name);
+
+      if (this.stats.cslib_catch_choice) {
+        // automated choice selection for cslib_menu tests
+        if (this.stats.cslib_choice_select.length === 0)
+          throw new Error("Error: stuck in a choice menu but selections (cslib_choice_select) were exhausted.");
+
+        // Extract the next choice selection
+        var selections = this.stats.cslib_choice_select.split(",");
+        var thisSelection = parseInt(selections.shift());
+        this.stats.cslib_choice_select = selections.join(",");
+
+        // Populate helper variables
+        this.stats["cslib_choice_count"] = options.length;
+        for (var i = 0; i < options.length; i++)
+          this.stats["cslib_choice_" + (i+1).toString()] = options[i].name;
+
+        // Resolve the selection
+        this.standardResolution(options[thisSelection - 1]);
+      } else {
+        // original 'game' behaviour
+        this.paragraph();
+        printOptions(groups, options, callback);
+
+        if (this.debugMode) println(toJson(this.stats));
+
+        if (this.finished) printFooter();
+      }
+
+    };
 */
-Scene.prototype.renderOptions = function renderOptions(groups, options, callback) {
-  var self = this;
-  for (var i = 0; i < options.length; i++)
-    options[i].name = self.replaceVariables(options[i].name);
-
-  if (this.stats.cslib_catch_choice) {
-    // automated choice selection for cslib_menu tests
-    if (this.stats.cslib_choice_select.length === 0)
-      throw new Error("Error: stuck in a choice menu but selections (cslib_choice_select) were exhausted.");
-
-    // Extract the next choice selection
-    var selections = this.stats.cslib_choice_select.split(",");
-    var thisSelection = parseInt(selections.shift());
-    this.stats.cslib_choice_select = selections.join(",");
-
-    // Populate helper variables
-    this.stats["cslib_choice_count"] = options.length;
-    for (var i = 0; i < options.length; i++)
-      this.stats["cslib_choice_" + (i+1).toString()] = options[i].name;
-
-    // Resolve the selection
-    this.standardResolution(options[thisSelection - 1]);
-  } else {
-    // original 'game' behaviour
-    this.paragraph();
-    printOptions(groups, options, callback);
-
-    if (this.debugMode) println(toJson(this.stats));
-
-    if (this.finished) printFooter();
-  }
-
-};
 
 /*  AUTOMATIC CHOICE SELECTION #3
     ---------------------------------
@@ -117,8 +128,7 @@ Scene.prototype.renderOptions = function renderOptions(groups, options, callback
     That means the code below is only the original source. The executed
     code is found in startup.txt in a minimized form. If you update
     the minimized code, please remember to update the source below as well.
-*/
-/*
+
     Scene.prototype.choice = function choice(data) {
       var groups = ["choice"];
       if (data) groups = data.split(/ /);
