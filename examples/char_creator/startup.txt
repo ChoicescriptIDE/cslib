@@ -34,7 +34,6 @@
 *create_array race 4 "Orc" "Human" "Elf" "Dwarf"
 
 *create attr_max 6
-*create attr_count 6
 *create_array attr 6 "strength" "charisma" "wisdom" "intelligence" "constitution" "dexterity"
 *create_array attr_val 6 0
 
