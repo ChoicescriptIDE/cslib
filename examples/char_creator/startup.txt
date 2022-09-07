@@ -30,27 +30,13 @@
 *comment a cslib routine asks for an array, it will
 *comment expect there to be both a '_count' and '_max' variable,
 *comment denoting its current and max length respectively.
-*create race_count 4
 *create race_max 4
-*create race_1 "Orc"
-*create race_2 "Human"
-*create race_3 "Elf"
-*create race_4 "Dwarf"
+*create_array race 4 "Orc" "Human" "Elf" "Dwarf"
 
-*create attr_count 6
 *create attr_max 6
-*create attr_1 "strength"
-*create attr_2 "charisma"
-*create attr_3 "wisdom"
-*create attr_4 "intelligence"
-*create attr_5 "constitution"
-*create attr_6 "dexterity"
-*create attr_val_1 0
-*create attr_val_2 0
-*create attr_val_3 0
-*create attr_val_4 0
-*create attr_val_5 0
-*create attr_val_6 0
+*create attr_count 6
+*create_array attr 6 "strength" "charisma" "wisdom" "intelligence" "constitution" "dexterity"
+*create_array attr_val 6 0
 
 *comment :::::: ON with THE show ::::::
 *goto_scene character_creator
