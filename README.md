@@ -1,7 +1,7 @@
 <h1>ChoiceScript Library</h1>
 
 ![Release](https://img.shields.io/github/v/release/choicescriptIDE/cslib?include_prereleases&style=for-the-badge) ![GitHub](https://img.shields.io/github/license/ChoicescriptIDE/cslib?style=for-the-badge) ![GitHub all releases](https://img.shields.io/github/downloads/ChoicescriptIDE/cslib/total?style=for-the-badge)
-![test](https://img.shields.io/github/workflow/status/choicescriptide/cslib/test?label=tests&style=for-the-badge)
+![test](https://img.shields.io/github/actions/workflow/status/choicescriptide/cslib/test.yml?branch=main&label=tests&style=for-the-badge)
 
 The ChoiceScript Library (cslib) is a collection of common, re-usable routines (i.e. functions) for use in development of ChoiceScript games. It's an attempt to extend ChoiceScript's core functionalities using vanilla ChoiceScript only.
 
