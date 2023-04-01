@@ -1,7 +1,7 @@
 # CSLIB Changelog
 
 This changelog only covers end-user facing changes (i.e. user-affecting changes to the cslib modules themselves).<br>
-It does not cover changes to tests or examples (please please refer to the git log for those).
+It does not cover changes to tests or examples (please refer to the git log for those).
 
 ## [0.2.0] (TBD)
 
