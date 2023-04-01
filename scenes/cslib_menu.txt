@@ -274,36 +274,9 @@
 *return
 
 *label _init_option_vars
-*temp option_guard_1 false
-*temp option_guard_2 false
-*temp option_guard_3 false
-*temp option_guard_4 false
-*temp option_guard_5 false
-*temp option_guard_6 false
-*temp option_guard_7 false
-*temp option_guard_8 false
-*temp option_guard_9 false
-*temp option_guard_10 false
-*temp option_text_1 ""
-*temp option_text_2 ""
-*temp option_text_3 ""
-*temp option_text_4 ""
-*temp option_text_5 ""
-*temp option_text_6 ""
-*temp option_text_7 ""
-*temp option_text_8 ""
-*temp option_text_9 ""
-*temp option_text_10 ""
-*temp option_ret_val_1 0
-*temp option_ret_val_2 0
-*temp option_ret_val_3 0
-*temp option_ret_val_4 0
-*temp option_ret_val_5 0
-*temp option_ret_val_6 0
-*temp option_ret_val_7 0
-*temp option_ret_val_8 0
-*temp option_ret_val_9 0
-*temp option_ret_val_10 0
+*temp_array option_guard 10 false
+*temp_array option_text 10 ""
+*temp_array option_ret_val 10 0
 *return
 
 *label _count
