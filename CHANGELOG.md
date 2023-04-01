@@ -11,6 +11,6 @@ It does not cover changes to tests or examples (please refer to the git log for 
 
 ### Contributions
 
-- [@StephenXHart](https://github.com/StephenXHart): cslib_object module ([PR #3382](https://github.com/ChoicescriptIDE/cslib/pull/41))
+- [@StephenXHart](https://github.com/StephenXHart): cslib_object module ([PR #41](https://github.com/ChoicescriptIDE/cslib/pull/41))
 
 ## [0.1.0] (20.05.2021)
