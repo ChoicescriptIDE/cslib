@@ -1,0 +1,619 @@
+*finish
+
+*comment cslib_db
+*comment This module allows to emulate a database in ChoiceScript programming.
+*comment
+*comment How it works:
+*comment
+*comment Simply copy this text file into a ChoiceScript project to use it.
+*comment
+*comment To create a table, a *create command is required in startup.txt.
+*comment The fields must be declared in a parameter. Example:
+*comment
+*comment *create db_dragon "name,hp,color,alignment"
+*comment
+*comment Every time a new record is inserted, its fields will be stored internally
+*comment in the order specified upon the table creation.
+*comment
+*comment The "db_" prefix is required. The default size of each field is 20. However,
+*comment both to cover the need for different sizes as well as for maximum optimization,
+*comment the field size can and should be declared whenever possible, like this:
+*comment
+*comment *create db_dragon "name:35,hp:3,color:10,alignment:15"
+*comment
+*comment The db_ string above will be used to keep the table parameters as
+*comment well as to store the table data.
+*comment
+*comment To insert a new record, both the following are valid:
+*comment
+*comment *gosub_scene cslib_db new "dragon" "Trevor,70,green,chaotic good"
+*comment *gosub_scene cslib_db new "dragon" "alignment" "chaotic good" "hp" 70 "name" "Trevor" "color" "green"
+*comment
+*comment The first option must contain the values in the same order as the respective fields
+*comment were declared when creating the table. The second format allows you to declare
+*comment field-value pairs in any order.
+*comment 
+*comment Some variables must be created to access a record (one variable for each field)
+*comment like in this example:
+*comment
+*comment *create currentdragon_name ""
+*comment *create currentdragon_hp 0
+*comment *create currentdragon_color ""
+*comment *create currentdragon_alignment ""
+*comment
+*comment The get command searches for the first record that contains a match with a given field-value
+*comment pair and copies the contents to the variables which prefix is given in the fourth parameter:
+*comment
+*comment *gosub_scene cslib_db get "dragon" "name" "Trevor" "currentdragon"
+*comment
+*comment The command above results in:
+*comment
+*comment currentdragon_name = "Trevor"
+*comment currentdragon_hp = 70
+*comment currentdragon_color = "green"
+*comment currentdragon_alignment = "chaotic good"
+*comment
+*comment To access a record it is also possible to use the get_by_index command.
+*comment This command returns the record whose position in the internal storage is the
+*comment number given in the second parameter.
+*comment 
+*comment *gosub_scene cslib_db get_by_index "dragon" 2 "currentdragon"
+*comment
+*comment It is also possible to get a random record using the get_random command:
+*comment
+*comment *gosub_scene cslib_db get_random "dragon" "currentdragon"
+*comment
+*comment The set command finds the first record that contains a match with a given field-value
+*comment pair and replaces the value of a column of that record.
+*comment
+*comment *gosub_scene cslib_db set "dragon" "name" "Trevor" "hp" "80"
+*comment 
+*comment The first green dragon is now blue. There is also the set_by_index command that sets the value
+*comment of a particular field in the record whose position in the internal storage is the
+*comment number given in the second parameter.
+*comment
+*comment *gosub_scene cslib_db set_by_index "dragon" 2 "color" "purple"
+*comment
+*comment Finally, the delete and delete_by_index commands allow the deletion of records from a table: 
+*comment
+*comment *gosub_scene cslib_db delete "dragon" "name" "Trevor" 
+*comment *gosub_scene cslib_db delete_by_index "dragon" 2
+*comment
+*comment ----------------------------------------------------------------------------------------------------
+
+
+*label create
+*comment ----------------------------------------------------------------------------------------------------
+*comment Creates a table
+*comment 
+*comment Not implemented since creating a table requires only its declaration in startup.txt.
+*comment
+*comment Example:
+*comment *create db_dragon "name:35,hp:3,color:10,alignment:15"
+*comment
+*comment Note: The "db_" prefix is required. 
+*comment ----------------------------------------------------------------------------------------------------
+*return
+
+
+*label new
+*comment ----------------------------------------------------------------------------------------------------
+*comment Creates a new record in a given table
+*comment 
+*comment @param table - The table name
+*comment @param values - A list of comma separated values for the new record
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db new "dragon" "Trevor,70,green,chaotic good"
+*comment
+*comment -- OR --
+*comment
+*comment @param table - The table name
+*comment @param field 1 - A table field name
+*comment @param value 1 - The value of field 1
+*comment (followed by field2 value2 field3 value3...)
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db new "dragon" "alignment" "chaotic good" "hp" 70 "name" "Trevor" "color" "green"
+*comment ----------------------------------------------------------------------------------------------------
+*params
+*temp table param_1
+*temp values ""
+*temp pointer1 11
+*temp pointer2 0
+*temp maxlength 0
+*temp value ""
+*temp instr ""
+*temp aux 0
+*temp key_value true
+*temp p2 param_2
+*temp p3 ""
+*temp p4 ""
+*temp p5 ""
+*temp param_number param_count
+*temp myparamname ""
+*temp myparamvalue ""
+*if (param_number < 3)
+    *set key_value false
+    *set values param_2
+*if (param_number > 2)
+    *set p3 param_3
+*if (param_number > 3)
+    *set p4 param_4
+    *set p5 param_5
+*temp field {"db_"&table}#1
+*if (field != "?")
+    *gosub _init_table ("db_"&table)
+*label _new_loop1
+*gosub _get_next_def ("db_"&table) "pointer1" "field" "maxlength"
+*if (field = "")
+    *set {"db_"&table} &instr
+    *return
+*if (key_value = false)
+    *gosub _get_next_def "values" "pointer2" "value" "aux"
+    *goto _new_loop3
+*set aux 0
+*label _new_loop2
+*set aux +2
+*if (aux > param_number)
+    *goto _new_loop1
+*if (aux > 5)
+    *set myparamname "param_"&aux
+    *set myparamvalue "param_"&(aux+1)
+*if (aux <= 5)
+    *set myparamname "p"&aux
+    *set myparamvalue "p"&(aux+1)
+*if ({myparamname} != field)
+    *goto _new_loop2
+*set value {myparamvalue}
+*label _new_loop3
+*if (length(value) > maxlength)
+    *bug Maximum length of ${maxlength} for <${field}> exceeded (${value}).
+*label _new_loop4
+*if (length(value) < maxlength)
+    *set value value&"~"
+    *goto _new_loop4
+*set instr &value
+*goto _new_loop1
+
+
+*label get
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the first record that matches a given field-value pair and copies the contents of that
+*comment record to existing variables with the given prefix (see example)
+*comment
+*comment @param table - The table name
+*comment @param field - The field to match
+*comment @param value - The value to match
+*comment @param retval - The prefix of a set of variables where to copy the values to
+*comment 
+*comment @requires - A set of variables where to copy the values to
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db get "dragon" "name" "Trevor" "mydragon"
+*comment (requires existing variables mydragon_name, mydragon_hp, mydragon_color and mydragon_alignment)
+*comment ----------------------------------------------------------------------------------------------------
+*params table field value retval
+*temp totdlen 0
+*temp totrlen 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*temp pointerr (totdlen+1)
+*label _get_loop1
+*gosub _get_next_block ("db_"&table) "pointerr" totrlen retval
+*if ({(retval&"_")&field} = value)
+    *return
+*if ({(retval&"_")&field} != value)
+    *if (pointerr <= length({"db_"&table}))
+        *goto _get_loop1
+*gosub _clear_varset ("db_"&table) retval
+*return
+
+
+*label get_by_index
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the record whose position in the internal storage is the number given in the second parameter
+*comment and copies the contents of that record to existing variables with the given prefix (see example)
+*comment
+*comment @param table - The table name
+*comment @param index - The record position in the internal storage
+*comment @param retval - The prefix of a set of variables where to copy the values to
+*comment 
+*comment @requires - A set of variables where to copy the values to
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db get_by_index "dragon" 2 "mydragon"
+*comment (requires the existing variables mydragon_name, mydragon_hp, mydragon_color and mydragon_alignment)
+*comment ----------------------------------------------------------------------------------------------------
+*params table index retval
+*temp totdlen 0
+*temp totrlen 0
+*temp howmany 0
+*temp pointer 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*set howmany (length({"db_"&table})-totdlen)/totrlen
+*if (index > howmany)
+    *gosub _clear_varset ("db_"&table) retval
+    *bug Trying to get record ${index} of ${howmany}
+*set pointer ((totdlen + ((index - 1) * totrlen)) + 1)
+*gosub _get_next_block ("db_"&table) "pointer" totrlen retval
+*return
+
+
+*label get_random
+*comment ----------------------------------------------------------------------------------------------------
+*comment Copies the contents of a random record to existing variables with the given prefix (see example)
+*comment
+*comment @param table - The table name
+*comment @param retval - The prefix of a set of variables where to copy the values to
+*comment 
+*comment @requires - A set of variables where to copy the values to
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db get_random "dragon" "mydragon"
+*comment (requires the existing variables mydragon_name, mydragon_hp, mydragon_color and mydragon_alignment)
+*comment ----------------------------------------------------------------------------------------------------
+*params table retval
+*temp totdlen 0
+*temp totrlen 0
+*temp howmany 0
+*temp pointer 0
+*temp index 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*set howmany (length({"db_"&table})-totdlen)/totrlen
+*rand index 1 howmany
+*set pointer ((totdlen + ((index - 1) * totrlen)) + 1)
+*gosub _get_next_block ("db_"&table) "pointer" totrlen retval
+*return
+
+
+*label set
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the first record that matches a given field-value pair and updates the value of a field
+*comment in that record
+*comment
+*comment @param table - The table name
+*comment @param keyfield - The field to search for
+*comment @param keyvalue - The value to search for
+*comment @param updfield - The field to update
+*comment @param updvalue - The new value for updfield
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db set "dragon" "name" "Trevor" "hp" "80"
+*comment ----------------------------------------------------------------------------------------------------
+*params table keyfield keyvalue updfield updvalue
+*temp index 0
+*gosub _find_record table keyfield keyvalue "index"
+*if (index = 0)
+    *bug No records where <${keyfield}> is ${keyvalue}
+    *return
+*gosub set_by_index table index updfield updvalue
+*return
+
+
+*label set_by_index
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the record whose position in the internal storage is the number given in the second
+*comment parameter and updates the value of a field in that record
+*comment
+*comment @param table - The table name
+*comment @param index - The record position in the internal storage
+*comment @param updfield - The field to update
+*comment @param updvalue - The new value for updfield
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db set_by_index "dragon" 2 "color" "purple"
+*comment ----------------------------------------------------------------------------------------------------
+*params table index updfield updvalue
+*temp totdlen 0
+*temp totrlen 0
+*temp field ""
+*temp maxlength 0
+*temp offset 0
+*temp howmany 0
+*temp pointer 11
+*temp newdef ""
+*temp aux 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*set howmany (length({"db_"&table})-totdlen)/totrlen
+*if (index > howmany)
+    *bug Trying to set in record ${index} of ${howmany}
+*label _set_by_index_loop1
+*gosub _get_next_def ("db_"&table) "pointer" "field" "maxlength"
+*if (field = "")
+    *bug Field <${updfield}> not found in table ${table}
+*if (field != updfield)
+    *set offset +maxlength
+    *goto _set_by_index_loop1
+*set pointer (((totdlen + ((index - 1) * totrlen)) + offset) + 1)
+*set aux 0
+*label _set_by_index_loop2
+*set aux +1
+*if (aux < pointer)
+    *set newdef &({"db_"&table}#aux)
+    *goto _set_by_index_loop2
+*label _set_by_index_loop3
+*if (length(updvalue) < maxlength)
+    *set updvalue updvalue&"~"
+    *goto _set_by_index_loop3
+*set newdef &updvalue
+*set pointer +maxlength
+*label _set_by_index_loop4
+*if (pointer <= length({"db_"&table}))
+    *set newdef &({"db_"&table}#pointer)
+    *set pointer +1
+    *goto _set_by_index_loop4
+*set {"db_"&table} newdef
+*return
+
+
+*label count
+*comment ----------------------------------------------------------------------------------------------------
+*comment Counts the number of records in the database
+*comment
+*comment @param table - The table name
+*comment
+*comment @returns retval - The total number of records
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db count "dragon" "howmanydragons"
+*comment (requires the existing global variable howmanydragons, which will contain the result)
+*comment ----------------------------------------------------------------------------------------------------
+*params table retval
+*temp totdlen 0
+*temp totrlen 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*set {retval} (length({"db_"&table})-totdlen)/totrlen
+*return
+
+
+*label delete
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the first record that matches a given field-value pair and deletes that record from the table
+*comment
+*comment @param table - The table name
+*comment @param keyfield - The field to search for
+*comment @param keyvalue - The value to search for
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db delete "dragon" "name" "Trevor"
+*comment ----------------------------------------------------------------------------------------------------
+*params table keyfield keyvalue
+*temp index 0
+*gosub _find_record table keyfield keyvalue "index"
+*if (index = 0)
+    *bug No record found where <${keyfield}>=${keyvalue}
+    *return
+*gosub delete_by_index table index
+*return
+
+
+*label delete_by_index
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the record whose position in the internal storage is the number given in the second
+*comment parameter and deletes that record
+*comment
+*comment @param table - The table name
+*comment @param index - The position of the record to delete
+*comment
+*comment Example:
+*comment *gosub_scene cslib_db delete_by_index "dragon" 2
+*comment ----------------------------------------------------------------------------------------------------
+*params table index
+*temp totdlen 0
+*temp totrlen 0
+*temp howmany 0
+*temp pointer 11
+*temp newdef ""
+*temp aux 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*set howmany (length({"db_"&table})-totdlen)/totrlen
+*if (index > howmany)
+    *bug Trying to delete record ${index} of ${howmany}
+*set pointer ((totdlen + ((index - 1) * totrlen)) +1)
+*set aux 0
+*label _delete_by_index_loop2
+*set aux +1
+*if (aux < pointer)
+    *set newdef &({"db_"&table}#aux)
+    *goto _delete_by_index_loop2
+*set aux ((pointer+totrlen)-1)
+*label _delete_by_index_loop3
+*set aux +1
+*if (aux <= length({"db_"&table}))
+    *set newdef &({"db_"&table}#aux)
+    *goto _delete_by_index_loop3
+*set {"db_"&table} newdef
+*return
+
+
+*comment ---------------------
+*comment -- Private methods --
+*comment ---------------------
+
+
+*label _init_table
+*comment ----------------------------------------------------------------------------------------------------
+*comment Initialize table
+*comment ----------------------------------------------------------------------------------------------------
+*params tbldef
+*temp pointer 0
+*temp totdlen 0
+*temp totrlen 0
+*temp field ""
+*temp maxlength 0
+*set totdlen (length({tbldef}) + 13)
+*label _init_db_loop1
+*gosub _get_next_def tbldef "pointer" "field" "maxlength"
+*if (field != "")
+    *set totrlen +maxlength
+    *goto _init_db_loop1
+*label _init_db_loop2
+*if (length(totdlen) < 4)
+    *set totdlen "0"&totdlen
+    *goto _init_db_loop2
+*label _init_db_loop3
+*if (length(totrlen) < 4)
+    *set totrlen "0"&totrlen
+    *goto _init_db_loop3
+*set {tbldef} ((((("?"&totdlen)&":")&totrlen)&"#")&{tbldef})&"##"
+*return
+
+
+*label _get_next_def
+*comment ----------------------------------------------------------------------------------------------------
+*comment Get the next field and max length (or 0 if not defined) from a comma separated list of fields
+*comment ----------------------------------------------------------------------------------------------------
+*params tbldef pointref fieldref maxlref
+*set {fieldref} ""
+*set {maxlref} 0
+*temp char ""
+*temp isqt false
+*label getnwhile
+*set {pointref} +1
+*if ({pointref}>length({tbldef}))
+    *if ({maxlref} = 0)
+        *set {maxlref} 20
+    *return
+*set char {tbldef}#{pointref}
+*if ((char != ",")  and (char != "#"))
+    *if (char = ":")
+        *set isqt true
+        *goto getnwhile
+    *if (isqt)
+        *set {maxlref} (({maxlref} * 10) + char)
+        *goto getnwhile
+    *set {fieldref} &char
+    *goto getnwhile
+*if ({maxlref} = 0)
+    *set {maxlref} 20
+*return
+
+
+*label _get_db_params
+*comment ----------------------------------------------------------------------------------------------------
+*comment Get table parameters (definition and record length)
+*comment ----------------------------------------------------------------------------------------------------
+*params tbldef dlen rlen
+*temp pointer 1
+*temp aux 0
+*label _loop_get_db_params1
+*set pointer +1
+*if (pointer < 6)
+    *set aux (tbldef#pointer)
+    *set {dlen} (({dlen}*10) + aux)
+    *goto _loop_get_db_params1
+*label _loop_get_db_params2
+*set pointer +1
+*if (pointer < 11)
+    *set aux (tbldef#pointer)
+    *set {rlen} (({rlen}*10) +  aux)
+    *goto _loop_get_db_params2
+*return
+    
+
+*label _get_next_block
+*comment ----------------------------------------------------------------------------------------------------
+*comment Fetch the next record block and load its values in a variable set
+*comment ----------------------------------------------------------------------------------------------------
+*params tbldef pointref reclength varset
+*temp aux 0
+*temp blockpointer 0
+*temp block ""
+*temp nextpointer 11
+*temp nextfield ""
+*temp nextlength 0
+*label _loop_get_next_block1
+*set aux +1
+*if (aux <= reclength)
+    *set block &({tbldef}#{pointref})
+    *set {pointref} +1
+    *goto _loop_get_next_block1
+*set blockpointer 1
+*label _loop_get_next_block2
+*gosub _get_next_def tbldef "nextpointer" "nextfield" "nextlength"
+*if (nextfield = "")
+    *return
+*set aux 0
+*set {(varset&"_")&nextfield} ""
+*label _loop_get_next_block3
+*set aux +1
+*if (aux <= nextlength)
+    *if ((block#blockpointer) != "~")
+        *set {(varset&"_")&nextfield} &(block#blockpointer)
+    *set blockpointer +1
+    *goto _loop_get_next_block3
+*goto _loop_get_next_block2
+*return
+
+
+*label _clear_varset
+*comment ----------------------------------------------------------------------------------------------------
+*comment Clear a set of variables related to a given table
+*comment ----------------------------------------------------------------------------------------------------
+*params tbldef varset
+*temp nextpointer 11
+*temp nextfield ""
+*temp nextlength 0
+*label _loop_clear_varset
+*gosub _get_next_def tbldef "nextpointer" "nextfield" "nextlength"
+*if (nextfield = "")
+    *return
+*set {(varset&"_")&nextfield} ""
+*goto _loop_clear_varset
+*return
+
+
+*label _find_record
+*comment ----------------------------------------------------------------------------------------------------
+*comment Finds the first record that matches a given field-value pair and returns its position
+*comment
+*comment @param table - The table name
+*comment @param keyfield - The field to search for
+*comment @param keyvalue - The value to search for
+*comment
+*comment @returns pos - The record position in the database
+*comment ----------------------------------------------------------------------------------------------------
+*params table keyfield keyvalue pos
+*temp totdlen 0
+*temp totrlen 0
+*temp field ""
+*temp maxlength 0
+*temp offset 0
+*temp pointer 11
+*temp nextval ""
+*temp aux 0
+*set {pos} 0
+*gosub _get_db_params {"db_"&table} "totdlen" "totrlen"
+*label _find_loop1
+*gosub _get_next_def ("db_"&table) "pointer" "field" "maxlength"
+*if (field = "")
+    *set {pos} 0
+    *bug Field <${keyfield}> not found in table ${table}
+    *return
+*if (field != keyfield)
+    *set offset +maxlength
+    *goto _find_loop1
+*set pointer (totdlen + offset)
+*label _find_loop2
+*set {pos} +1
+*if (pointer > length({"db_"&table}))
+    *set {pos} 0
+    *return
+*set aux pointer
+*set nextval ""
+*label _find_loop3
+*set aux +1
+*if (aux > length({"db_"&table}))
+    *set {pos} 0
+    *return
+*if (aux > (pointer + maxlength))
+    *goto _find_loop4
+*if (({"db_"&table}#aux) = "~")
+    *goto _find_loop4
+*set nextval &({"db_"&table}#aux)
+*goto _find_loop3
+*label _find_loop4
+*if (keyvalue != nextval)
+    *set pointer +totrlen
+    *goto _find_loop2
+*return
