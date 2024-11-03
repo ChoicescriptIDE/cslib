@@ -360,6 +360,38 @@
 *return
 
 
+*comment SORT
+*comment ------------------------------
+*comment Sorts the elements in a numerical array.
+*comment The smallest number will be at the lowest index.
+*comment ------------------------------
+*comment    params:
+*comment        p_array_ref(string): the name of the array to sort
+*label sort
+*params p_array_ref
+*set cslib_ret ""
+*set p_array_ref &"_"
+*temp count {p_array_ref&"count"}
+*if count <= 1
+    *return
+*temp index 2
+*label _sort_loop
+*if index > count
+    *return
+*temp left_index index-1
+*if (left_index > 0)
+    *temp left_value {p_array_ref&left_index}
+    *temp current_value {p_array_ref&index}
+    *if (left_value > current_value)
+        *temp store left_value
+        *set {p_array_ref&left_index} current_value
+        *set {p_array_ref&index} store
+        *set index left_index
+        *goto _sort_loop
+*set index + 1
+*goto _sort_loop
+
+
 *comment FOR_EACH
 *comment ------------------------------
 *comment Call a given subroutine against each

@@ -284,6 +284,41 @@
 *gosub test_finish 1 test_arr_1
 
 
+*comment :::::: SORT tests ::::::
+*gosub test_start "sort #1"
+*set test_arr_1 99
+*set test_arr_2 2
+*set test_arr_3 77
+*set test_arr_4 4
+*set test_arr_5 5
+*set test_arr_6 9
+*set test_arr_count 6
+*gosub_scene cslib_array sort "test_arr"
+*gosub test_assert_equal 2 test_arr_1
+*gosub test_assert_equal 4 test_arr_2
+*gosub test_assert_equal 5 test_arr_3
+*gosub test_assert_equal 9 test_arr_4
+*gosub test_assert_equal 77 test_arr_5
+*gosub test_assert_equal 99 test_arr_6
+*gosub test_finish
+
+*gosub test_start "sort #2 (two items)"
+*set test_arr_1 99
+*set test_arr_2 77
+*set test_arr_count 2
+*gosub_scene cslib_array sort "test_arr"
+*gosub test_assert_equal 77 test_arr_1
+*gosub test_assert_equal 99 test_arr_2
+*gosub test_finish
+
+*gosub test_start "sort #3 (one item)"
+*set test_arr_1 99
+*set test_arr_count 1
+*gosub_scene cslib_array sort "test_arr"
+*gosub test_assert_equal 99 test_arr_1
+*gosub test_finish
+
+
 *comment :::::: TO_STRING tests ::::::
 *gosub test_start "join #1"
 *set test_arr_1 1
